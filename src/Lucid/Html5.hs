@@ -2,10 +2,10 @@
 
 module Lucid.Html5 where
 
-import           Data.Monoid
 import           Lucid.Base
 
 import qualified Blaze.ByteString.Builder.Char.Utf8 as Blaze
+import           Data.Monoid
 
 -- | @DOCTYPE@ element
 doctype_  :: Html ()
