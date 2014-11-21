@@ -16,7 +16,6 @@ module Lucid
   ,with
    -- * Types
   ,Html
-  ,Attr(..)
    -- * Classes
   ,ToText(..)
   ,ToHtml(..)

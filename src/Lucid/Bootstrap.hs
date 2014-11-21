@@ -1,4 +1,6 @@
 {-# OPTIONS -fno-warn-type-defaults #-}
+{-# LANGUAGE OverloadedStrings #-}
+{-# LANGUAGE ExtendedDefaultRules #-}
 
 -- | Bootstrap layout elements. See
 -- <http://getbootstrap.com/2.3.2/scaffolding.html> for more

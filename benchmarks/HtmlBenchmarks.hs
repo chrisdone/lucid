@@ -12,6 +12,7 @@ import qualified Data.Text as T
 import qualified Blaze.ByteString.Builder.Char.Utf8 as Blaze
 import qualified Prelude as P
 import           Prelude hiding (div, id)
+import           Data.String
 
 -- import BenchmarkUtils
 import           Lucid
@@ -129,4 +130,4 @@ manyAttributes as = with img_ (map id_ as)
 customAttributes :: [(String, String)]  -- ^ List of attribute name, value pairs
                  -> Html ()                -- ^ Result
 customAttributes xs =
-  with img_ (map (\(key,val) -> Attr (Blaze.fromString key) (T.pack val)) xs)
+  with img_ (map (\(key,val) -> (,) (fromString key) (T.pack val)) xs)

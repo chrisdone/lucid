@@ -23,7 +23,6 @@ module Lucid.Base
   ,makeElementNoEnd
    -- * Types
   ,Html
-  ,Attr(..)
   ,HtmlT
    -- * Classes
   ,ToText(..)
@@ -41,6 +40,8 @@ import           Control.Monad.Reader
 import           Data.ByteString.Lazy (ByteString)
 import qualified Data.ByteString.Lazy as L
 import           Data.Functor.Identity
+import           Data.HashMap.Strict (HashMap)
+import qualified Data.HashMap.Strict as M
 import           Data.Monoid
 import           Data.String
 import           Data.Text (Text)
@@ -61,7 +62,7 @@ type Html = HtmlT Identity
 -- | A monad transformer that generates HTML. Use the simpler 'Html'
 -- type if you don't want to transform over some other monad.
 newtype HtmlT m a =
-  HtmlT {runHtmlT :: m (Builder -> Builder -> Builder,a)
+  HtmlT {runHtmlT :: m (HashMap Text Text -> Builder -> Builder,a)
          -- ^ This is the low-level way to run the HTML transformer,
          -- finally returning an element builder and a value. You can
          -- pass 'mempty' for both arguments for a top-level call. See
@@ -120,12 +121,6 @@ instance (Monad m,a ~ ()) => IsString (HtmlT m a) where
 instance (m ~ Identity) => Show (HtmlT m a) where
   show = LT.unpack . renderText
 
--- | An attribute.
-data Attr =
-  Attr {attrName :: !Builder -- ^ The attribute name.
-       ,attrValue :: !Text   -- ^ The attribute value.
-       }
-
 -- | Used for attributes.
 class ToText a where
   toText :: a -> Text
@@ -151,37 +146,30 @@ instance ToHtml Text where
 
 -- | Used for names that are mixed, e.g. 'style_'.
 class Mixed a r where
-  mixed :: Builder -> a -> r
+  mixed :: Text -> a -> r
 
 -- | Attributes can be a mixed thing e.g. 'style_'.
-instance (ToText a) => Mixed a Attr where
-  mixed s = Attr s . toText
+instance (ToText a) => Mixed a (Text,Text) where
+  mixed key value = (key,toText value)
 
 -- | HTML elements can be a mixed thing e.g. 'style_'.
 instance (Monad m,a ~ HtmlT m r,r ~ ()) => Mixed a (HtmlT m r) where
-  mixed = makeElement
+  mixed = makeElement . Blaze.fromText
 
 -- | With an element use these attributes.
 class With a where
   -- | With the given element(s), use the given attributes.
   with :: a -- ^ Some element, either @Html ()@ or @Html () -> Html ()@.
-       -> [Attr] -> a
+       -> [(Text,Text)] -> a
 
 -- | For the contentless elements: 'br_'
 instance (Monad m,a ~ ()) => With (HtmlT m a) where
   with f =
     \attr ->
       HtmlT (do ~(f',_) <- runHtmlT f
-                return (\attr' m' -> f' (attr' <> mconcat (map buildAttr attr)) m',()))
-    where buildAttr :: Attr -> Builder
-          buildAttr (Attr key val) =
-            Blaze.fromString " " <>
-            key <>
-            if val == mempty
-               then mempty
-               else Blaze.fromString "=\"" <>
-                    Blaze.fromText val <>
-                    Blaze.fromText "\""
+                return (\attr' m' ->
+                          f' (unionArgs (M.fromList attr) attr') m'
+                       ,()))
 
 -- | For the contentful elements: 'div_'
 instance (Monad m,a ~ ()) => With (HtmlT m a -> HtmlT m a) where
@@ -189,19 +177,12 @@ instance (Monad m,a ~ ()) => With (HtmlT m a -> HtmlT m a) where
     \attr inner ->
       HtmlT (do ~(f',_) <- runHtmlT (f inner)
                 return ((\attr' m' ->
-                           f' (attr' <>
-                               mconcat (map buildAttr attr))
-                              m'),
-                        ()) )
-    where buildAttr :: Attr -> Builder
-          buildAttr (Attr key val) =
-            Blaze.fromString " " <>
-            key <>
-            if val == mempty
-               then mempty
-               else Blaze.fromString "=\"" <>
-                    Blaze.fromText val <>
-                    Blaze.fromText "\""
+                           f' (unionArgs (M.fromList attr) attr') m')
+                       ,()))
+
+-- | Union two sets of arguments and append duplicate keys.
+unionArgs :: HashMap Text Text -> HashMap Text Text -> HashMap Text Text
+unionArgs = M.unionWith (<>)
 
 --------------------------------------------------------------------------------
 -- Running
@@ -295,19 +276,30 @@ makeElement :: Monad m
 makeElement name =
   \m' ->
     HtmlT (do ~(f,_) <- runHtmlT m'
-              return ((\attr m -> s "<" <> name <> attr <> s ">" <> m <> f mempty mempty <> s "</" <>
+              return ((\attr m -> s "<" <> name <> mconcat (map buildAttr (M.toList attr)) <> s ">" <> m <> f mempty mempty <> s "</" <>
                                    name <> s ">"),
                       ()))
   where s = Blaze.fromString
+
 
 -- | Make an HTML builder for
 makeElementNoEnd :: Monad m
                  => Builder -- ^ Name.
                  -> HtmlT m () -- ^ A parent element.
 makeElementNoEnd name =
-  HtmlT (return ((\attr _ -> s "<" <> name <> attr <> s ">"),
+  HtmlT (return ((\attr _ -> s "<" <> name <> mconcat (map buildAttr (M.toList attr)) <> s ">"),
                  ()))
   where s = Blaze.fromString
+
+buildAttr :: (Text,Text) -> Builder
+buildAttr (key,val) =
+  Blaze.fromString " " <>
+  Blaze.fromText key <>
+  if val == mempty
+     then mempty
+     else Blaze.fromString "=\"" <>
+          Blaze.fromText val <>
+          Blaze.fromText "\""
 
 --------------------------------------------------------------------------------
 -- Encoding

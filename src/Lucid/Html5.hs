@@ -1,9 +1,11 @@
+{-# LANGUAGE OverloadedStrings #-}
 {-# OPTIONS -fno-warn-type-defaults #-}
 
 -- | Html5 terms.
 
 module Lucid.Html5 where
 
+import           Data.Text (Text)
 import           Lucid.Base
 
 import qualified Blaze.ByteString.Builder.Char.Utf8 as Blaze
@@ -85,7 +87,7 @@ caption_ = makeElement (Blaze.fromString "caption")
 
 -- | @cite@ element or @cite@ attribute.
 cite_ :: Mixed a r => a -> r
-cite_ = mixed (Blaze.fromString "cite")
+cite_ = mixed ("cite")
 
 -- | @code@ element
 code_  :: Monad m => HtmlT m () -> HtmlT m ()
@@ -161,7 +163,7 @@ footer_ = makeElement (Blaze.fromString "footer")
 
 -- | @form@ element or @form@ attribute
 form_ :: Mixed a r => a -> r
-form_ = mixed (Blaze.fromString "form")
+form_ = mixed ("form")
 
 -- | @h1@ element
 h1_  :: Monad m => HtmlT m () -> HtmlT m ()
@@ -237,7 +239,7 @@ keygen_ = makeElementNoEnd (Blaze.fromString "keygen")
 
 -- | @label@ element or @label@ attribute
 label_ :: Mixed a r => a -> r
-label_ = mixed (Blaze.fromString "label")
+label_ = mixed ("label")
 
 -- | @legend@ element
 legend_  :: Monad m => HtmlT m () -> HtmlT m ()
@@ -361,7 +363,7 @@ source_ = makeElementNoEnd (Blaze.fromString "source")
 
 -- | @span@ element or @span@ attribute
 span_  :: Mixed a r => a -> r
-span_ = mixed (Blaze.fromString "span")
+span_ = mixed ("span")
 
 -- | @strong@ element
 strong_  :: Monad m => HtmlT m () -> HtmlT m ()
@@ -369,7 +371,7 @@ strong_ = makeElement (Blaze.fromString "strong")
 
 -- | @style@ element or @style@ attribute
 style_  :: Mixed a r => a -> r
-style_ = mixed (Blaze.fromString "style")
+style_ = mixed ("style")
 
 -- | @sub@ element
 sub_  :: Monad m => HtmlT m () -> HtmlT m ()
@@ -377,7 +379,7 @@ sub_ = makeElement (Blaze.fromString "sub")
 
 -- | @summary@ element or @summary@ attribute
 summary_  :: Mixed a r => a -> r
-summary_ = mixed (Blaze.fromString "summary")
+summary_ = mixed ("summary")
 
 -- | @sup@ element
 sup_  :: Monad m => HtmlT m () -> HtmlT m ()
@@ -417,7 +419,7 @@ time_ = makeElement (Blaze.fromString "time")
 
 -- | @title@ element or @title@ attribute
 title_  :: Mixed a r => a -> r
-title_ = mixed (Blaze.fromString "title")
+title_ = mixed ("title")
 
 -- | @tr@ element
 tr_  :: Monad m => HtmlT m () -> HtmlT m ()
@@ -444,637 +446,637 @@ wbr_  :: Monad m => HtmlT m ()
 wbr_ = makeElementNoEnd (Blaze.fromString "wbr")
 
 -- | The @accept@ attribute.
-accept_ :: ToText a => a -> Attr
-accept_ = Attr (Blaze.fromString "accept") . toText
+accept_ :: ToText a => a -> (Text,Text)
+accept_ = (,) ("accept") . toText
 
 -- | The @acceptCharset@ attribute.
-acceptCharset_ :: ToText a => a -> Attr
-acceptCharset_ = Attr (Blaze.fromString "acceptCharset") . toText
+acceptCharset_ :: ToText a => a -> (Text,Text)
+acceptCharset_ = (,) ("acceptCharset") . toText
 
 -- | The @accesskey@ attribute.
-accesskey_ :: ToText a => a -> Attr
-accesskey_ = Attr (Blaze.fromString "accesskey") . toText
+accesskey_ :: ToText a => a -> (Text,Text)
+accesskey_ = (,) ("accesskey") . toText
 
 -- | The @action@ attribute.
-action_ :: ToText a => a -> Attr
-action_ = Attr (Blaze.fromString "action") . toText
+action_ :: ToText a => a -> (Text,Text)
+action_ = (,) ("action") . toText
 
 -- | The @alt@ attribute.
-alt_ :: ToText a => a -> Attr
-alt_ = Attr (Blaze.fromString "alt") . toText
+alt_ :: ToText a => a -> (Text,Text)
+alt_ = (,) ("alt") . toText
 
 -- | The @async@ attribute.
-async_ :: ToText a => a -> Attr
-async_ = Attr (Blaze.fromString "async") . toText
+async_ :: ToText a => a -> (Text,Text)
+async_ = (,) ("async") . toText
 
 -- | The @autocomplete@ attribute.
-autocomplete_ :: ToText a => a -> Attr
-autocomplete_ = Attr (Blaze.fromString "autocomplete") . toText
+autocomplete_ :: ToText a => a -> (Text,Text)
+autocomplete_ = (,) ("autocomplete") . toText
 
 -- | The @autofocus@ attribute.
-autofocus_ :: Attr
-autofocus_ = Attr (Blaze.fromString "autofocus") mempty
+autofocus_ :: (Text,Text)
+autofocus_ = (,) ("autofocus") mempty
 
 -- | The @autoplay@ attribute.
-autoplay_ :: ToText a => a -> Attr
-autoplay_ = Attr (Blaze.fromString "autoplay") . toText
+autoplay_ :: ToText a => a -> (Text,Text)
+autoplay_ = (,) ("autoplay") . toText
 
 -- | The @challenge@ attribute.
-challenge_ :: ToText a => a -> Attr
-challenge_ = Attr (Blaze.fromString "challenge") . toText
+challenge_ :: ToText a => a -> (Text,Text)
+challenge_ = (,) ("challenge") . toText
 
 -- | The @charset@ attribute.
-charset_ :: ToText a => a -> Attr
-charset_ = Attr (Blaze.fromString "charset") . toText
+charset_ :: ToText a => a -> (Text,Text)
+charset_ = (,) ("charset") . toText
 
 -- | The @checked@ attribute.
-checked_ :: Attr
-checked_ = Attr (Blaze.fromString "checked") mempty
+checked_ :: (Text,Text)
+checked_ = (,) ("checked") mempty
 
 -- | The @class@ attribute.
-class_ :: ToText a => a -> Attr
-class_ = Attr (Blaze.fromString "class") . toText
+class_ :: ToText a => a -> (Text,Text)
+class_ = (,) ("class") . toText
 
 -- | The @cols@ attribute.
-cols_ :: ToText a => a -> Attr
-cols_ = Attr (Blaze.fromString "cols") . toText
+cols_ :: ToText a => a -> (Text,Text)
+cols_ = (,) ("cols") . toText
 
 -- | The @colspan@ attribute.
-colspan_ :: ToText a => a -> Attr
-colspan_ = Attr (Blaze.fromString "colspan") . toText
+colspan_ :: ToText a => a -> (Text,Text)
+colspan_ = (,) ("colspan") . toText
 
 -- | The @content@ attribute.
-content_ :: ToText a => a -> Attr
-content_ = Attr (Blaze.fromString "content") . toText
+content_ :: ToText a => a -> (Text,Text)
+content_ = (,) ("content") . toText
 
 -- | The @contenteditable@ attribute.
-contenteditable_ :: ToText a => a -> Attr
-contenteditable_ = Attr (Blaze.fromString "contenteditable") . toText
+contenteditable_ :: ToText a => a -> (Text,Text)
+contenteditable_ = (,) ("contenteditable") . toText
 
 -- | The @contextmenu@ attribute.
-contextmenu_ :: ToText a => a -> Attr
-contextmenu_ = Attr (Blaze.fromString "contextmenu") . toText
+contextmenu_ :: ToText a => a -> (Text,Text)
+contextmenu_ = (,) ("contextmenu") . toText
 
 -- | The @controls@ attribute.
-controls_ :: ToText a => a -> Attr
-controls_ = Attr (Blaze.fromString "controls") . toText
+controls_ :: ToText a => a -> (Text,Text)
+controls_ = (,) ("controls") . toText
 
 -- | The @coords@ attribute.
-coords_ :: ToText a => a -> Attr
-coords_ = Attr (Blaze.fromString "coords") . toText
+coords_ :: ToText a => a -> (Text,Text)
+coords_ = (,) ("coords") . toText
 
 -- | The @data@ attribute.
-data_ :: ToText a => a -> Attr
-data_ = Attr (Blaze.fromString "data") . toText
+data_ :: ToText a => a -> (Text,Text)
+data_ = (,) ("data") . toText
 
 -- | The @datetime@ attribute.
-datetime_ :: ToText a => a -> Attr
-datetime_ = Attr (Blaze.fromString "datetime") . toText
+datetime_ :: ToText a => a -> (Text,Text)
+datetime_ = (,) ("datetime") . toText
 
 -- | The @defer@ attribute.
-defer_ :: ToText a => a -> Attr
-defer_ = Attr (Blaze.fromString "defer") . toText
+defer_ :: ToText a => a -> (Text,Text)
+defer_ = (,) ("defer") . toText
 
 -- | The @dir@ attribute.
-dir_ :: ToText a => a -> Attr
-dir_ = Attr (Blaze.fromString "dir") . toText
+dir_ :: ToText a => a -> (Text,Text)
+dir_ = (,) ("dir") . toText
 
 -- | The @disabled@ attribute.
-disabled_ :: ToText a => a -> Attr
-disabled_ = Attr (Blaze.fromString "disabled") . toText
+disabled_ :: ToText a => a -> (Text,Text)
+disabled_ = (,) ("disabled") . toText
 
 -- | The @draggable@ attribute.
-draggable_ :: ToText a => a -> Attr
-draggable_ = Attr (Blaze.fromString "draggable") . toText
+draggable_ :: ToText a => a -> (Text,Text)
+draggable_ = (,) ("draggable") . toText
 
 -- | The @enctype@ attribute.
-enctype_ :: ToText a => a -> Attr
-enctype_ = Attr (Blaze.fromString "enctype") . toText
+enctype_ :: ToText a => a -> (Text,Text)
+enctype_ = (,) ("enctype") . toText
 
 -- | The @for@ attribute.
-for_ :: ToText a => a -> Attr
-for_ = Attr (Blaze.fromString "for") . toText
+for_ :: ToText a => a -> (Text,Text)
+for_ = (,) ("for") . toText
 
 -- | The @formaction@ attribute.
-formaction_ :: ToText a => a -> Attr
-formaction_ = Attr (Blaze.fromString "formaction") . toText
+formaction_ :: ToText a => a -> (Text,Text)
+formaction_ = (,) ("formaction") . toText
 
 -- | The @formenctype@ attribute.
-formenctype_ :: ToText a => a -> Attr
-formenctype_ = Attr (Blaze.fromString "formenctype") . toText
+formenctype_ :: ToText a => a -> (Text,Text)
+formenctype_ = (,) ("formenctype") . toText
 
 -- | The @formmethod@ attribute.
-formmethod_ :: ToText a => a -> Attr
-formmethod_ = Attr (Blaze.fromString "formmethod") . toText
+formmethod_ :: ToText a => a -> (Text,Text)
+formmethod_ = (,) ("formmethod") . toText
 
 -- | The @formnovalidate@ attribute.
-formnovalidate_ :: ToText a => a -> Attr
-formnovalidate_ = Attr (Blaze.fromString "formnovalidate") . toText
+formnovalidate_ :: ToText a => a -> (Text,Text)
+formnovalidate_ = (,) ("formnovalidate") . toText
 
 -- | The @formtarget@ attribute.
-formtarget_ :: ToText a => a -> Attr
-formtarget_ = Attr (Blaze.fromString "formtarget") . toText
+formtarget_ :: ToText a => a -> (Text,Text)
+formtarget_ = (,) ("formtarget") . toText
 
 -- | The @headers@ attribute.
-headers_ :: ToText a => a -> Attr
-headers_ = Attr (Blaze.fromString "headers") . toText
+headers_ :: ToText a => a -> (Text,Text)
+headers_ = (,) ("headers") . toText
 
 -- | The @height@ attribute.
-height_ :: ToText a => a -> Attr
-height_ = Attr (Blaze.fromString "height") . toText
+height_ :: ToText a => a -> (Text,Text)
+height_ = (,) ("height") . toText
 
 -- | The @hidden@ attribute.
-hidden_ :: ToText a => a -> Attr
-hidden_ = Attr (Blaze.fromString "hidden") . toText
+hidden_ :: ToText a => a -> (Text,Text)
+hidden_ = (,) ("hidden") . toText
 
 -- | The @high@ attribute.
-high_ :: ToText a => a -> Attr
-high_ = Attr (Blaze.fromString "high") . toText
+high_ :: ToText a => a -> (Text,Text)
+high_ = (,) ("high") . toText
 
 -- | The @href@ attribute.
-href_ :: ToText a => a -> Attr
-href_ = Attr (Blaze.fromString "href") . toText
+href_ :: ToText a => a -> (Text,Text)
+href_ = (,) ("href") . toText
 
 -- | The @hreflang@ attribute.
-hreflang_ :: ToText a => a -> Attr
-hreflang_ = Attr (Blaze.fromString "hreflang") . toText
+hreflang_ :: ToText a => a -> (Text,Text)
+hreflang_ = (,) ("hreflang") . toText
 
 -- | The @httpEquiv@ attribute.
-httpEquiv_ :: ToText a => a -> Attr
-httpEquiv_ = Attr (Blaze.fromString "httpEquiv") . toText
+httpEquiv_ :: ToText a => a -> (Text,Text)
+httpEquiv_ = (,) ("httpEquiv") . toText
 
 -- | The @icon@ attribute.
-icon_ :: ToText a => a -> Attr
-icon_ = Attr (Blaze.fromString "icon") . toText
+icon_ :: ToText a => a -> (Text,Text)
+icon_ = (,) ("icon") . toText
 
 -- | The @id@ attribute.
-id_ :: ToText a => a -> Attr
-id_ = Attr (Blaze.fromString "id") . toText
+id_ :: ToText a => a -> (Text,Text)
+id_ = (,) ("id") . toText
 
 -- | The @ismap@ attribute.
-ismap_ :: ToText a => a -> Attr
-ismap_ = Attr (Blaze.fromString "ismap") . toText
+ismap_ :: ToText a => a -> (Text,Text)
+ismap_ = (,) ("ismap") . toText
 
 -- | The @item@ attribute.
-item_ :: ToText a => a -> Attr
-item_ = Attr (Blaze.fromString "item") . toText
+item_ :: ToText a => a -> (Text,Text)
+item_ = (,) ("item") . toText
 
 -- | The @itemprop@ attribute.
-itemprop_ :: ToText a => a -> Attr
-itemprop_ = Attr (Blaze.fromString "itemprop") . toText
+itemprop_ :: ToText a => a -> (Text,Text)
+itemprop_ = (,) ("itemprop") . toText
 
 -- | The @keytype@ attribute.
-keytype_ :: ToText a => a -> Attr
-keytype_ = Attr (Blaze.fromString "keytype") . toText
+keytype_ :: ToText a => a -> (Text,Text)
+keytype_ = (,) ("keytype") . toText
 
 -- | The @lang@ attribute.
-lang_ :: ToText a => a -> Attr
-lang_ = Attr (Blaze.fromString "lang") . toText
+lang_ :: ToText a => a -> (Text,Text)
+lang_ = (,) ("lang") . toText
 
 -- | The @list@ attribute.
-list_ :: ToText a => a -> Attr
-list_ = Attr (Blaze.fromString "list") . toText
+list_ :: ToText a => a -> (Text,Text)
+list_ = (,) ("list") . toText
 
 -- | The @loop@ attribute.
-loop_ :: ToText a => a -> Attr
-loop_ = Attr (Blaze.fromString "loop") . toText
+loop_ :: ToText a => a -> (Text,Text)
+loop_ = (,) ("loop") . toText
 
 -- | The @low@ attribute.
-low_ :: ToText a => a -> Attr
-low_ = Attr (Blaze.fromString "low") . toText
+low_ :: ToText a => a -> (Text,Text)
+low_ = (,) ("low") . toText
 
 -- | The @manifest@ attribute.
-manifest_ :: ToText a => a -> Attr
-manifest_ = Attr (Blaze.fromString "manifest") . toText
+manifest_ :: ToText a => a -> (Text,Text)
+manifest_ = (,) ("manifest") . toText
 
 -- | The @max@ attribute.
-max_ :: ToText a => a -> Attr
-max_ = Attr (Blaze.fromString "max") . toText
+max_ :: ToText a => a -> (Text,Text)
+max_ = (,) ("max") . toText
 
 -- | The @maxlength@ attribute.
-maxlength_ :: ToText a => a -> Attr
-maxlength_ = Attr (Blaze.fromString "maxlength") . toText
+maxlength_ :: ToText a => a -> (Text,Text)
+maxlength_ = (,) ("maxlength") . toText
 
 -- | The @media@ attribute.
-media_ :: ToText a => a -> Attr
-media_ = Attr (Blaze.fromString "media") . toText
+media_ :: ToText a => a -> (Text,Text)
+media_ = (,) ("media") . toText
 
 -- | The @method@ attribute.
-method_ :: ToText a => a -> Attr
-method_ = Attr (Blaze.fromString "method") . toText
+method_ :: ToText a => a -> (Text,Text)
+method_ = (,) ("method") . toText
 
 -- | The @min@ attribute.
-min_ :: ToText a => a -> Attr
-min_ = Attr (Blaze.fromString "min") . toText
+min_ :: ToText a => a -> (Text,Text)
+min_ = (,) ("min") . toText
 
 -- | The @multiple@ attribute.
-multiple_ :: ToText a => a -> Attr
-multiple_ = Attr (Blaze.fromString "multiple") . toText
+multiple_ :: ToText a => a -> (Text,Text)
+multiple_ = (,) ("multiple") . toText
 
 -- | The @name@ attribute.
-name_ :: ToText a => a -> Attr
-name_ = Attr (Blaze.fromString "name") . toText
+name_ :: ToText a => a -> (Text,Text)
+name_ = (,) ("name") . toText
 
 -- | The @novalidate@ attribute.
-novalidate_ :: ToText a => a -> Attr
-novalidate_ = Attr (Blaze.fromString "novalidate") . toText
+novalidate_ :: ToText a => a -> (Text,Text)
+novalidate_ = (,) ("novalidate") . toText
 
 -- | The @onbeforeonload@ attribute.
-onbeforeonload_ :: ToText a => a -> Attr
-onbeforeonload_ = Attr (Blaze.fromString "onbeforeonload") . toText
+onbeforeonload_ :: ToText a => a -> (Text,Text)
+onbeforeonload_ = (,) ("onbeforeonload") . toText
 
 -- | The @onbeforeprint@ attribute.
-onbeforeprint_ :: ToText a => a -> Attr
-onbeforeprint_ = Attr (Blaze.fromString "onbeforeprint") . toText
+onbeforeprint_ :: ToText a => a -> (Text,Text)
+onbeforeprint_ = (,) ("onbeforeprint") . toText
 
 -- | The @onblur@ attribute.
-onblur_ :: ToText a => a -> Attr
-onblur_ = Attr (Blaze.fromString "onblur") . toText
+onblur_ :: ToText a => a -> (Text,Text)
+onblur_ = (,) ("onblur") . toText
 
 -- | The @oncanplay@ attribute.
-oncanplay_ :: ToText a => a -> Attr
-oncanplay_ = Attr (Blaze.fromString "oncanplay") . toText
+oncanplay_ :: ToText a => a -> (Text,Text)
+oncanplay_ = (,) ("oncanplay") . toText
 
 -- | The @oncanplaythrough@ attribute.
-oncanplaythrough_ :: ToText a => a -> Attr
-oncanplaythrough_ = Attr (Blaze.fromString "oncanplaythrough") . toText
+oncanplaythrough_ :: ToText a => a -> (Text,Text)
+oncanplaythrough_ = (,) ("oncanplaythrough") . toText
 
 -- | The @onchange@ attribute.
-onchange_ :: ToText a => a -> Attr
-onchange_ = Attr (Blaze.fromString "onchange") . toText
+onchange_ :: ToText a => a -> (Text,Text)
+onchange_ = (,) ("onchange") . toText
 
 -- | The @onclick@ attribute.
-onclick_ :: ToText a => a -> Attr
-onclick_ = Attr (Blaze.fromString "onclick") . toText
+onclick_ :: ToText a => a -> (Text,Text)
+onclick_ = (,) ("onclick") . toText
 
 -- | The @oncontextmenu@ attribute.
-oncontextmenu_ :: ToText a => a -> Attr
-oncontextmenu_ = Attr (Blaze.fromString "oncontextmenu") . toText
+oncontextmenu_ :: ToText a => a -> (Text,Text)
+oncontextmenu_ = (,) ("oncontextmenu") . toText
 
 -- | The @ondblclick@ attribute.
-ondblclick_ :: ToText a => a -> Attr
-ondblclick_ = Attr (Blaze.fromString "ondblclick") . toText
+ondblclick_ :: ToText a => a -> (Text,Text)
+ondblclick_ = (,) ("ondblclick") . toText
 
 -- | The @ondrag@ attribute.
-ondrag_ :: ToText a => a -> Attr
-ondrag_ = Attr (Blaze.fromString "ondrag") . toText
+ondrag_ :: ToText a => a -> (Text,Text)
+ondrag_ = (,) ("ondrag") . toText
 
 -- | The @ondragend@ attribute.
-ondragend_ :: ToText a => a -> Attr
-ondragend_ = Attr (Blaze.fromString "ondragend") . toText
+ondragend_ :: ToText a => a -> (Text,Text)
+ondragend_ = (,) ("ondragend") . toText
 
 -- | The @ondragenter@ attribute.
-ondragenter_ :: ToText a => a -> Attr
-ondragenter_ = Attr (Blaze.fromString "ondragenter") . toText
+ondragenter_ :: ToText a => a -> (Text,Text)
+ondragenter_ = (,) ("ondragenter") . toText
 
 -- | The @ondragleave@ attribute.
-ondragleave_ :: ToText a => a -> Attr
-ondragleave_ = Attr (Blaze.fromString "ondragleave") . toText
+ondragleave_ :: ToText a => a -> (Text,Text)
+ondragleave_ = (,) ("ondragleave") . toText
 
 -- | The @ondragover@ attribute.
-ondragover_ :: ToText a => a -> Attr
-ondragover_ = Attr (Blaze.fromString "ondragover") . toText
+ondragover_ :: ToText a => a -> (Text,Text)
+ondragover_ = (,) ("ondragover") . toText
 
 -- | The @ondragstart@ attribute.
-ondragstart_ :: ToText a => a -> Attr
-ondragstart_ = Attr (Blaze.fromString "ondragstart") . toText
+ondragstart_ :: ToText a => a -> (Text,Text)
+ondragstart_ = (,) ("ondragstart") . toText
 
 -- | The @ondrop@ attribute.
-ondrop_ :: ToText a => a -> Attr
-ondrop_ = Attr (Blaze.fromString "ondrop") . toText
+ondrop_ :: ToText a => a -> (Text,Text)
+ondrop_ = (,) ("ondrop") . toText
 
 -- | The @ondurationchange@ attribute.
-ondurationchange_ :: ToText a => a -> Attr
-ondurationchange_ = Attr (Blaze.fromString "ondurationchange") . toText
+ondurationchange_ :: ToText a => a -> (Text,Text)
+ondurationchange_ = (,) ("ondurationchange") . toText
 
 -- | The @onemptied@ attribute.
-onemptied_ :: ToText a => a -> Attr
-onemptied_ = Attr (Blaze.fromString "onemptied") . toText
+onemptied_ :: ToText a => a -> (Text,Text)
+onemptied_ = (,) ("onemptied") . toText
 
 -- | The @onended@ attribute.
-onended_ :: ToText a => a -> Attr
-onended_ = Attr (Blaze.fromString "onended") . toText
+onended_ :: ToText a => a -> (Text,Text)
+onended_ = (,) ("onended") . toText
 
 -- | The @onerror@ attribute.
-onerror_ :: ToText a => a -> Attr
-onerror_ = Attr (Blaze.fromString "onerror") . toText
+onerror_ :: ToText a => a -> (Text,Text)
+onerror_ = (,) ("onerror") . toText
 
 -- | The @onfocus@ attribute.
-onfocus_ :: ToText a => a -> Attr
-onfocus_ = Attr (Blaze.fromString "onfocus") . toText
+onfocus_ :: ToText a => a -> (Text,Text)
+onfocus_ = (,) ("onfocus") . toText
 
 -- | The @onformchange@ attribute.
-onformchange_ :: ToText a => a -> Attr
-onformchange_ = Attr (Blaze.fromString "onformchange") . toText
+onformchange_ :: ToText a => a -> (Text,Text)
+onformchange_ = (,) ("onformchange") . toText
 
 -- | The @onforminput@ attribute.
-onforminput_ :: ToText a => a -> Attr
-onforminput_ = Attr (Blaze.fromString "onforminput") . toText
+onforminput_ :: ToText a => a -> (Text,Text)
+onforminput_ = (,) ("onforminput") . toText
 
 -- | The @onhaschange@ attribute.
-onhaschange_ :: ToText a => a -> Attr
-onhaschange_ = Attr (Blaze.fromString "onhaschange") . toText
+onhaschange_ :: ToText a => a -> (Text,Text)
+onhaschange_ = (,) ("onhaschange") . toText
 
 -- | The @oninput@ attribute.
-oninput_ :: ToText a => a -> Attr
-oninput_ = Attr (Blaze.fromString "oninput") . toText
+oninput_ :: ToText a => a -> (Text,Text)
+oninput_ = (,) ("oninput") . toText
 
 -- | The @oninvalid@ attribute.
-oninvalid_ :: ToText a => a -> Attr
-oninvalid_ = Attr (Blaze.fromString "oninvalid") . toText
+oninvalid_ :: ToText a => a -> (Text,Text)
+oninvalid_ = (,) ("oninvalid") . toText
 
 -- | The @onkeydown@ attribute.
-onkeydown_ :: ToText a => a -> Attr
-onkeydown_ = Attr (Blaze.fromString "onkeydown") . toText
+onkeydown_ :: ToText a => a -> (Text,Text)
+onkeydown_ = (,) ("onkeydown") . toText
 
 -- | The @onkeyup@ attribute.
-onkeyup_ :: ToText a => a -> Attr
-onkeyup_ = Attr (Blaze.fromString "onkeyup") . toText
+onkeyup_ :: ToText a => a -> (Text,Text)
+onkeyup_ = (,) ("onkeyup") . toText
 
 -- | The @onload@ attribute.
-onload_ :: ToText a => a -> Attr
-onload_ = Attr (Blaze.fromString "onload") . toText
+onload_ :: ToText a => a -> (Text,Text)
+onload_ = (,) ("onload") . toText
 
 -- | The @onloadeddata@ attribute.
-onloadeddata_ :: ToText a => a -> Attr
-onloadeddata_ = Attr (Blaze.fromString "onloadeddata") . toText
+onloadeddata_ :: ToText a => a -> (Text,Text)
+onloadeddata_ = (,) ("onloadeddata") . toText
 
 -- | The @onloadedmetadata@ attribute.
-onloadedmetadata_ :: ToText a => a -> Attr
-onloadedmetadata_ = Attr (Blaze.fromString "onloadedmetadata") . toText
+onloadedmetadata_ :: ToText a => a -> (Text,Text)
+onloadedmetadata_ = (,) ("onloadedmetadata") . toText
 
 -- | The @onloadstart@ attribute.
-onloadstart_ :: ToText a => a -> Attr
-onloadstart_ = Attr (Blaze.fromString "onloadstart") . toText
+onloadstart_ :: ToText a => a -> (Text,Text)
+onloadstart_ = (,) ("onloadstart") . toText
 
 -- | The @onmessage@ attribute.
-onmessage_ :: ToText a => a -> Attr
-onmessage_ = Attr (Blaze.fromString "onmessage") . toText
+onmessage_ :: ToText a => a -> (Text,Text)
+onmessage_ = (,) ("onmessage") . toText
 
 -- | The @onmousedown@ attribute.
-onmousedown_ :: ToText a => a -> Attr
-onmousedown_ = Attr (Blaze.fromString "onmousedown") . toText
+onmousedown_ :: ToText a => a -> (Text,Text)
+onmousedown_ = (,) ("onmousedown") . toText
 
 -- | The @onmousemove@ attribute.
-onmousemove_ :: ToText a => a -> Attr
-onmousemove_ = Attr (Blaze.fromString "onmousemove") . toText
+onmousemove_ :: ToText a => a -> (Text,Text)
+onmousemove_ = (,) ("onmousemove") . toText
 
 -- | The @onmouseout@ attribute.
-onmouseout_ :: ToText a => a -> Attr
-onmouseout_ = Attr (Blaze.fromString "onmouseout") . toText
+onmouseout_ :: ToText a => a -> (Text,Text)
+onmouseout_ = (,) ("onmouseout") . toText
 
 -- | The @onmouseover@ attribute.
-onmouseover_ :: ToText a => a -> Attr
-onmouseover_ = Attr (Blaze.fromString "onmouseover") . toText
+onmouseover_ :: ToText a => a -> (Text,Text)
+onmouseover_ = (,) ("onmouseover") . toText
 
 -- | The @onmouseup@ attribute.
-onmouseup_ :: ToText a => a -> Attr
-onmouseup_ = Attr (Blaze.fromString "onmouseup") . toText
+onmouseup_ :: ToText a => a -> (Text,Text)
+onmouseup_ = (,) ("onmouseup") . toText
 
 -- | The @onmousewheel@ attribute.
-onmousewheel_ :: ToText a => a -> Attr
-onmousewheel_ = Attr (Blaze.fromString "onmousewheel") . toText
+onmousewheel_ :: ToText a => a -> (Text,Text)
+onmousewheel_ = (,) ("onmousewheel") . toText
 
 -- | The @ononline@ attribute.
-ononline_ :: ToText a => a -> Attr
-ononline_ = Attr (Blaze.fromString "ononline") . toText
+ononline_ :: ToText a => a -> (Text,Text)
+ononline_ = (,) ("ononline") . toText
 
 -- | The @onpagehide@ attribute.
-onpagehide_ :: ToText a => a -> Attr
-onpagehide_ = Attr (Blaze.fromString "onpagehide") . toText
+onpagehide_ :: ToText a => a -> (Text,Text)
+onpagehide_ = (,) ("onpagehide") . toText
 
 -- | The @onpageshow@ attribute.
-onpageshow_ :: ToText a => a -> Attr
-onpageshow_ = Attr (Blaze.fromString "onpageshow") . toText
+onpageshow_ :: ToText a => a -> (Text,Text)
+onpageshow_ = (,) ("onpageshow") . toText
 
 -- | The @onpause@ attribute.
-onpause_ :: ToText a => a -> Attr
-onpause_ = Attr (Blaze.fromString "onpause") . toText
+onpause_ :: ToText a => a -> (Text,Text)
+onpause_ = (,) ("onpause") . toText
 
 -- | The @onplay@ attribute.
-onplay_ :: ToText a => a -> Attr
-onplay_ = Attr (Blaze.fromString "onplay") . toText
+onplay_ :: ToText a => a -> (Text,Text)
+onplay_ = (,) ("onplay") . toText
 
 -- | The @onplaying@ attribute.
-onplaying_ :: ToText a => a -> Attr
-onplaying_ = Attr (Blaze.fromString "onplaying") . toText
+onplaying_ :: ToText a => a -> (Text,Text)
+onplaying_ = (,) ("onplaying") . toText
 
 -- | The @onprogress@ attribute.
-onprogress_ :: ToText a => a -> Attr
-onprogress_ = Attr (Blaze.fromString "onprogress") . toText
+onprogress_ :: ToText a => a -> (Text,Text)
+onprogress_ = (,) ("onprogress") . toText
 
 -- | The @onpropstate@ attribute.
-onpropstate_ :: ToText a => a -> Attr
-onpropstate_ = Attr (Blaze.fromString "onpropstate") . toText
+onpropstate_ :: ToText a => a -> (Text,Text)
+onpropstate_ = (,) ("onpropstate") . toText
 
 -- | The @onratechange@ attribute.
-onratechange_ :: ToText a => a -> Attr
-onratechange_ = Attr (Blaze.fromString "onratechange") . toText
+onratechange_ :: ToText a => a -> (Text,Text)
+onratechange_ = (,) ("onratechange") . toText
 
 -- | The @onreadystatechange@ attribute.
-onreadystatechange_ :: ToText a => a -> Attr
-onreadystatechange_ = Attr (Blaze.fromString "onreadystatechange") . toText
+onreadystatechange_ :: ToText a => a -> (Text,Text)
+onreadystatechange_ = (,) ("onreadystatechange") . toText
 
 -- | The @onredo@ attribute.
-onredo_ :: ToText a => a -> Attr
-onredo_ = Attr (Blaze.fromString "onredo") . toText
+onredo_ :: ToText a => a -> (Text,Text)
+onredo_ = (,) ("onredo") . toText
 
 -- | The @onresize@ attribute.
-onresize_ :: ToText a => a -> Attr
-onresize_ = Attr (Blaze.fromString "onresize") . toText
+onresize_ :: ToText a => a -> (Text,Text)
+onresize_ = (,) ("onresize") . toText
 
 -- | The @onscroll@ attribute.
-onscroll_ :: ToText a => a -> Attr
-onscroll_ = Attr (Blaze.fromString "onscroll") . toText
+onscroll_ :: ToText a => a -> (Text,Text)
+onscroll_ = (,) ("onscroll") . toText
 
 -- | The @onseeked@ attribute.
-onseeked_ :: ToText a => a -> Attr
-onseeked_ = Attr (Blaze.fromString "onseeked") . toText
+onseeked_ :: ToText a => a -> (Text,Text)
+onseeked_ = (,) ("onseeked") . toText
 
 -- | The @onseeking@ attribute.
-onseeking_ :: ToText a => a -> Attr
-onseeking_ = Attr (Blaze.fromString "onseeking") . toText
+onseeking_ :: ToText a => a -> (Text,Text)
+onseeking_ = (,) ("onseeking") . toText
 
 -- | The @onselect@ attribute.
-onselect_ :: ToText a => a -> Attr
-onselect_ = Attr (Blaze.fromString "onselect") . toText
+onselect_ :: ToText a => a -> (Text,Text)
+onselect_ = (,) ("onselect") . toText
 
 -- | The @onstalled@ attribute.
-onstalled_ :: ToText a => a -> Attr
-onstalled_ = Attr (Blaze.fromString "onstalled") . toText
+onstalled_ :: ToText a => a -> (Text,Text)
+onstalled_ = (,) ("onstalled") . toText
 
 -- | The @onstorage@ attribute.
-onstorage_ :: ToText a => a -> Attr
-onstorage_ = Attr (Blaze.fromString "onstorage") . toText
+onstorage_ :: ToText a => a -> (Text,Text)
+onstorage_ = (,) ("onstorage") . toText
 
 -- | The @onsubmit@ attribute.
-onsubmit_ :: ToText a => a -> Attr
-onsubmit_ = Attr (Blaze.fromString "onsubmit") . toText
+onsubmit_ :: ToText a => a -> (Text,Text)
+onsubmit_ = (,) ("onsubmit") . toText
 
 -- | The @onsuspend@ attribute.
-onsuspend_ :: ToText a => a -> Attr
-onsuspend_ = Attr (Blaze.fromString "onsuspend") . toText
+onsuspend_ :: ToText a => a -> (Text,Text)
+onsuspend_ = (,) ("onsuspend") . toText
 
 -- | The @ontimeupdate@ attribute.
-ontimeupdate_ :: ToText a => a -> Attr
-ontimeupdate_ = Attr (Blaze.fromString "ontimeupdate") . toText
+ontimeupdate_ :: ToText a => a -> (Text,Text)
+ontimeupdate_ = (,) ("ontimeupdate") . toText
 
 -- | The @onundo@ attribute.
-onundo_ :: ToText a => a -> Attr
-onundo_ = Attr (Blaze.fromString "onundo") . toText
+onundo_ :: ToText a => a -> (Text,Text)
+onundo_ = (,) ("onundo") . toText
 
 -- | The @onunload@ attribute.
-onunload_ :: ToText a => a -> Attr
-onunload_ = Attr (Blaze.fromString "onunload") . toText
+onunload_ :: ToText a => a -> (Text,Text)
+onunload_ = (,) ("onunload") . toText
 
 -- | The @onvolumechange@ attribute.
-onvolumechange_ :: ToText a => a -> Attr
-onvolumechange_ = Attr (Blaze.fromString "onvolumechange") . toText
+onvolumechange_ :: ToText a => a -> (Text,Text)
+onvolumechange_ = (,) ("onvolumechange") . toText
 
 -- | The @onwaiting@ attribute.
-onwaiting_ :: ToText a => a -> Attr
-onwaiting_ = Attr (Blaze.fromString "onwaiting") . toText
+onwaiting_ :: ToText a => a -> (Text,Text)
+onwaiting_ = (,) ("onwaiting") . toText
 
 -- | The @open@ attribute.
-open_ :: ToText a => a -> Attr
-open_ = Attr (Blaze.fromString "open") . toText
+open_ :: ToText a => a -> (Text,Text)
+open_ = (,) ("open") . toText
 
 -- | The @optimum@ attribute.
-optimum_ :: ToText a => a -> Attr
-optimum_ = Attr (Blaze.fromString "optimum") . toText
+optimum_ :: ToText a => a -> (Text,Text)
+optimum_ = (,) ("optimum") . toText
 
 -- | The @pattern@ attribute.
-pattern_ :: ToText a => a -> Attr
-pattern_ = Attr (Blaze.fromString "pattern") . toText
+pattern_ :: ToText a => a -> (Text,Text)
+pattern_ = (,) ("pattern") . toText
 
 -- | The @ping@ attribute.
-ping_ :: ToText a => a -> Attr
-ping_ = Attr (Blaze.fromString "ping") . toText
+ping_ :: ToText a => a -> (Text,Text)
+ping_ = (,) ("ping") . toText
 
 -- | The @placeholder@ attribute.
-placeholder_ :: ToText a => a -> Attr
-placeholder_ = Attr (Blaze.fromString "placeholder") . toText
+placeholder_ :: ToText a => a -> (Text,Text)
+placeholder_ = (,) ("placeholder") . toText
 
 -- | The @preload@ attribute.
-preload_ :: ToText a => a -> Attr
-preload_ = Attr (Blaze.fromString "preload") . toText
+preload_ :: ToText a => a -> (Text,Text)
+preload_ = (,) ("preload") . toText
 
 -- | The @pubdate@ attribute.
-pubdate_ :: ToText a => a -> Attr
-pubdate_ = Attr (Blaze.fromString "pubdate") . toText
+pubdate_ :: ToText a => a -> (Text,Text)
+pubdate_ = (,) ("pubdate") . toText
 
 -- | The @radiogroup@ attribute.
-radiogroup_ :: ToText a => a -> Attr
-radiogroup_ = Attr (Blaze.fromString "radiogroup") . toText
+radiogroup_ :: ToText a => a -> (Text,Text)
+radiogroup_ = (,) ("radiogroup") . toText
 
 -- | The @readonly@ attribute.
-readonly_ :: ToText a => a -> Attr
-readonly_ = Attr (Blaze.fromString "readonly") . toText
+readonly_ :: ToText a => a -> (Text,Text)
+readonly_ = (,) ("readonly") . toText
 
 -- | The @rel@ attribute.
-rel_ :: ToText a => a -> Attr
-rel_ = Attr (Blaze.fromString "rel") . toText
+rel_ :: ToText a => a -> (Text,Text)
+rel_ = (,) ("rel") . toText
 
 -- | The @required@ attribute.
-required_ :: ToText a => a -> Attr
-required_ = Attr (Blaze.fromString "required") . toText
+required_ :: ToText a => a -> (Text,Text)
+required_ = (,) ("required") . toText
 
 -- | The @reversed@ attribute.
-reversed_ :: ToText a => a -> Attr
-reversed_ = Attr (Blaze.fromString "reversed") . toText
+reversed_ :: ToText a => a -> (Text,Text)
+reversed_ = (,) ("reversed") . toText
 
 -- | The @rows@ attribute.
-rows_ :: ToText a => a -> Attr
-rows_ = Attr (Blaze.fromString "rows") . toText
+rows_ :: ToText a => a -> (Text,Text)
+rows_ = (,) ("rows") . toText
 
 -- | The @rowspan@ attribute.
-rowspan_ :: ToText a => a -> Attr
-rowspan_ = Attr (Blaze.fromString "rowspan") . toText
+rowspan_ :: ToText a => a -> (Text,Text)
+rowspan_ = (,) ("rowspan") . toText
 
 -- | The @sandbox@ attribute.
-sandbox_ :: ToText a => a -> Attr
-sandbox_ = Attr (Blaze.fromString "sandbox") . toText
+sandbox_ :: ToText a => a -> (Text,Text)
+sandbox_ = (,) ("sandbox") . toText
 
 -- | The @scope@ attribute.
-scope_ :: ToText a => a -> Attr
-scope_ = Attr (Blaze.fromString "scope") . toText
+scope_ :: ToText a => a -> (Text,Text)
+scope_ = (,) ("scope") . toText
 
 -- | The @scoped@ attribute.
-scoped_ :: ToText a => a -> Attr
-scoped_ = Attr (Blaze.fromString "scoped") . toText
+scoped_ :: ToText a => a -> (Text,Text)
+scoped_ = (,) ("scoped") . toText
 
 -- | The @seamless@ attribute.
-seamless_ :: ToText a => a -> Attr
-seamless_ = Attr (Blaze.fromString "seamless") . toText
+seamless_ :: ToText a => a -> (Text,Text)
+seamless_ = (,) ("seamless") . toText
 
 -- | The @selected@ attribute.
-selected_ :: ToText a => a -> Attr
-selected_ = Attr (Blaze.fromString "selected") . toText
+selected_ :: ToText a => a -> (Text,Text)
+selected_ = (,) ("selected") . toText
 
 -- | The @shape@ attribute.
-shape_ :: ToText a => a -> Attr
-shape_ = Attr (Blaze.fromString "shape") . toText
+shape_ :: ToText a => a -> (Text,Text)
+shape_ = (,) ("shape") . toText
 
 -- | The @size@ attribute.
-size_ :: ToText a => a -> Attr
-size_ = Attr (Blaze.fromString "size") . toText
+size_ :: ToText a => a -> (Text,Text)
+size_ = (,) ("size") . toText
 
 -- | The @sizes@ attribute.
-sizes_ :: ToText a => a -> Attr
-sizes_ = Attr (Blaze.fromString "sizes") . toText
+sizes_ :: ToText a => a -> (Text,Text)
+sizes_ = (,) ("sizes") . toText
 
 -- | The @spellcheck@ attribute.
-spellcheck_ :: ToText a => a -> Attr
-spellcheck_ = Attr (Blaze.fromString "spellcheck") . toText
+spellcheck_ :: ToText a => a -> (Text,Text)
+spellcheck_ = (,) ("spellcheck") . toText
 
 -- | The @src@ attribute.
-src_ :: ToText a => a -> Attr
-src_ = Attr (Blaze.fromString "src") . toText
+src_ :: ToText a => a -> (Text,Text)
+src_ = (,) ("src") . toText
 
 -- | The @srcdoc@ attribute.
-srcdoc_ :: ToText a => a -> Attr
-srcdoc_ = Attr (Blaze.fromString "srcdoc") . toText
+srcdoc_ :: ToText a => a -> (Text,Text)
+srcdoc_ = (,) ("srcdoc") . toText
 
 -- | The @start@ attribute.
-start_ :: ToText a => a -> Attr
-start_ = Attr (Blaze.fromString "start") . toText
+start_ :: ToText a => a -> (Text,Text)
+start_ = (,) ("start") . toText
 
 -- | The @step@ attribute.
-step_ :: ToText a => a -> Attr
-step_ = Attr (Blaze.fromString "step") . toText
+step_ :: ToText a => a -> (Text,Text)
+step_ = (,) ("step") . toText
 
 -- | The @subject@ attribute.
-subject_ :: ToText a => a -> Attr
-subject_ = Attr (Blaze.fromString "subject") . toText
+subject_ :: ToText a => a -> (Text,Text)
+subject_ = (,) ("subject") . toText
 
 -- | The @tabindex@ attribute.
-tabindex_ :: ToText a => a -> Attr
-tabindex_ = Attr (Blaze.fromString "tabindex") . toText
+tabindex_ :: ToText a => a -> (Text,Text)
+tabindex_ = (,) ("tabindex") . toText
 
 -- | The @target@ attribute.
-target_ :: ToText a => a -> Attr
-target_ = Attr (Blaze.fromString "target") . toText
+target_ :: ToText a => a -> (Text,Text)
+target_ = (,) ("target") . toText
 
 -- | The @type@ attribute.
-type_ :: ToText a => a -> Attr
-type_ = Attr (Blaze.fromString "type") . toText
+type_ :: ToText a => a -> (Text,Text)
+type_ = (,) ("type") . toText
 
 -- | The @usemap@ attribute.
-usemap_ :: ToText a => a -> Attr
-usemap_ = Attr (Blaze.fromString "usemap") . toText
+usemap_ :: ToText a => a -> (Text,Text)
+usemap_ = (,) ("usemap") . toText
 
 -- | The @value@ attribute.
-value_ :: ToText a => a -> Attr
-value_ = Attr (Blaze.fromString "value") . toText
+value_ :: ToText a => a -> (Text,Text)
+value_ = (,) ("value") . toText
 
 -- | The @width@ attribute.
-width_ :: ToText a => a -> Attr
-width_ = Attr (Blaze.fromString "width") . toText
+width_ :: ToText a => a -> (Text,Text)
+width_ = (,) ("width") . toText
 
 -- | The @wrap@ attribute.
-wrap_ :: ToText a => a -> Attr
-wrap_ = Attr (Blaze.fromString "wrap") . toText
+wrap_ :: ToText a => a -> (Text,Text)
+wrap_ = (,) ("wrap") . toText
 
 -- | The @xmlns@ attribute.
-xmlns_ :: ToText a => a -> Attr
-xmlns_ = Attr (Blaze.fromString "xmlns") . toText
+xmlns_ :: ToText a => a -> (Text,Text)
+xmlns_ = (,) ("xmlns") . toText
