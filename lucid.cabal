@@ -18,7 +18,8 @@ library
                      Lucid.Base
                      Lucid.Html5
                      Lucid.Bootstrap
-  build-depends:     base >= 4 && <5,
-                     blaze-builder,
-                     text,
-                     bytestring
+  build-depends:     base >= 4 && <5
+                   , blaze-builder
+                   , bytestring
+                   , text
+                   , transformers

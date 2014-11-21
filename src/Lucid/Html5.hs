@@ -8,77 +8,77 @@ import qualified Blaze.ByteString.Builder.Char.Utf8 as Blaze
 import           Data.Monoid
 
 -- | @DOCTYPE@ element
-doctype_  :: Html ()
+doctype_  :: Monad m => HtmlT m ()
 doctype_ = makeElementNoEnd (Blaze.fromString "!DOCTYPE HTML")
 
 -- | @DOCTYPE@ element + @html@ element
-doctypehtml_  :: Html () -> Html ()
+doctypehtml_  :: Monad m => HtmlT m () -> HtmlT m ()
 doctypehtml_ m =
   do doctype_
      html_ m
 
 -- | @a@ element
-a_  :: Html () -> Html ()
+a_  :: Monad m => HtmlT m () -> HtmlT m ()
 a_ = makeElement (Blaze.fromString "a")
 
 -- | @abbr@ element
-abbr_  :: Html () -> Html ()
+abbr_  :: Monad m => HtmlT m () -> HtmlT m ()
 abbr_ = makeElement (Blaze.fromString "abbr")
 
 -- | @address@ element
-address_  :: Html () -> Html ()
+address_  :: Monad m => HtmlT m () -> HtmlT m ()
 address_ = makeElement (Blaze.fromString "address")
 
 -- | @area@ element
-area_  :: Html ()
+area_  :: Monad m => HtmlT m ()
 area_ = makeElementNoEnd (Blaze.fromString "area")
 
 -- | @article@ element
-article_  :: Html () -> Html ()
+article_  :: Monad m => HtmlT m () -> HtmlT m ()
 article_ = makeElement (Blaze.fromString "article")
 
 -- | @aside@ element
-aside_  :: Html () -> Html ()
+aside_  :: Monad m => HtmlT m () -> HtmlT m ()
 aside_ = makeElement (Blaze.fromString "aside")
 
 -- | @audio@ element
-audio_  :: Html () -> Html ()
+audio_  :: Monad m => HtmlT m () -> HtmlT m ()
 audio_ = makeElement (Blaze.fromString "audio")
 
 -- | @b@ element
-b_  :: Html () -> Html ()
+b_  :: Monad m => HtmlT m () -> HtmlT m ()
 b_ = makeElement (Blaze.fromString "b")
 
 -- | @base@ element
-base_  :: Html ()
+base_  :: Monad m => HtmlT m ()
 base_ = makeElementNoEnd (Blaze.fromString "base")
 
 -- | @bdo@ element
-bdo_  :: Html () -> Html ()
+bdo_  :: Monad m => HtmlT m () -> HtmlT m ()
 bdo_ = makeElement (Blaze.fromString "bdo")
 
 -- | @blockquote@ element
-blockquote_  :: Html () -> Html ()
+blockquote_  :: Monad m => HtmlT m () -> HtmlT m ()
 blockquote_ = makeElement (Blaze.fromString "blockquote")
 
 -- | @body@ element
-body_  :: Html () -> Html ()
+body_  :: Monad m => HtmlT m () -> HtmlT m ()
 body_ = makeElement (Blaze.fromString "body")
 
 -- | @br@ element
-br_  :: Html ()
+br_  :: Monad m => HtmlT m ()
 br_ = makeElementNoEnd (Blaze.fromString "br")
 
 -- | @button@ element
-button_  :: Html () -> Html ()
+button_  :: Monad m => HtmlT m () -> HtmlT m ()
 button_ = makeElement (Blaze.fromString "button")
 
 -- | @canvas@ element
-canvas_  :: Html () -> Html ()
+canvas_  :: Monad m => HtmlT m () -> HtmlT m ()
 canvas_ = makeElement (Blaze.fromString "canvas")
 
 -- | @caption@ element
-caption_  :: Html () -> Html ()
+caption_  :: Monad m => HtmlT m () -> HtmlT m ()
 caption_ = makeElement (Blaze.fromString "caption")
 
 -- | @cite@ element or @cite@ attribute.
@@ -86,75 +86,75 @@ cite_ :: Mixed a r => a -> r
 cite_ = mixed (Blaze.fromString "cite")
 
 -- | @code@ element
-code_  :: Html () -> Html ()
+code_  :: Monad m => HtmlT m () -> HtmlT m ()
 code_ = makeElement (Blaze.fromString "code")
 
 -- | @col@ element
-col_  :: Html ()
+col_  :: Monad m => HtmlT m ()
 col_ = makeElementNoEnd (Blaze.fromString "col")
 
 -- | @colgroup@ element
-colgroup_  :: Html () -> Html ()
+colgroup_  :: Monad m => HtmlT m () -> HtmlT m ()
 colgroup_ = makeElement (Blaze.fromString "colgroup")
 
 -- | @command@ element
-command_  :: Html () -> Html ()
+command_  :: Monad m => HtmlT m () -> HtmlT m ()
 command_ = makeElement (Blaze.fromString "command")
 
 -- | @datalist@ element
-datalist_  :: Html () -> Html ()
+datalist_  :: Monad m => HtmlT m () -> HtmlT m ()
 datalist_ = makeElement (Blaze.fromString "datalist")
 
 -- | @dd@ element
-dd_  :: Html () -> Html ()
+dd_  :: Monad m => HtmlT m () -> HtmlT m ()
 dd_ = makeElement (Blaze.fromString "dd")
 
 -- | @del@ element
-del_  :: Html () -> Html ()
+del_  :: Monad m => HtmlT m () -> HtmlT m ()
 del_ = makeElement (Blaze.fromString "del")
 
 -- | @details@ element
-details_  :: Html () -> Html ()
+details_  :: Monad m => HtmlT m () -> HtmlT m ()
 details_ = makeElement (Blaze.fromString "details")
 
 -- | @dfn@ element
-dfn_  :: Html () -> Html ()
+dfn_  :: Monad m => HtmlT m () -> HtmlT m ()
 dfn_ = makeElement (Blaze.fromString "dfn")
 
 -- | @div@ element
-div_  :: Html () -> Html ()
+div_  :: Monad m => HtmlT m () -> HtmlT m ()
 div_ = makeElement (Blaze.fromString "div")
 
 -- | @dl@ element
-dl_  :: Html () -> Html ()
+dl_  :: Monad m => HtmlT m () -> HtmlT m ()
 dl_ = makeElement (Blaze.fromString "dl")
 
 -- | @dt@ element
-dt_  :: Html () -> Html ()
+dt_  :: Monad m => HtmlT m () -> HtmlT m ()
 dt_ = makeElement (Blaze.fromString "dt")
 
 -- | @em@ element
-em_  :: Html () -> Html ()
+em_  :: Monad m => HtmlT m () -> HtmlT m ()
 em_ = makeElement (Blaze.fromString "em")
 
 -- | @embed@ element
-embed_  :: Html ()
+embed_  :: Monad m => HtmlT m ()
 embed_ = makeElementNoEnd (Blaze.fromString "embed")
 
 -- | @fieldset@ element
-fieldset_  :: Html () -> Html ()
+fieldset_  :: Monad m => HtmlT m () -> HtmlT m ()
 fieldset_ = makeElement (Blaze.fromString "fieldset")
 
 -- | @figcaption@ element
-figcaption_  :: Html () -> Html ()
+figcaption_  :: Monad m => HtmlT m () -> HtmlT m ()
 figcaption_ = makeElement (Blaze.fromString "figcaption")
 
 -- | @figure@ element
-figure_  :: Html () -> Html ()
+figure_  :: Monad m => HtmlT m () -> HtmlT m ()
 figure_ = makeElement (Blaze.fromString "figure")
 
 -- | @footer@ element
-footer_  :: Html () -> Html ()
+footer_  :: Monad m => HtmlT m () -> HtmlT m ()
 footer_ = makeElement (Blaze.fromString "footer")
 
 -- | @form@ element or @form@ attribute
@@ -162,75 +162,75 @@ form_ :: Mixed a r => a -> r
 form_ = mixed (Blaze.fromString "form")
 
 -- | @h1@ element
-h1_  :: Html () -> Html ()
+h1_  :: Monad m => HtmlT m () -> HtmlT m ()
 h1_ = makeElement (Blaze.fromString "h1")
 
 -- | @h2@ element
-h2_  :: Html () -> Html ()
+h2_  :: Monad m => HtmlT m () -> HtmlT m ()
 h2_ = makeElement (Blaze.fromString "h2")
 
 -- | @h3@ element
-h3_  :: Html () -> Html ()
+h3_  :: Monad m => HtmlT m () -> HtmlT m ()
 h3_ = makeElement (Blaze.fromString "h3")
 
 -- | @h4@ element
-h4_  :: Html () -> Html ()
+h4_  :: Monad m => HtmlT m () -> HtmlT m ()
 h4_ = makeElement (Blaze.fromString "h4")
 
 -- | @h5@ element
-h5_  :: Html () -> Html ()
+h5_  :: Monad m => HtmlT m () -> HtmlT m ()
 h5_ = makeElement (Blaze.fromString "h5")
 
 -- | @h6@ element
-h6_  :: Html () -> Html ()
+h6_  :: Monad m => HtmlT m () -> HtmlT m ()
 h6_ = makeElement (Blaze.fromString "h6")
 
 -- | @head@ element
-head_  :: Html () -> Html ()
+head_  :: Monad m => HtmlT m () -> HtmlT m ()
 head_ = makeElement (Blaze.fromString "head")
 
 -- | @header@ element
-header_  :: Html () -> Html ()
+header_  :: Monad m => HtmlT m () -> HtmlT m ()
 header_ = makeElement (Blaze.fromString "header")
 
 -- | @hgroup@ element
-hgroup_  :: Html () -> Html ()
+hgroup_  :: Monad m => HtmlT m () -> HtmlT m ()
 hgroup_ = makeElement (Blaze.fromString "hgroup")
 
 -- | @hr@ element
-hr_  :: Html ()
+hr_  :: Monad m => HtmlT m ()
 hr_ = makeElementNoEnd (Blaze.fromString "hr")
 
 -- | @html@ element
-html_  :: Html () -> Html ()
+html_  :: Monad m => HtmlT m () -> HtmlT m ()
 html_ = makeElement (Blaze.fromString "html")
 
 -- | @i@ element
-i_  :: Html () -> Html ()
+i_  :: Monad m => HtmlT m () -> HtmlT m ()
 i_ = makeElement (Blaze.fromString "i")
 
 -- | @iframe@ element
-iframe_  :: Html () -> Html ()
+iframe_  :: Monad m => HtmlT m () -> HtmlT m ()
 iframe_ = makeElement (Blaze.fromString "iframe")
 
 -- | @img@ element
-img_  :: Html ()
+img_  :: Monad m => HtmlT m ()
 img_ = makeElementNoEnd (Blaze.fromString "img")
 
 -- | @input@ element
-input_  :: Html ()
+input_  :: Monad m => HtmlT m ()
 input_ = makeElementNoEnd (Blaze.fromString "input")
 
 -- | @ins@ element
-ins_  :: Html () -> Html ()
+ins_  :: Monad m => HtmlT m () -> HtmlT m ()
 ins_ = makeElement (Blaze.fromString "ins")
 
 -- | @kbd@ element
-kbd_  :: Html () -> Html ()
+kbd_  :: Monad m => HtmlT m () -> HtmlT m ()
 kbd_ = makeElement (Blaze.fromString "kbd")
 
 -- | @keygen@ element
-keygen_  :: Html ()
+keygen_  :: Monad m => HtmlT m ()
 keygen_ = makeElementNoEnd (Blaze.fromString "keygen")
 
 -- | @label@ element or @label@ attribute
@@ -238,123 +238,123 @@ label_ :: Mixed a r => a -> r
 label_ = mixed (Blaze.fromString "label")
 
 -- | @legend@ element
-legend_  :: Html () -> Html ()
+legend_  :: Monad m => HtmlT m () -> HtmlT m ()
 legend_ = makeElement (Blaze.fromString "legend")
 
 -- | @li@ element
-li_  :: Html () -> Html ()
+li_  :: Monad m => HtmlT m () -> HtmlT m ()
 li_ = makeElement (Blaze.fromString "li")
 
 -- | @link@ element
-link_  :: Html ()
+link_  :: Monad m => HtmlT m ()
 link_ = makeElementNoEnd (Blaze.fromString "link")
 
 -- | @map@ element
-map_  :: Html () -> Html ()
+map_  :: Monad m => HtmlT m () -> HtmlT m ()
 map_ = makeElement (Blaze.fromString "map")
 
 -- | @mark@ element
-mark_  :: Html () -> Html ()
+mark_  :: Monad m => HtmlT m () -> HtmlT m ()
 mark_ = makeElement (Blaze.fromString "mark")
 
 -- | @menu@ element
-menu_  :: Html () -> Html ()
+menu_  :: Monad m => HtmlT m () -> HtmlT m ()
 menu_ = makeElement (Blaze.fromString "menu")
 
 -- | @menuitem@ element
-menuitem_  :: Html ()
+menuitem_  :: Monad m => HtmlT m ()
 menuitem_ = makeElementNoEnd (Blaze.fromString "menuitem")
 
 -- | @meta@ element
-meta_  :: Html ()
+meta_  :: Monad m => HtmlT m ()
 meta_ = makeElementNoEnd (Blaze.fromString "meta")
 
 -- | @meter@ element
-meter_  :: Html () -> Html ()
+meter_  :: Monad m => HtmlT m () -> HtmlT m ()
 meter_ = makeElement (Blaze.fromString "meter")
 
 -- | @nav@ element
-nav_  :: Html () -> Html ()
+nav_  :: Monad m => HtmlT m () -> HtmlT m ()
 nav_ = makeElement (Blaze.fromString "nav")
 
 -- | @noscript@ element
-noscript_  :: Html () -> Html ()
+noscript_  :: Monad m => HtmlT m () -> HtmlT m ()
 noscript_ = makeElement (Blaze.fromString "noscript")
 
 -- | @object@ element
-object_  :: Html () -> Html ()
+object_  :: Monad m => HtmlT m () -> HtmlT m ()
 object_ = makeElement (Blaze.fromString "object")
 
 -- | @ol@ element
-ol_  :: Html () -> Html ()
+ol_  :: Monad m => HtmlT m () -> HtmlT m ()
 ol_ = makeElement (Blaze.fromString "ol")
 
 -- | @optgroup@ element
-optgroup_  :: Html () -> Html ()
+optgroup_  :: Monad m => HtmlT m () -> HtmlT m ()
 optgroup_ = makeElement (Blaze.fromString "optgroup")
 
 -- | @option@ element
-option_  :: Html () -> Html ()
+option_  :: Monad m => HtmlT m () -> HtmlT m ()
 option_ = makeElement (Blaze.fromString "option")
 
 -- | @output@ element
-output_  :: Html () -> Html ()
+output_  :: Monad m => HtmlT m () -> HtmlT m ()
 output_ = makeElement (Blaze.fromString "output")
 
 -- | @p@ element
-p_  :: Html () -> Html ()
+p_  :: Monad m => HtmlT m () -> HtmlT m ()
 p_ = makeElement (Blaze.fromString "p")
 
 -- | @param@ element
-param_  :: Html ()
+param_  :: Monad m => HtmlT m ()
 param_ = makeElementNoEnd (Blaze.fromString "param")
 
 -- | @pre@ element
-pre_  :: Html () -> Html ()
+pre_  :: Monad m => HtmlT m () -> HtmlT m ()
 pre_ = makeElement (Blaze.fromString "pre")
 
 -- | @progress@ element
-progress_  :: Html () -> Html ()
+progress_  :: Monad m => HtmlT m () -> HtmlT m ()
 progress_ = makeElement (Blaze.fromString "progress")
 
 -- | @q@ element
-q_  :: Html () -> Html ()
+q_  :: Monad m => HtmlT m () -> HtmlT m ()
 q_ = makeElement (Blaze.fromString "q")
 
 -- | @rp@ element
-rp_  :: Html () -> Html ()
+rp_  :: Monad m => HtmlT m () -> HtmlT m ()
 rp_ = makeElement (Blaze.fromString "rp")
 
 -- | @rt@ element
-rt_  :: Html () -> Html ()
+rt_  :: Monad m => HtmlT m () -> HtmlT m ()
 rt_ = makeElement (Blaze.fromString "rt")
 
 -- | @ruby@ element
-ruby_  :: Html () -> Html ()
+ruby_  :: Monad m => HtmlT m () -> HtmlT m ()
 ruby_ = makeElement (Blaze.fromString "ruby")
 
 -- | @samp@ element
-samp_  :: Html () -> Html ()
+samp_  :: Monad m => HtmlT m () -> HtmlT m ()
 samp_ = makeElement (Blaze.fromString "samp")
 
 -- | @script@ element
-script_  :: Html () -> Html ()
+script_  :: Monad m => HtmlT m () -> HtmlT m ()
 script_ = makeElement (Blaze.fromString "script")
 
 -- | @section@ element
-section_  :: Html () -> Html ()
+section_  :: Monad m => HtmlT m () -> HtmlT m ()
 section_ = makeElement (Blaze.fromString "section")
 
 -- | @select@ element
-select_  :: Html () -> Html ()
+select_  :: Monad m => HtmlT m () -> HtmlT m ()
 select_ = makeElement (Blaze.fromString "select")
 
 -- | @small@ element
-small_  :: Html () -> Html ()
+small_  :: Monad m => HtmlT m () -> HtmlT m ()
 small_ = makeElement (Blaze.fromString "small")
 
 -- | @source@ element
-source_  :: Html ()
+source_  :: Monad m => HtmlT m ()
 source_ = makeElementNoEnd (Blaze.fromString "source")
 
 -- | @span@ element or @span@ attribute
@@ -362,7 +362,7 @@ span_  :: Mixed a r => a -> r
 span_ = mixed (Blaze.fromString "span")
 
 -- | @strong@ element
-strong_  :: Html () -> Html ()
+strong_  :: Monad m => HtmlT m () -> HtmlT m ()
 strong_ = makeElement (Blaze.fromString "strong")
 
 -- | @style@ element or @style@ attribute
@@ -370,7 +370,7 @@ style_  :: Mixed a r => a -> r
 style_ = mixed (Blaze.fromString "style")
 
 -- | @sub@ element
-sub_  :: Html () -> Html ()
+sub_  :: Monad m => HtmlT m () -> HtmlT m ()
 sub_ = makeElement (Blaze.fromString "sub")
 
 -- | @summary@ element or @summary@ attribute
@@ -378,39 +378,39 @@ summary_  :: Mixed a r => a -> r
 summary_ = mixed (Blaze.fromString "summary")
 
 -- | @sup@ element
-sup_  :: Html () -> Html ()
+sup_  :: Monad m => HtmlT m () -> HtmlT m ()
 sup_ = makeElement (Blaze.fromString "sup")
 
 -- | @table@ element
-table_  :: Html () -> Html ()
+table_  :: Monad m => HtmlT m () -> HtmlT m ()
 table_ = makeElement (Blaze.fromString "table")
 
 -- | @tbody@ element
-tbody_  :: Html () -> Html ()
+tbody_  :: Monad m => HtmlT m () -> HtmlT m ()
 tbody_ = makeElement (Blaze.fromString "tbody")
 
 -- | @td@ element
-td_  :: Html () -> Html ()
+td_  :: Monad m => HtmlT m () -> HtmlT m ()
 td_ = makeElement (Blaze.fromString "td")
 
 -- | @textarea@ element
-textarea_  :: Html () -> Html ()
+textarea_  :: Monad m => HtmlT m () -> HtmlT m ()
 textarea_ = makeElement (Blaze.fromString "textarea")
 
 -- | @tfoot@ element
-tfoot_  :: Html () -> Html ()
+tfoot_  :: Monad m => HtmlT m () -> HtmlT m ()
 tfoot_ = makeElement (Blaze.fromString "tfoot")
 
 -- | @th@ element
-th_  :: Html () -> Html ()
+th_  :: Monad m => HtmlT m () -> HtmlT m ()
 th_ = makeElement (Blaze.fromString "th")
 
 -- | @thead@ element
-thead_  :: Html () -> Html ()
+thead_  :: Monad m => HtmlT m () -> HtmlT m ()
 thead_ = makeElement (Blaze.fromString "thead")
 
 -- | @time@ element
-time_  :: Html () -> Html ()
+time_  :: Monad m => HtmlT m () -> HtmlT m ()
 time_ = makeElement (Blaze.fromString "time")
 
 -- | @title@ element or @title@ attribute
@@ -418,27 +418,27 @@ title_  :: Mixed a r => a -> r
 title_ = mixed (Blaze.fromString "title")
 
 -- | @tr@ element
-tr_  :: Html () -> Html ()
+tr_  :: Monad m => HtmlT m () -> HtmlT m ()
 tr_ = makeElement (Blaze.fromString "tr")
 
 -- | @track@ element
-track_  :: Html ()
+track_  :: Monad m => HtmlT m ()
 track_ = makeElementNoEnd (Blaze.fromString "track")
 
 -- | @ul@ element
-ul_  :: Html () -> Html ()
+ul_  :: Monad m => HtmlT m () -> HtmlT m ()
 ul_ = makeElement (Blaze.fromString "ul")
 
 -- | @var@ element
-var_  :: Html () -> Html ()
+var_  :: Monad m => HtmlT m () -> HtmlT m ()
 var_ = makeElement (Blaze.fromString "var")
 
 -- | @video@ element
-video_  :: Html () -> Html ()
+video_  :: Monad m => HtmlT m () -> HtmlT m ()
 video_ = makeElement (Blaze.fromString "video")
 
 -- | @wbr@ element
-wbr_  :: Html ()
+wbr_  :: Monad m => HtmlT m ()
 wbr_ = makeElementNoEnd (Blaze.fromString "wbr")
 
 -- | The @accept@ attribute.

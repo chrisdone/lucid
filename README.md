@@ -112,3 +112,6 @@ If the above rendering functions aren't suited for your purpose, you
 can run the monad directly via `execHtml` and use the more low-level
 blaze `Builder`, which has a plethora of output modes in
 Blaze.ByteString.Builder.
+
+See the documentation for the `Lucid` module for information about
+using it as a monad transformer.

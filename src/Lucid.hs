@@ -5,10 +5,13 @@ module Lucid
    -- $intro
    renderText
   ,renderBS
+  ,renderTextT
+  ,renderBST
    -- * Running
    -- $running
-  ,execHtml
-  ,evalHtml
+  ,execHtmlT
+  ,evalHtmlT
+  ,runHtmlT
   -- * Combinators
   ,with
    -- * Types
@@ -18,6 +21,7 @@ module Lucid
   ,ToText(..)
   ,ToHtml(..)
   ,Mixed(..)
+  ,With
   -- * Re-exports
   ,module Lucid.Html5)
  where
