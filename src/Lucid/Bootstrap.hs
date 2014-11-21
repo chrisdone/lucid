@@ -38,94 +38,94 @@ import qualified Blaze.ByteString.Builder.Char.Utf8 as Blaze
 container_ :: Monad m => HtmlT m () -> HtmlT m ()
 container_ =
   with (makeElement (Blaze.fromString "div"))
-       [class_ "container"]
+       [class_ "container "]
 
 -- | A fluid grid container.
 containerFluid_ :: Monad m => HtmlT m () -> HtmlT m ()
 containerFluid_ =
   with (makeElement (Blaze.fromString "div"))
-       [class_ "container-fluid"]
+       [class_ "container-fluid "]
 
 -- | A grid row.
 row_ :: Monad m => HtmlT m () -> HtmlT m ()
 row_ =
   with (makeElement (Blaze.fromString "div"))
-       [class_ "row"]
+       [class_ "row "]
 
 -- | A fluid grid row.
 rowFluid_ :: Monad m => HtmlT m () -> HtmlT m ()
 rowFluid_ =
   with (makeElement (Blaze.fromString "div"))
-       [class_ "row-fluid"]
+       [class_ "row-fluid "]
 
 -- | A span of 1 column.
 span1_ :: Monad m => HtmlT m () -> HtmlT m ()
 span1_ =
   with (makeElement (Blaze.fromString "div"))
-       [class_ "span1"]
+       [class_ "span1 "]
 
 -- | A span of 2 columns.
 span2_ :: Monad m => HtmlT m () -> HtmlT m ()
 span2_ =
   with (makeElement (Blaze.fromString "div"))
-       [class_ "span2"]
+       [class_ "span2 "]
 
 -- | A span of 3 columns.
 span3_ :: Monad m => HtmlT m () -> HtmlT m ()
 span3_ =
   with (makeElement (Blaze.fromString "div"))
-       [class_ "span3"]
+       [class_ "span3 "]
 
 -- | A span of 4 columns.
 span4_ :: Monad m => HtmlT m () -> HtmlT m ()
 span4_ =
   with (makeElement (Blaze.fromString "div"))
-       [class_ "span4"]
+       [class_ "span4 "]
 
 -- | A span of 5 columns.
 span5_ :: Monad m => HtmlT m () -> HtmlT m ()
 span5_ =
   with (makeElement (Blaze.fromString "div"))
-       [class_ "span5"]
+       [class_ "span5 "]
 
 -- | A span of 6 columns.
 span6_ :: Monad m => HtmlT m () -> HtmlT m ()
 span6_ =
   with (makeElement (Blaze.fromString "div"))
-       [class_ "span6"]
+       [class_ "span6 "]
 
 -- | A span of 7 columns.
 span7_ :: Monad m => HtmlT m () -> HtmlT m ()
 span7_ =
   with (makeElement (Blaze.fromString "div"))
-       [class_ "span7"]
+       [class_ "span7 "]
 
 -- | A span of 8 columns.
 span8_ :: Monad m => HtmlT m () -> HtmlT m ()
 span8_ =
   with (makeElement (Blaze.fromString "div"))
-       [class_ "span8"]
+       [class_ "span8 "]
 
 -- | A span of 9 columns.
 span9_ :: Monad m => HtmlT m () -> HtmlT m ()
 span9_ =
   with (makeElement (Blaze.fromString "div"))
-       [class_ "span9"]
+       [class_ "span9 "]
 
 -- | A span of 10 columns.
 span10_ :: Monad m => HtmlT m () -> HtmlT m ()
 span10_ =
   with (makeElement (Blaze.fromString "div"))
-       [class_ "span10"]
+       [class_ "span10 "]
 
 -- | A span of 11 columns.
 span11_ :: Monad m => HtmlT m () -> HtmlT m ()
 span11_ =
   with (makeElement (Blaze.fromString "div"))
-       [class_ "span11"]
+       [class_ "span11 "]
 
 -- | A span of 12 columns.
 span12_ :: Monad m => HtmlT m () -> HtmlT m ()
 span12_ =
   with (makeElement (Blaze.fromString "div"))
-       [class_ "span12"]
+       [class_ "span12 "]
