@@ -276,30 +276,33 @@ makeElement :: Monad m
 makeElement name =
   \m' ->
     HtmlT (do ~(f,_) <- runHtmlT m'
-              return ((\attr m -> s "<" <> name <> mconcat (map buildAttr (M.toList attr)) <> s ">" <> m <> f mempty mempty <> s "</" <>
-                                   name <> s ">"),
+              return (\attr m -> s "<" <> name <> foldlMapWithKey buildAttr attr <> s ">"
+                              <> m <> f mempty mempty
+                              <> s "</" <> name <> s ">",
                       ()))
-  where s = Blaze.fromString
-
 
 -- | Make an HTML builder for
 makeElementNoEnd :: Monad m
                  => Builder -- ^ Name.
                  -> HtmlT m () -- ^ A parent element.
 makeElementNoEnd name =
-  HtmlT (return ((\attr _ -> s "<" <> name <> mconcat (map buildAttr (M.toList attr)) <> s ">"),
+  HtmlT (return (\attr _ -> s "<" <> name <> foldlMapWithKey buildAttr attr <> s ">",
                  ()))
-  where s = Blaze.fromString
 
-buildAttr :: (Text,Text) -> Builder
-buildAttr (key,val) =
-  Blaze.fromString " " <>
+buildAttr :: Text -> Text -> Builder
+buildAttr key val =
+  s " " <>
   Blaze.fromText key <>
   if val == mempty
      then mempty
-     else Blaze.fromString "=\"" <>
-          Blaze.fromText val <>
-          Blaze.fromText "\""
+     else s "=\"" <> Blaze.fromText val <> s "\""
+
+foldlMapWithKey :: Monoid m => (k -> v -> m) -> HashMap k v -> m
+foldlMapWithKey f = M.foldlWithKey' (\m k v -> m <> f k v) mempty
+
+s :: String -> Builder
+s = Blaze.fromString
+{-# INLINE s #-}
 
 --------------------------------------------------------------------------------
 -- Encoding
