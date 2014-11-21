@@ -1,8 +1,9 @@
 name:                lucid
-version:             0.0
+version:             0.1
 synopsis:            Clear to write, read and edit DSL for HTML
 description:         Clear to write, read and edit DSL for HTML. See the 'Lucid' module
                      for description and documentation.
+homepage:            https://github.com/chrisdone/lucid
 license:             BSD3
 license-file:        LICENSE
 author:              Chris Done
