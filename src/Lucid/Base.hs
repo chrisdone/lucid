@@ -12,6 +12,7 @@ module Lucid.Base
   ,renderBS
   ,renderTextT
   ,renderBST
+  ,renderToFile
    -- * Running
   ,execHtmlT
   ,evalHtmlT
@@ -38,6 +39,7 @@ import           Control.Applicative
 import           Control.Monad
 import           Control.Monad.Reader
 import           Data.ByteString.Lazy (ByteString)
+import qualified Data.ByteString.Lazy as L
 import           Data.Functor.Identity
 import           Data.Monoid
 import           Data.String
@@ -143,10 +145,6 @@ instance ToHtml String where
   toHtml = fromString
   toHtmlRaw m = HtmlT (return ((\_ _ -> Blaze.fromString m),()))
 
-instance ToHtml Int where
-  toHtml i = HtmlT (return ((\_ _ -> Blaze.fromInthost i),()))
-  toHtmlRaw = toHtml
-
 instance ToHtml Text where
   toHtml m = HtmlT (return ((\_ _ -> encode m),()))
   toHtmlRaw m = HtmlT (return ((\_ _ -> Blaze.fromText m),()))
@@ -207,6 +205,15 @@ instance (Monad m,a ~ ()) => With (HtmlT m a -> HtmlT m a) where
 
 --------------------------------------------------------------------------------
 -- Running
+
+-- | Render the HTML to a lazy 'ByteString'.
+--
+-- This is a convenience function defined in terms of 'execHtmlT',
+-- 'runIdentity' and 'Blaze.toLazyByteString'. Check the source if
+-- you're interested in the lower-level behaviour.
+--
+renderToFile :: FilePath -> Html a -> IO ()
+renderToFile fp = L.writeFile fp . Blaze.toLazyByteString . runIdentity . execHtmlT
 
 -- | Render the HTML to a lazy 'ByteString'.
 --
