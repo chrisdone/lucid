@@ -36,7 +36,7 @@ import qualified Blaze.ByteString.Builder as Blaze
 import qualified Blaze.ByteString.Builder.Html.Utf8 as Blaze
 import           Control.Applicative
 import           Control.Monad
-import           Control.Monad.Trans
+import           Control.Monad.Reader
 import           Data.ByteString.Lazy (ByteString)
 import           Data.Functor.Identity
 import           Data.Monoid
@@ -103,6 +103,10 @@ instance MonadTrans HtmlT where
   lift m =
     HtmlT (do a <- m
               return (\_ _ -> mempty,a))
+
+-- | If you want to use IO in your HTML generation.
+instance MonadIO m => MonadIO (HtmlT m) where
+  liftIO = lift . liftIO
 
 -- | We pack it via string. Could possibly encode straight into a
 -- builder. That might be faster.
