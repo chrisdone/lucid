@@ -36,6 +36,7 @@ import qualified Blaze.ByteString.Builder as Blaze
 import qualified Blaze.ByteString.Builder.Html.Utf8 as Blaze
 import           Control.Applicative
 import           Control.Monad
+import           Control.Monad.Trans
 import           Data.ByteString.Lazy (ByteString)
 import           Data.Functor.Identity
 import           Data.Monoid
@@ -96,6 +97,12 @@ instance Monad m => Monad (HtmlT m) where
                         g attr inner <>
                         f' attr inner
                      ,b))
+
+-- | Used for 'lift'.
+instance MonadTrans HtmlT where
+  lift m =
+    HtmlT (do a <- m
+              return (\_ _ -> mempty,a))
 
 -- | We pack it via string. Could possibly encode straight into a
 -- builder. That might be faster.
