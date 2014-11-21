@@ -1,3 +1,5 @@
+{-# OPTIONS -fno-warn-type-defaults #-}
+
 -- | Html5 terms.
 
 module Lucid.Html5 where

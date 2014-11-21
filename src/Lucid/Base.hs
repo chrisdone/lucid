@@ -136,8 +136,8 @@ instance ToText Text where
 
 -- | Can be converted to HTML.
 class ToHtml a where
-  toHtml :: a -> Html ()
-  toHtmlRaw :: a -> Html ()
+  toHtml :: Monad m => a -> HtmlT m ()
+  toHtmlRaw :: Monad m => a -> HtmlT m ()
 
 instance ToHtml String where
   toHtml = fromString

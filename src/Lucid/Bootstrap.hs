@@ -1,3 +1,5 @@
+{-# OPTIONS -fno-warn-type-defaults #-}
+
 -- | Bootstrap layout elements. See
 -- <http://getbootstrap.com/2.3.2/scaffolding.html> for more
 -- information.

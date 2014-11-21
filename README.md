@@ -119,3 +119,9 @@ using it as a monad transformer.
 ## Transforming
 
 You can use `lift` to call parent monads.
+
+``` haskell
+λ> runReader (renderTextT (html_ (body_ (do name <- lift ask; p_ (toHtml name)))))
+             ("Chris" :: String)
+"<html><body><p>Chris</p></body></html>"
+```
