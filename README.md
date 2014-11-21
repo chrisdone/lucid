@@ -115,3 +115,7 @@ Blaze.ByteString.Builder.
 
 See the documentation for the `Lucid` module for information about
 using it as a monad transformer.
+
+## Transforming
+
+You can use `lift` to call parent monads.
