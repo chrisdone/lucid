@@ -17,7 +17,7 @@ import           HtmlBenchmarks (HtmlBenchmark (..), benchmarks)
 import qualified Blaze.ByteString.Builder.Char.Utf8 as Blaze
 import qualified Blaze.ByteString.Builder as Blaze
 
-import           Lucid (execHtml)
+import           Lucid (renderBS)
 
 -- | Function to run the benchmarks using criterion
 --
@@ -25,5 +25,5 @@ main :: IO ()
 main = defaultMain $ map benchHtml benchmarks
   where
     benchHtml (HtmlBenchmark name f x _) = bgroup name $
-        [bench "ByteString"   $ nf (LB.length . Blaze.toLazyByteString . execHtml . f) x
+        [bench "ByteString"   $ nf (LB.length . renderBS . f) x
         ]

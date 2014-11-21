@@ -30,20 +30,20 @@ data HtmlBenchmark = forall a. HtmlBenchmark
 benchmarks :: [HtmlBenchmark]
 benchmarks =
     [ HtmlBenchmark "bigTable" bigTable bigTableData $
-        let h = toHtml $ length bigTableData
-            w = toHtml $ length $ P.head bigTableData
+        let h = toHtml $ show $ length bigTableData
+            w = toHtml $ show $ length $ P.head bigTableData
         in "Rendering of a big (" >> h >> "x" >> w >> ") HTML table"
     , HtmlBenchmark "basic" basic basicData
         "A simple, small basic template with a few holes to fill in"
     , HtmlBenchmark "wideTree" wideTree wideTreeData $
-        "A very wide tree (" >> toHtml (length wideTreeData) >> " elements)"
+        "A very wide tree (" >> toHtml (show (length wideTreeData)) >> " elements)"
     , HtmlBenchmark "wideTreeEscaping" wideTree wideTreeEscapingData $ do
-        "A very wide tree (" >> toHtml (length wideTreeData) >> " elements)"
+        "A very wide tree (" >> toHtml (show (length wideTreeData)) >> " elements)"
         " with lots of escaping"
     , HtmlBenchmark "deepTree" deepTree deepTreeData $ do
-        "A really deep tree (" >> toHtml deepTreeData >> " nested templates)"
+        "A really deep tree (" >> toHtml (show deepTreeData) >> " nested templates)"
     , HtmlBenchmark "manyAttributes" manyAttributes manyAttributesData $ do
-        "A single element with " >> toHtml (length manyAttributesData)
+        "A single element with " >> toHtml (show (length manyAttributesData))
         " attributes."
     , HtmlBenchmark "customAttribute" customAttributes customAttributesData $
         "Creating custom attributes"
@@ -90,7 +90,7 @@ bigTable :: [[Int]]  -- ^ Matrix.
          -> Html ()     -- ^ Result.
 bigTable t = table_ (mapM_ row t)
   where
-    row r = tr_ (mapM_ (td_ . toHtml) r)
+    row r = tr_ (mapM_ (td_ . toHtml . show) r)
 
 -- | Render a simple HTML page with some data.
 --
