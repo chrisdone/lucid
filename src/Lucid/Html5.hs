@@ -5,15 +5,12 @@
 
 module Lucid.Html5 where
 
-import           Data.Text (Text)
+import           Data.Text (Text, empty)
 import           Lucid.Base
-
-import qualified Blaze.ByteString.Builder.Char.Utf8 as Blaze
-import           Data.Monoid
 
 -- | @DOCTYPE@ element
 doctype_  :: Monad m => HtmlT m ()
-doctype_ = makeElementNoEnd (Blaze.fromString "!DOCTYPE HTML")
+doctype_ = makeElementNoEnd "!DOCTYPE HTML"
 
 -- | @DOCTYPE@ element + @html@ element
 doctypehtml_  :: Monad m => HtmlT m () -> HtmlT m ()
@@ -23,67 +20,67 @@ doctypehtml_ m =
 
 -- | @a@ element
 a_  :: Monad m => HtmlT m () -> HtmlT m ()
-a_ = makeElement (Blaze.fromString "a")
+a_ = makeElement "a"
 
 -- | @abbr@ element
 abbr_  :: Monad m => HtmlT m () -> HtmlT m ()
-abbr_ = makeElement (Blaze.fromString "abbr")
+abbr_ = makeElement "abbr"
 
 -- | @address@ element
 address_  :: Monad m => HtmlT m () -> HtmlT m ()
-address_ = makeElement (Blaze.fromString "address")
+address_ = makeElement "address"
 
 -- | @area@ element
 area_  :: Monad m => HtmlT m ()
-area_ = makeElementNoEnd (Blaze.fromString "area")
+area_ = makeElementNoEnd "area"
 
 -- | @article@ element
 article_  :: Monad m => HtmlT m () -> HtmlT m ()
-article_ = makeElement (Blaze.fromString "article")
+article_ = makeElement "article"
 
 -- | @aside@ element
 aside_  :: Monad m => HtmlT m () -> HtmlT m ()
-aside_ = makeElement (Blaze.fromString "aside")
+aside_ = makeElement "aside"
 
 -- | @audio@ element
 audio_  :: Monad m => HtmlT m () -> HtmlT m ()
-audio_ = makeElement (Blaze.fromString "audio")
+audio_ = makeElement "audio"
 
 -- | @b@ element
 b_  :: Monad m => HtmlT m () -> HtmlT m ()
-b_ = makeElement (Blaze.fromString "b")
+b_ = makeElement "b"
 
 -- | @base@ element
 base_  :: Monad m => HtmlT m ()
-base_ = makeElementNoEnd (Blaze.fromString "base")
+base_ = makeElementNoEnd "base"
 
 -- | @bdo@ element
 bdo_  :: Monad m => HtmlT m () -> HtmlT m ()
-bdo_ = makeElement (Blaze.fromString "bdo")
+bdo_ = makeElement "bdo"
 
 -- | @blockquote@ element
 blockquote_  :: Monad m => HtmlT m () -> HtmlT m ()
-blockquote_ = makeElement (Blaze.fromString "blockquote")
+blockquote_ = makeElement "blockquote"
 
 -- | @body@ element
 body_  :: Monad m => HtmlT m () -> HtmlT m ()
-body_ = makeElement (Blaze.fromString "body")
+body_ = makeElement "body"
 
 -- | @br@ element
 br_  :: Monad m => HtmlT m ()
-br_ = makeElementNoEnd (Blaze.fromString "br")
+br_ = makeElementNoEnd "br"
 
 -- | @button@ element
 button_  :: Monad m => HtmlT m () -> HtmlT m ()
-button_ = makeElement (Blaze.fromString "button")
+button_ = makeElement "button"
 
 -- | @canvas@ element
 canvas_  :: Monad m => HtmlT m () -> HtmlT m ()
-canvas_ = makeElement (Blaze.fromString "canvas")
+canvas_ = makeElement "canvas"
 
 -- | @caption@ element
 caption_  :: Monad m => HtmlT m () -> HtmlT m ()
-caption_ = makeElement (Blaze.fromString "caption")
+caption_ = makeElement "caption"
 
 -- | @cite@ element or @cite@ attribute.
 cite_ :: Mixed a r => a -> r
@@ -91,75 +88,75 @@ cite_ = mixed ("cite")
 
 -- | @code@ element
 code_  :: Monad m => HtmlT m () -> HtmlT m ()
-code_ = makeElement (Blaze.fromString "code")
+code_ = makeElement "code"
 
 -- | @col@ element
 col_  :: Monad m => HtmlT m ()
-col_ = makeElementNoEnd (Blaze.fromString "col")
+col_ = makeElementNoEnd "col"
 
 -- | @colgroup@ element
 colgroup_  :: Monad m => HtmlT m () -> HtmlT m ()
-colgroup_ = makeElement (Blaze.fromString "colgroup")
+colgroup_ = makeElement "colgroup"
 
 -- | @command@ element
 command_  :: Monad m => HtmlT m () -> HtmlT m ()
-command_ = makeElement (Blaze.fromString "command")
+command_ = makeElement "command"
 
 -- | @datalist@ element
 datalist_  :: Monad m => HtmlT m () -> HtmlT m ()
-datalist_ = makeElement (Blaze.fromString "datalist")
+datalist_ = makeElement "datalist"
 
 -- | @dd@ element
 dd_  :: Monad m => HtmlT m () -> HtmlT m ()
-dd_ = makeElement (Blaze.fromString "dd")
+dd_ = makeElement "dd"
 
 -- | @del@ element
 del_  :: Monad m => HtmlT m () -> HtmlT m ()
-del_ = makeElement (Blaze.fromString "del")
+del_ = makeElement "del"
 
 -- | @details@ element
 details_  :: Monad m => HtmlT m () -> HtmlT m ()
-details_ = makeElement (Blaze.fromString "details")
+details_ = makeElement "details"
 
 -- | @dfn@ element
 dfn_  :: Monad m => HtmlT m () -> HtmlT m ()
-dfn_ = makeElement (Blaze.fromString "dfn")
+dfn_ = makeElement "dfn"
 
 -- | @div@ element
 div_  :: Monad m => HtmlT m () -> HtmlT m ()
-div_ = makeElement (Blaze.fromString "div")
+div_ = makeElement "div"
 
 -- | @dl@ element
 dl_  :: Monad m => HtmlT m () -> HtmlT m ()
-dl_ = makeElement (Blaze.fromString "dl")
+dl_ = makeElement "dl"
 
 -- | @dt@ element
 dt_  :: Monad m => HtmlT m () -> HtmlT m ()
-dt_ = makeElement (Blaze.fromString "dt")
+dt_ = makeElement "dt"
 
 -- | @em@ element
 em_  :: Monad m => HtmlT m () -> HtmlT m ()
-em_ = makeElement (Blaze.fromString "em")
+em_ = makeElement "em"
 
 -- | @embed@ element
 embed_  :: Monad m => HtmlT m ()
-embed_ = makeElementNoEnd (Blaze.fromString "embed")
+embed_ = makeElementNoEnd "embed"
 
 -- | @fieldset@ element
 fieldset_  :: Monad m => HtmlT m () -> HtmlT m ()
-fieldset_ = makeElement (Blaze.fromString "fieldset")
+fieldset_ = makeElement "fieldset"
 
 -- | @figcaption@ element
 figcaption_  :: Monad m => HtmlT m () -> HtmlT m ()
-figcaption_ = makeElement (Blaze.fromString "figcaption")
+figcaption_ = makeElement "figcaption"
 
 -- | @figure@ element
 figure_  :: Monad m => HtmlT m () -> HtmlT m ()
-figure_ = makeElement (Blaze.fromString "figure")
+figure_ = makeElement "figure"
 
 -- | @footer@ element
 footer_  :: Monad m => HtmlT m () -> HtmlT m ()
-footer_ = makeElement (Blaze.fromString "footer")
+footer_ = makeElement "footer"
 
 -- | @form@ element or @form@ attribute
 form_ :: Mixed a r => a -> r
@@ -167,75 +164,75 @@ form_ = mixed ("form")
 
 -- | @h1@ element
 h1_  :: Monad m => HtmlT m () -> HtmlT m ()
-h1_ = makeElement (Blaze.fromString "h1")
+h1_ = makeElement "h1"
 
 -- | @h2@ element
 h2_  :: Monad m => HtmlT m () -> HtmlT m ()
-h2_ = makeElement (Blaze.fromString "h2")
+h2_ = makeElement "h2"
 
 -- | @h3@ element
 h3_  :: Monad m => HtmlT m () -> HtmlT m ()
-h3_ = makeElement (Blaze.fromString "h3")
+h3_ = makeElement "h3"
 
 -- | @h4@ element
 h4_  :: Monad m => HtmlT m () -> HtmlT m ()
-h4_ = makeElement (Blaze.fromString "h4")
+h4_ = makeElement "h4"
 
 -- | @h5@ element
 h5_  :: Monad m => HtmlT m () -> HtmlT m ()
-h5_ = makeElement (Blaze.fromString "h5")
+h5_ = makeElement "h5"
 
 -- | @h6@ element
 h6_  :: Monad m => HtmlT m () -> HtmlT m ()
-h6_ = makeElement (Blaze.fromString "h6")
+h6_ = makeElement "h6"
 
 -- | @head@ element
 head_  :: Monad m => HtmlT m () -> HtmlT m ()
-head_ = makeElement (Blaze.fromString "head")
+head_ = makeElement "head"
 
 -- | @header@ element
 header_  :: Monad m => HtmlT m () -> HtmlT m ()
-header_ = makeElement (Blaze.fromString "header")
+header_ = makeElement "header"
 
 -- | @hgroup@ element
 hgroup_  :: Monad m => HtmlT m () -> HtmlT m ()
-hgroup_ = makeElement (Blaze.fromString "hgroup")
+hgroup_ = makeElement "hgroup"
 
 -- | @hr@ element
 hr_  :: Monad m => HtmlT m ()
-hr_ = makeElementNoEnd (Blaze.fromString "hr")
+hr_ = makeElementNoEnd "hr"
 
 -- | @html@ element
 html_  :: Monad m => HtmlT m () -> HtmlT m ()
-html_ = makeElement (Blaze.fromString "html")
+html_ = makeElement "html"
 
 -- | @i@ element
 i_  :: Monad m => HtmlT m () -> HtmlT m ()
-i_ = makeElement (Blaze.fromString "i")
+i_ = makeElement "i"
 
 -- | @iframe@ element
 iframe_  :: Monad m => HtmlT m () -> HtmlT m ()
-iframe_ = makeElement (Blaze.fromString "iframe")
+iframe_ = makeElement "iframe"
 
 -- | @img@ element
 img_  :: Monad m => HtmlT m ()
-img_ = makeElementNoEnd (Blaze.fromString "img")
+img_ = makeElementNoEnd "img"
 
 -- | @input@ element
 input_  :: Monad m => HtmlT m ()
-input_ = makeElementNoEnd (Blaze.fromString "input")
+input_ = makeElementNoEnd "input"
 
 -- | @ins@ element
 ins_  :: Monad m => HtmlT m () -> HtmlT m ()
-ins_ = makeElement (Blaze.fromString "ins")
+ins_ = makeElement "ins"
 
 -- | @kbd@ element
 kbd_  :: Monad m => HtmlT m () -> HtmlT m ()
-kbd_ = makeElement (Blaze.fromString "kbd")
+kbd_ = makeElement "kbd"
 
 -- | @keygen@ element
 keygen_  :: Monad m => HtmlT m ()
-keygen_ = makeElementNoEnd (Blaze.fromString "keygen")
+keygen_ = makeElementNoEnd "keygen"
 
 -- | @label@ element or @label@ attribute
 label_ :: Mixed a r => a -> r
@@ -243,123 +240,123 @@ label_ = mixed ("label")
 
 -- | @legend@ element
 legend_  :: Monad m => HtmlT m () -> HtmlT m ()
-legend_ = makeElement (Blaze.fromString "legend")
+legend_ = makeElement "legend"
 
 -- | @li@ element
 li_  :: Monad m => HtmlT m () -> HtmlT m ()
-li_ = makeElement (Blaze.fromString "li")
+li_ = makeElement "li"
 
 -- | @link@ element
 link_  :: Monad m => HtmlT m ()
-link_ = makeElementNoEnd (Blaze.fromString "link")
+link_ = makeElementNoEnd "link"
 
 -- | @map@ element
 map_  :: Monad m => HtmlT m () -> HtmlT m ()
-map_ = makeElement (Blaze.fromString "map")
+map_ = makeElement "map"
 
 -- | @mark@ element
 mark_  :: Monad m => HtmlT m () -> HtmlT m ()
-mark_ = makeElement (Blaze.fromString "mark")
+mark_ = makeElement "mark"
 
 -- | @menu@ element
 menu_  :: Monad m => HtmlT m () -> HtmlT m ()
-menu_ = makeElement (Blaze.fromString "menu")
+menu_ = makeElement "menu"
 
 -- | @menuitem@ element
 menuitem_  :: Monad m => HtmlT m ()
-menuitem_ = makeElementNoEnd (Blaze.fromString "menuitem")
+menuitem_ = makeElementNoEnd "menuitem"
 
 -- | @meta@ element
 meta_  :: Monad m => HtmlT m ()
-meta_ = makeElementNoEnd (Blaze.fromString "meta")
+meta_ = makeElementNoEnd "meta"
 
 -- | @meter@ element
 meter_  :: Monad m => HtmlT m () -> HtmlT m ()
-meter_ = makeElement (Blaze.fromString "meter")
+meter_ = makeElement "meter"
 
 -- | @nav@ element
 nav_  :: Monad m => HtmlT m () -> HtmlT m ()
-nav_ = makeElement (Blaze.fromString "nav")
+nav_ = makeElement "nav"
 
 -- | @noscript@ element
 noscript_  :: Monad m => HtmlT m () -> HtmlT m ()
-noscript_ = makeElement (Blaze.fromString "noscript")
+noscript_ = makeElement "noscript"
 
 -- | @object@ element
 object_  :: Monad m => HtmlT m () -> HtmlT m ()
-object_ = makeElement (Blaze.fromString "object")
+object_ = makeElement "object"
 
 -- | @ol@ element
 ol_  :: Monad m => HtmlT m () -> HtmlT m ()
-ol_ = makeElement (Blaze.fromString "ol")
+ol_ = makeElement "ol"
 
 -- | @optgroup@ element
 optgroup_  :: Monad m => HtmlT m () -> HtmlT m ()
-optgroup_ = makeElement (Blaze.fromString "optgroup")
+optgroup_ = makeElement "optgroup"
 
 -- | @option@ element
 option_  :: Monad m => HtmlT m () -> HtmlT m ()
-option_ = makeElement (Blaze.fromString "option")
+option_ = makeElement "option"
 
 -- | @output@ element
 output_  :: Monad m => HtmlT m () -> HtmlT m ()
-output_ = makeElement (Blaze.fromString "output")
+output_ = makeElement "output"
 
 -- | @p@ element
 p_  :: Monad m => HtmlT m () -> HtmlT m ()
-p_ = makeElement (Blaze.fromString "p")
+p_ = makeElement "p"
 
 -- | @param@ element
 param_  :: Monad m => HtmlT m ()
-param_ = makeElementNoEnd (Blaze.fromString "param")
+param_ = makeElementNoEnd "param"
 
 -- | @pre@ element
 pre_  :: Monad m => HtmlT m () -> HtmlT m ()
-pre_ = makeElement (Blaze.fromString "pre")
+pre_ = makeElement "pre"
 
 -- | @progress@ element
 progress_  :: Monad m => HtmlT m () -> HtmlT m ()
-progress_ = makeElement (Blaze.fromString "progress")
+progress_ = makeElement "progress"
 
 -- | @q@ element
 q_  :: Monad m => HtmlT m () -> HtmlT m ()
-q_ = makeElement (Blaze.fromString "q")
+q_ = makeElement "q"
 
 -- | @rp@ element
 rp_  :: Monad m => HtmlT m () -> HtmlT m ()
-rp_ = makeElement (Blaze.fromString "rp")
+rp_ = makeElement "rp"
 
 -- | @rt@ element
 rt_  :: Monad m => HtmlT m () -> HtmlT m ()
-rt_ = makeElement (Blaze.fromString "rt")
+rt_ = makeElement "rt"
 
 -- | @ruby@ element
 ruby_  :: Monad m => HtmlT m () -> HtmlT m ()
-ruby_ = makeElement (Blaze.fromString "ruby")
+ruby_ = makeElement "ruby"
 
 -- | @samp@ element
 samp_  :: Monad m => HtmlT m () -> HtmlT m ()
-samp_ = makeElement (Blaze.fromString "samp")
+samp_ = makeElement "samp"
 
 -- | @script@ element
 script_  :: (ToHtml t,Monad m) => t -> HtmlT m ()
-script_ = makeElement (Blaze.fromString "script") . toHtmlRaw
+script_ = makeElement "script" . toHtmlRaw
 
 -- | @section@ element
 section_  :: Monad m => HtmlT m () -> HtmlT m ()
-section_ = makeElement (Blaze.fromString "section")
+section_ = makeElement "section"
 
 -- | @select@ element
 select_  :: Monad m => HtmlT m () -> HtmlT m ()
-select_ = makeElement (Blaze.fromString "select")
+select_ = makeElement "select"
 
 -- | @small@ element
 small_  :: Monad m => HtmlT m () -> HtmlT m ()
-small_ = makeElement (Blaze.fromString "small")
+small_ = makeElement "small"
 
 -- | @source@ element
 source_  :: Monad m => HtmlT m ()
-source_ = makeElementNoEnd (Blaze.fromString "source")
+source_ = makeElementNoEnd "source"
 
 -- | @span@ element or @span@ attribute
 span_  :: Mixed a r => a -> r
@@ -367,7 +364,7 @@ span_ = mixed ("span")
 
 -- | @strong@ element
 strong_  :: Monad m => HtmlT m () -> HtmlT m ()
-strong_ = makeElement (Blaze.fromString "strong")
+strong_ = makeElement "strong"
 
 -- | @style@ element or @style@ attribute
 style_  :: MixedRaw a r => a -> r
@@ -375,7 +372,7 @@ style_ = mixedRaw "style"
 
 -- | @sub@ element
 sub_  :: Monad m => HtmlT m () -> HtmlT m ()
-sub_ = makeElement (Blaze.fromString "sub")
+sub_ = makeElement "sub"
 
 -- | @summary@ element or @summary@ attribute
 summary_  :: Mixed a r => a -> r
@@ -383,39 +380,39 @@ summary_ = mixed ("summary")
 
 -- | @sup@ element
 sup_  :: Monad m => HtmlT m () -> HtmlT m ()
-sup_ = makeElement (Blaze.fromString "sup")
+sup_ = makeElement "sup"
 
 -- | @table@ element
 table_  :: Monad m => HtmlT m () -> HtmlT m ()
-table_ = makeElement (Blaze.fromString "table")
+table_ = makeElement "table"
 
 -- | @tbody@ element
 tbody_  :: Monad m => HtmlT m () -> HtmlT m ()
-tbody_ = makeElement (Blaze.fromString "tbody")
+tbody_ = makeElement "tbody"
 
 -- | @td@ element
 td_  :: Monad m => HtmlT m () -> HtmlT m ()
-td_ = makeElement (Blaze.fromString "td")
+td_ = makeElement "td"
 
 -- | @textarea@ element
 textarea_  :: Monad m => HtmlT m () -> HtmlT m ()
-textarea_ = makeElement (Blaze.fromString "textarea")
+textarea_ = makeElement "textarea"
 
 -- | @tfoot@ element
 tfoot_  :: Monad m => HtmlT m () -> HtmlT m ()
-tfoot_ = makeElement (Blaze.fromString "tfoot")
+tfoot_ = makeElement "tfoot"
 
 -- | @th@ element
 th_  :: Monad m => HtmlT m () -> HtmlT m ()
-th_ = makeElement (Blaze.fromString "th")
+th_ = makeElement "th"
 
 -- | @thead@ element
 thead_  :: Monad m => HtmlT m () -> HtmlT m ()
-thead_ = makeElement (Blaze.fromString "thead")
+thead_ = makeElement "thead"
 
 -- | @time@ element
 time_  :: Monad m => HtmlT m () -> HtmlT m ()
-time_ = makeElement (Blaze.fromString "time")
+time_ = makeElement "time"
 
 -- | @title@ element or @title@ attribute
 title_  :: Mixed a r => a -> r
@@ -423,660 +420,660 @@ title_ = mixed ("title")
 
 -- | @tr@ element
 tr_  :: Monad m => HtmlT m () -> HtmlT m ()
-tr_ = makeElement (Blaze.fromString "tr")
+tr_ = makeElement "tr"
 
 -- | @track@ element
 track_  :: Monad m => HtmlT m ()
-track_ = makeElementNoEnd (Blaze.fromString "track")
+track_ = makeElementNoEnd "track"
 
 -- | @ul@ element
 ul_  :: Monad m => HtmlT m () -> HtmlT m ()
-ul_ = makeElement (Blaze.fromString "ul")
+ul_ = makeElement "ul"
 
 -- | @var@ element
 var_  :: Monad m => HtmlT m () -> HtmlT m ()
-var_ = makeElement (Blaze.fromString "var")
+var_ = makeElement "var"
 
 -- | @video@ element
 video_  :: Monad m => HtmlT m () -> HtmlT m ()
-video_ = makeElement (Blaze.fromString "video")
+video_ = makeElement "video"
 
 -- | @wbr@ element
 wbr_  :: Monad m => HtmlT m ()
-wbr_ = makeElementNoEnd (Blaze.fromString "wbr")
+wbr_ = makeElementNoEnd "wbr"
 
 -- | The @accept@ attribute.
-accept_ :: Text -> (Text,Text)
-accept_ = (,) ("accept")
+accept_ :: Text -> Attribute
+accept_ = makeAttribute "accept"
 
 -- | The @acceptCharset@ attribute.
-acceptCharset_ :: Text -> (Text,Text)
-acceptCharset_ = (,) ("acceptCharset")
+acceptCharset_ :: Text -> Attribute
+acceptCharset_ = makeAttribute "acceptCharset"
 
 -- | The @accesskey@ attribute.
-accesskey_ :: Text -> (Text,Text)
-accesskey_ = (,) ("accesskey")
+accesskey_ :: Text -> Attribute
+accesskey_ = makeAttribute "accesskey"
 
 -- | The @action@ attribute.
-action_ :: Text -> (Text,Text)
-action_ = (,) ("action")
+action_ :: Text -> Attribute
+action_ = makeAttribute "action"
 
 -- | The @alt@ attribute.
-alt_ :: Text -> (Text,Text)
-alt_ = (,) ("alt")
+alt_ :: Text -> Attribute
+alt_ = makeAttribute "alt"
 
 -- | The @async@ attribute.
-async_ :: Text -> (Text,Text)
-async_ = (,) ("async")
+async_ :: Text -> Attribute
+async_ = makeAttribute "async"
 
 -- | The @autocomplete@ attribute.
-autocomplete_ :: Text -> (Text,Text)
-autocomplete_ = (,) ("autocomplete")
+autocomplete_ :: Text -> Attribute
+autocomplete_ = makeAttribute "autocomplete"
 
 -- | The @autofocus@ attribute.
-autofocus_ :: (Text,Text)
-autofocus_ = (,) ("autofocus") mempty
+autofocus_ :: Attribute
+autofocus_ = makeAttribute "autofocus" empty
 
 -- | The @autoplay@ attribute.
-autoplay_ :: Text -> (Text,Text)
-autoplay_ = (,) ("autoplay")
+autoplay_ :: Text -> Attribute
+autoplay_ = makeAttribute "autoplay"
 
 -- | The @challenge@ attribute.
-challenge_ :: Text -> (Text,Text)
-challenge_ = (,) ("challenge")
+challenge_ :: Text -> Attribute
+challenge_ = makeAttribute "challenge"
 
 -- | The @charset@ attribute.
-charset_ :: Text -> (Text,Text)
-charset_ = (,) ("charset")
+charset_ :: Text -> Attribute
+charset_ = makeAttribute "charset"
 
 -- | The @checked@ attribute.
-checked_ :: (Text,Text)
-checked_ = (,) ("checked") mempty
+checked_ :: Attribute
+checked_ = makeAttribute "checked" empty
 
 -- | The @class@ attribute.
-class_ :: Text -> (Text,Text)
-class_ = (,) ("class")
+class_ :: Text -> Attribute
+class_ = makeAttribute "class"
 
 -- | The @cols@ attribute.
-cols_ :: Text -> (Text,Text)
-cols_ = (,) ("cols")
+cols_ :: Text -> Attribute
+cols_ = makeAttribute "cols"
 
 -- | The @colspan@ attribute.
-colspan_ :: Text -> (Text,Text)
-colspan_ = (,) ("colspan")
+colspan_ :: Text -> Attribute
+colspan_ = makeAttribute "colspan"
 
 -- | The @content@ attribute.
-content_ :: Text -> (Text,Text)
-content_ = (,) ("content")
+content_ :: Text -> Attribute
+content_ = makeAttribute "content"
 
 -- | The @contenteditable@ attribute.
-contenteditable_ :: Text -> (Text,Text)
-contenteditable_ = (,) ("contenteditable")
+contenteditable_ :: Text -> Attribute
+contenteditable_ = makeAttribute "contenteditable"
 
 -- | The @contextmenu@ attribute.
-contextmenu_ :: Text -> (Text,Text)
-contextmenu_ = (,) ("contextmenu")
+contextmenu_ :: Text -> Attribute
+contextmenu_ = makeAttribute "contextmenu"
 
 -- | The @controls@ attribute.
-controls_ :: Text -> (Text,Text)
-controls_ = (,) ("controls")
+controls_ :: Text -> Attribute
+controls_ = makeAttribute "controls"
 
 -- | The @coords@ attribute.
-coords_ :: Text -> (Text,Text)
-coords_ = (,) ("coords")
+coords_ :: Text -> Attribute
+coords_ = makeAttribute "coords"
 
 -- | The @data@ attribute.
-data_ :: Text -> (Text,Text)
-data_ = (,) ("data")
+data_ :: Text -> Attribute
+data_ = makeAttribute "data"
 
 -- | The @datetime@ attribute.
-datetime_ :: Text -> (Text,Text)
-datetime_ = (,) ("datetime")
+datetime_ :: Text -> Attribute
+datetime_ = makeAttribute "datetime"
 
 -- | The @defer@ attribute.
-defer_ :: Text -> (Text,Text)
-defer_ = (,) ("defer")
+defer_ :: Text -> Attribute
+defer_ = makeAttribute "defer"
 
 -- | The @dir@ attribute.
-dir_ :: Text -> (Text,Text)
-dir_ = (,) ("dir")
+dir_ :: Text -> Attribute
+dir_ = makeAttribute "dir"
 
 -- | The @disabled@ attribute.
-disabled_ :: Text -> (Text,Text)
-disabled_ = (,) ("disabled")
+disabled_ :: Text -> Attribute
+disabled_ = makeAttribute "disabled"
 
 -- | The @draggable@ attribute.
-draggable_ :: Text -> (Text,Text)
-draggable_ = (,) ("draggable")
+draggable_ :: Text -> Attribute
+draggable_ = makeAttribute "draggable"
 
 -- | The @enctype@ attribute.
-enctype_ :: Text -> (Text,Text)
-enctype_ = (,) ("enctype")
+enctype_ :: Text -> Attribute
+enctype_ = makeAttribute "enctype"
 
 -- | The @for@ attribute.
-for_ :: Text -> (Text,Text)
-for_ = (,) ("for")
+for_ :: Text -> Attribute
+for_ = makeAttribute "for"
 
 -- | The @formaction@ attribute.
-formaction_ :: Text -> (Text,Text)
-formaction_ = (,) ("formaction")
+formaction_ :: Text -> Attribute
+formaction_ = makeAttribute "formaction"
 
 -- | The @formenctype@ attribute.
-formenctype_ :: Text -> (Text,Text)
-formenctype_ = (,) ("formenctype")
+formenctype_ :: Text -> Attribute
+formenctype_ = makeAttribute "formenctype"
 
 -- | The @formmethod@ attribute.
-formmethod_ :: Text -> (Text,Text)
-formmethod_ = (,) ("formmethod")
+formmethod_ :: Text -> Attribute
+formmethod_ = makeAttribute "formmethod"
 
 -- | The @formnovalidate@ attribute.
-formnovalidate_ :: Text -> (Text,Text)
-formnovalidate_ = (,) ("formnovalidate")
+formnovalidate_ :: Text -> Attribute
+formnovalidate_ = makeAttribute "formnovalidate"
 
 -- | The @formtarget@ attribute.
-formtarget_ :: Text -> (Text,Text)
-formtarget_ = (,) ("formtarget")
+formtarget_ :: Text -> Attribute
+formtarget_ = makeAttribute "formtarget"
 
 -- | The @headers@ attribute.
-headers_ :: Text -> (Text,Text)
-headers_ = (,) ("headers")
+headers_ :: Text -> Attribute
+headers_ = makeAttribute "headers"
 
 -- | The @height@ attribute.
-height_ :: Text -> (Text,Text)
-height_ = (,) ("height")
+height_ :: Text -> Attribute
+height_ = makeAttribute "height"
 
 -- | The @hidden@ attribute.
-hidden_ :: Text -> (Text,Text)
-hidden_ = (,) ("hidden")
+hidden_ :: Text -> Attribute
+hidden_ = makeAttribute "hidden"
 
 -- | The @high@ attribute.
-high_ :: Text -> (Text,Text)
-high_ = (,) ("high")
+high_ :: Text -> Attribute
+high_ = makeAttribute "high"
 
 -- | The @href@ attribute.
-href_ :: Text -> (Text,Text)
-href_ = (,) ("href")
+href_ :: Text -> Attribute
+href_ = makeAttribute "href"
 
 -- | The @hreflang@ attribute.
-hreflang_ :: Text -> (Text,Text)
-hreflang_ = (,) ("hreflang")
+hreflang_ :: Text -> Attribute
+hreflang_ = makeAttribute "hreflang"
 
 -- | The @httpEquiv@ attribute.
-httpEquiv_ :: Text -> (Text,Text)
-httpEquiv_ = (,) ("httpEquiv")
+httpEquiv_ :: Text -> Attribute
+httpEquiv_ = makeAttribute "httpEquiv"
 
 -- | The @icon@ attribute.
-icon_ :: Text -> (Text,Text)
-icon_ = (,) ("icon")
+icon_ :: Text -> Attribute
+icon_ = makeAttribute "icon"
 
 -- | The @id@ attribute.
-id_ :: Text -> (Text,Text)
-id_ = (,) ("id")
+id_ :: Text -> Attribute
+id_ = makeAttribute "id"
 
 -- | The @ismap@ attribute.
-ismap_ :: Text -> (Text,Text)
-ismap_ = (,) ("ismap")
+ismap_ :: Text -> Attribute
+ismap_ = makeAttribute "ismap"
 
 -- | The @item@ attribute.
-item_ :: Text -> (Text,Text)
-item_ = (,) ("item")
+item_ :: Text -> Attribute
+item_ = makeAttribute "item"
 
 -- | The @itemprop@ attribute.
-itemprop_ :: Text -> (Text,Text)
-itemprop_ = (,) ("itemprop")
+itemprop_ :: Text -> Attribute
+itemprop_ = makeAttribute "itemprop"
 
 -- | The @keytype@ attribute.
-keytype_ :: Text -> (Text,Text)
-keytype_ = (,) ("keytype")
+keytype_ :: Text -> Attribute
+keytype_ = makeAttribute "keytype"
 
 -- | The @lang@ attribute.
-lang_ :: Text -> (Text,Text)
-lang_ = (,) ("lang")
+lang_ :: Text -> Attribute
+lang_ = makeAttribute "lang"
 
 -- | The @list@ attribute.
-list_ :: Text -> (Text,Text)
-list_ = (,) ("list")
+list_ :: Text -> Attribute
+list_ = makeAttribute "list"
 
 -- | The @loop@ attribute.
-loop_ :: Text -> (Text,Text)
-loop_ = (,) ("loop")
+loop_ :: Text -> Attribute
+loop_ = makeAttribute "loop"
 
 -- | The @low@ attribute.
-low_ :: Text -> (Text,Text)
-low_ = (,) ("low")
+low_ :: Text -> Attribute
+low_ = makeAttribute "low"
 
 -- | The @manifest@ attribute.
-manifest_ :: Text -> (Text,Text)
-manifest_ = (,) ("manifest")
+manifest_ :: Text -> Attribute
+manifest_ = makeAttribute "manifest"
 
 -- | The @max@ attribute.
-max_ :: Text -> (Text,Text)
-max_ = (,) ("max")
+max_ :: Text -> Attribute
+max_ = makeAttribute "max"
 
 -- | The @maxlength@ attribute.
-maxlength_ :: Text -> (Text,Text)
-maxlength_ = (,) ("maxlength")
+maxlength_ :: Text -> Attribute
+maxlength_ = makeAttribute "maxlength"
 
 -- | The @media@ attribute.
-media_ :: Text -> (Text,Text)
-media_ = (,) ("media")
+media_ :: Text -> Attribute
+media_ = makeAttribute "media"
 
 -- | The @method@ attribute.
-method_ :: Text -> (Text,Text)
-method_ = (,) ("method")
+method_ :: Text -> Attribute
+method_ = makeAttribute "method"
 
 -- | The @min@ attribute.
-min_ :: Text -> (Text,Text)
-min_ = (,) ("min")
+min_ :: Text -> Attribute
+min_ = makeAttribute "min"
 
 -- | The @multiple@ attribute.
-multiple_ :: Text -> (Text,Text)
-multiple_ = (,) ("multiple")
+multiple_ :: Text -> Attribute
+multiple_ = makeAttribute "multiple"
 
 -- | The @name@ attribute.
-name_ :: Text -> (Text,Text)
-name_ = (,) ("name")
+name_ :: Text -> Attribute
+name_ = makeAttribute "name"
 
 -- | The @novalidate@ attribute.
-novalidate_ :: Text -> (Text,Text)
-novalidate_ = (,) ("novalidate")
+novalidate_ :: Text -> Attribute
+novalidate_ = makeAttribute "novalidate"
 
 -- | The @onbeforeonload@ attribute.
-onbeforeonload_ :: Text -> (Text,Text)
-onbeforeonload_ = (,) ("onbeforeonload")
+onbeforeonload_ :: Text -> Attribute
+onbeforeonload_ = makeAttribute "onbeforeonload"
 
 -- | The @onbeforeprint@ attribute.
-onbeforeprint_ :: Text -> (Text,Text)
-onbeforeprint_ = (,) ("onbeforeprint")
+onbeforeprint_ :: Text -> Attribute
+onbeforeprint_ = makeAttribute "onbeforeprint"
 
 -- | The @onblur@ attribute.
-onblur_ :: Text -> (Text,Text)
-onblur_ = (,) ("onblur")
+onblur_ :: Text -> Attribute
+onblur_ = makeAttribute "onblur"
 
 -- | The @oncanplay@ attribute.
-oncanplay_ :: Text -> (Text,Text)
-oncanplay_ = (,) ("oncanplay")
+oncanplay_ :: Text -> Attribute
+oncanplay_ = makeAttribute "oncanplay"
 
 -- | The @oncanplaythrough@ attribute.
-oncanplaythrough_ :: Text -> (Text,Text)
-oncanplaythrough_ = (,) ("oncanplaythrough")
+oncanplaythrough_ :: Text -> Attribute
+oncanplaythrough_ = makeAttribute "oncanplaythrough"
 
 -- | The @onchange@ attribute.
-onchange_ :: Text -> (Text,Text)
-onchange_ = (,) ("onchange")
+onchange_ :: Text -> Attribute
+onchange_ = makeAttribute "onchange"
 
 -- | The @onclick@ attribute.
-onclick_ :: Text -> (Text,Text)
-onclick_ = (,) ("onclick")
+onclick_ :: Text -> Attribute
+onclick_ = makeAttribute "onclick"
 
 -- | The @oncontextmenu@ attribute.
-oncontextmenu_ :: Text -> (Text,Text)
-oncontextmenu_ = (,) ("oncontextmenu")
+oncontextmenu_ :: Text -> Attribute
+oncontextmenu_ = makeAttribute "oncontextmenu"
 
 -- | The @ondblclick@ attribute.
-ondblclick_ :: Text -> (Text,Text)
-ondblclick_ = (,) ("ondblclick")
+ondblclick_ :: Text -> Attribute
+ondblclick_ = makeAttribute "ondblclick"
 
 -- | The @ondrag@ attribute.
-ondrag_ :: Text -> (Text,Text)
-ondrag_ = (,) ("ondrag")
+ondrag_ :: Text -> Attribute
+ondrag_ = makeAttribute "ondrag"
 
 -- | The @ondragend@ attribute.
-ondragend_ :: Text -> (Text,Text)
-ondragend_ = (,) ("ondragend")
+ondragend_ :: Text -> Attribute
+ondragend_ = makeAttribute "ondragend"
 
 -- | The @ondragenter@ attribute.
-ondragenter_ :: Text -> (Text,Text)
-ondragenter_ = (,) ("ondragenter")
+ondragenter_ :: Text -> Attribute
+ondragenter_ = makeAttribute "ondragenter"
 
 -- | The @ondragleave@ attribute.
-ondragleave_ :: Text -> (Text,Text)
-ondragleave_ = (,) ("ondragleave")
+ondragleave_ :: Text -> Attribute
+ondragleave_ = makeAttribute "ondragleave"
 
 -- | The @ondragover@ attribute.
-ondragover_ :: Text -> (Text,Text)
-ondragover_ = (,) ("ondragover")
+ondragover_ :: Text -> Attribute
+ondragover_ = makeAttribute "ondragover"
 
 -- | The @ondragstart@ attribute.
-ondragstart_ :: Text -> (Text,Text)
-ondragstart_ = (,) ("ondragstart")
+ondragstart_ :: Text -> Attribute
+ondragstart_ = makeAttribute "ondragstart"
 
 -- | The @ondrop@ attribute.
-ondrop_ :: Text -> (Text,Text)
-ondrop_ = (,) ("ondrop")
+ondrop_ :: Text -> Attribute
+ondrop_ = makeAttribute "ondrop"
 
 -- | The @ondurationchange@ attribute.
-ondurationchange_ :: Text -> (Text,Text)
-ondurationchange_ = (,) ("ondurationchange")
+ondurationchange_ :: Text -> Attribute
+ondurationchange_ = makeAttribute "ondurationchange"
 
 -- | The @onemptied@ attribute.
-onemptied_ :: Text -> (Text,Text)
-onemptied_ = (,) ("onemptied")
+onemptied_ :: Text -> Attribute
+onemptied_ = makeAttribute "onemptied"
 
 -- | The @onended@ attribute.
-onended_ :: Text -> (Text,Text)
-onended_ = (,) ("onended")
+onended_ :: Text -> Attribute
+onended_ = makeAttribute "onended"
 
 -- | The @onerror@ attribute.
-onerror_ :: Text -> (Text,Text)
-onerror_ = (,) ("onerror")
+onerror_ :: Text -> Attribute
+onerror_ = makeAttribute "onerror"
 
 -- | The @onfocus@ attribute.
-onfocus_ :: Text -> (Text,Text)
-onfocus_ = (,) ("onfocus")
+onfocus_ :: Text -> Attribute
+onfocus_ = makeAttribute "onfocus"
 
 -- | The @onformchange@ attribute.
-onformchange_ :: Text -> (Text,Text)
-onformchange_ = (,) ("onformchange")
+onformchange_ :: Text -> Attribute
+onformchange_ = makeAttribute "onformchange"
 
 -- | The @onforminput@ attribute.
-onforminput_ :: Text -> (Text,Text)
-onforminput_ = (,) ("onforminput")
+onforminput_ :: Text -> Attribute
+onforminput_ = makeAttribute "onforminput"
 
 -- | The @onhaschange@ attribute.
-onhaschange_ :: Text -> (Text,Text)
-onhaschange_ = (,) ("onhaschange")
+onhaschange_ :: Text -> Attribute
+onhaschange_ = makeAttribute "onhaschange"
 
 -- | The @oninput@ attribute.
-oninput_ :: Text -> (Text,Text)
-oninput_ = (,) ("oninput")
+oninput_ :: Text -> Attribute
+oninput_ = makeAttribute "oninput"
 
 -- | The @oninvalid@ attribute.
-oninvalid_ :: Text -> (Text,Text)
-oninvalid_ = (,) ("oninvalid")
+oninvalid_ :: Text -> Attribute
+oninvalid_ = makeAttribute "oninvalid"
 
 -- | The @onkeydown@ attribute.
-onkeydown_ :: Text -> (Text,Text)
-onkeydown_ = (,) ("onkeydown")
+onkeydown_ :: Text -> Attribute
+onkeydown_ = makeAttribute "onkeydown"
 
 -- | The @onkeyup@ attribute.
-onkeyup_ :: Text -> (Text,Text)
-onkeyup_ = (,) ("onkeyup")
+onkeyup_ :: Text -> Attribute
+onkeyup_ = makeAttribute "onkeyup"
 
 -- | The @onload@ attribute.
-onload_ :: Text -> (Text,Text)
-onload_ = (,) ("onload")
+onload_ :: Text -> Attribute
+onload_ = makeAttribute "onload"
 
 -- | The @onloadeddata@ attribute.
-onloadeddata_ :: Text -> (Text,Text)
-onloadeddata_ = (,) ("onloadeddata")
+onloadeddata_ :: Text -> Attribute
+onloadeddata_ = makeAttribute "onloadeddata"
 
 -- | The @onloadedmetadata@ attribute.
-onloadedmetadata_ :: Text -> (Text,Text)
-onloadedmetadata_ = (,) ("onloadedmetadata")
+onloadedmetadata_ :: Text -> Attribute
+onloadedmetadata_ = makeAttribute "onloadedmetadata"
 
 -- | The @onloadstart@ attribute.
-onloadstart_ :: Text -> (Text,Text)
-onloadstart_ = (,) ("onloadstart")
+onloadstart_ :: Text -> Attribute
+onloadstart_ = makeAttribute "onloadstart"
 
 -- | The @onmessage@ attribute.
-onmessage_ :: Text -> (Text,Text)
-onmessage_ = (,) ("onmessage")
+onmessage_ :: Text -> Attribute
+onmessage_ = makeAttribute "onmessage"
 
 -- | The @onmousedown@ attribute.
-onmousedown_ :: Text -> (Text,Text)
-onmousedown_ = (,) ("onmousedown")
+onmousedown_ :: Text -> Attribute
+onmousedown_ = makeAttribute "onmousedown"
 
 -- | The @onmousemove@ attribute.
-onmousemove_ :: Text -> (Text,Text)
-onmousemove_ = (,) ("onmousemove")
+onmousemove_ :: Text -> Attribute
+onmousemove_ = makeAttribute "onmousemove"
 
 -- | The @onmouseout@ attribute.
-onmouseout_ :: Text -> (Text,Text)
-onmouseout_ = (,) ("onmouseout")
+onmouseout_ :: Text -> Attribute
+onmouseout_ = makeAttribute "onmouseout"
 
 -- | The @onmouseover@ attribute.
-onmouseover_ :: Text -> (Text,Text)
-onmouseover_ = (,) ("onmouseover")
+onmouseover_ :: Text -> Attribute
+onmouseover_ = makeAttribute "onmouseover"
 
 -- | The @onmouseup@ attribute.
-onmouseup_ :: Text -> (Text,Text)
-onmouseup_ = (,) ("onmouseup")
+onmouseup_ :: Text -> Attribute
+onmouseup_ = makeAttribute "onmouseup"
 
 -- | The @onmousewheel@ attribute.
-onmousewheel_ :: Text -> (Text,Text)
-onmousewheel_ = (,) ("onmousewheel")
+onmousewheel_ :: Text -> Attribute
+onmousewheel_ = makeAttribute "onmousewheel"
 
 -- | The @ononline@ attribute.
-ononline_ :: Text -> (Text,Text)
-ononline_ = (,) ("ononline")
+ononline_ :: Text -> Attribute
+ononline_ = makeAttribute "ononline"
 
 -- | The @onpagehide@ attribute.
-onpagehide_ :: Text -> (Text,Text)
-onpagehide_ = (,) ("onpagehide")
+onpagehide_ :: Text -> Attribute
+onpagehide_ = makeAttribute "onpagehide"
 
 -- | The @onpageshow@ attribute.
-onpageshow_ :: Text -> (Text,Text)
-onpageshow_ = (,) ("onpageshow")
+onpageshow_ :: Text -> Attribute
+onpageshow_ = makeAttribute "onpageshow"
 
 -- | The @onpause@ attribute.
-onpause_ :: Text -> (Text,Text)
-onpause_ = (,) ("onpause")
+onpause_ :: Text -> Attribute
+onpause_ = makeAttribute "onpause"
 
 -- | The @onplay@ attribute.
-onplay_ :: Text -> (Text,Text)
-onplay_ = (,) ("onplay")
+onplay_ :: Text -> Attribute
+onplay_ = makeAttribute "onplay"
 
 -- | The @onplaying@ attribute.
-onplaying_ :: Text -> (Text,Text)
-onplaying_ = (,) ("onplaying")
+onplaying_ :: Text -> Attribute
+onplaying_ = makeAttribute "onplaying"
 
 -- | The @onprogress@ attribute.
-onprogress_ :: Text -> (Text,Text)
-onprogress_ = (,) ("onprogress")
+onprogress_ :: Text -> Attribute
+onprogress_ = makeAttribute "onprogress"
 
 -- | The @onpropstate@ attribute.
-onpropstate_ :: Text -> (Text,Text)
-onpropstate_ = (,) ("onpropstate")
+onpropstate_ :: Text -> Attribute
+onpropstate_ = makeAttribute "onpropstate"
 
 -- | The @onratechange@ attribute.
-onratechange_ :: Text -> (Text,Text)
-onratechange_ = (,) ("onratechange")
+onratechange_ :: Text -> Attribute
+onratechange_ = makeAttribute "onratechange"
 
 -- | The @onreadystatechange@ attribute.
-onreadystatechange_ :: Text -> (Text,Text)
-onreadystatechange_ = (,) ("onreadystatechange")
+onreadystatechange_ :: Text -> Attribute
+onreadystatechange_ = makeAttribute "onreadystatechange"
 
 -- | The @onredo@ attribute.
-onredo_ :: Text -> (Text,Text)
-onredo_ = (,) ("onredo")
+onredo_ :: Text -> Attribute
+onredo_ = makeAttribute "onredo"
 
 -- | The @onresize@ attribute.
-onresize_ :: Text -> (Text,Text)
-onresize_ = (,) ("onresize")
+onresize_ :: Text -> Attribute
+onresize_ = makeAttribute "onresize"
 
 -- | The @onscroll@ attribute.
-onscroll_ :: Text -> (Text,Text)
-onscroll_ = (,) ("onscroll")
+onscroll_ :: Text -> Attribute
+onscroll_ = makeAttribute "onscroll"
 
 -- | The @onseeked@ attribute.
-onseeked_ :: Text -> (Text,Text)
-onseeked_ = (,) ("onseeked")
+onseeked_ :: Text -> Attribute
+onseeked_ = makeAttribute "onseeked"
 
 -- | The @onseeking@ attribute.
-onseeking_ :: Text -> (Text,Text)
-onseeking_ = (,) ("onseeking")
+onseeking_ :: Text -> Attribute
+onseeking_ = makeAttribute "onseeking"
 
 -- | The @onselect@ attribute.
-onselect_ :: Text -> (Text,Text)
-onselect_ = (,) ("onselect")
+onselect_ :: Text -> Attribute
+onselect_ = makeAttribute "onselect"
 
 -- | The @onstalled@ attribute.
-onstalled_ :: Text -> (Text,Text)
-onstalled_ = (,) ("onstalled")
+onstalled_ :: Text -> Attribute
+onstalled_ = makeAttribute "onstalled"
 
 -- | The @onstorage@ attribute.
-onstorage_ :: Text -> (Text,Text)
-onstorage_ = (,) ("onstorage")
+onstorage_ :: Text -> Attribute
+onstorage_ = makeAttribute "onstorage"
 
 -- | The @onsubmit@ attribute.
-onsubmit_ :: Text -> (Text,Text)
-onsubmit_ = (,) ("onsubmit")
+onsubmit_ :: Text -> Attribute
+onsubmit_ = makeAttribute "onsubmit"
 
 -- | The @onsuspend@ attribute.
-onsuspend_ :: Text -> (Text,Text)
-onsuspend_ = (,) ("onsuspend")
+onsuspend_ :: Text -> Attribute
+onsuspend_ = makeAttribute "onsuspend"
 
 -- | The @ontimeupdate@ attribute.
-ontimeupdate_ :: Text -> (Text,Text)
-ontimeupdate_ = (,) ("ontimeupdate")
+ontimeupdate_ :: Text -> Attribute
+ontimeupdate_ = makeAttribute "ontimeupdate"
 
 -- | The @onundo@ attribute.
-onundo_ :: Text -> (Text,Text)
-onundo_ = (,) ("onundo")
+onundo_ :: Text -> Attribute
+onundo_ = makeAttribute "onundo"
 
 -- | The @onunload@ attribute.
-onunload_ :: Text -> (Text,Text)
-onunload_ = (,) ("onunload")
+onunload_ :: Text -> Attribute
+onunload_ = makeAttribute "onunload"
 
 -- | The @onvolumechange@ attribute.
-onvolumechange_ :: Text -> (Text,Text)
-onvolumechange_ = (,) ("onvolumechange")
+onvolumechange_ :: Text -> Attribute
+onvolumechange_ = makeAttribute "onvolumechange"
 
 -- | The @onwaiting@ attribute.
-onwaiting_ :: Text -> (Text,Text)
-onwaiting_ = (,) ("onwaiting")
+onwaiting_ :: Text -> Attribute
+onwaiting_ = makeAttribute "onwaiting"
 
 -- | The @open@ attribute.
-open_ :: Text -> (Text,Text)
-open_ = (,) ("open")
+open_ :: Text -> Attribute
+open_ = makeAttribute "open"
 
 -- | The @optimum@ attribute.
-optimum_ :: Text -> (Text,Text)
-optimum_ = (,) ("optimum")
+optimum_ :: Text -> Attribute
+optimum_ = makeAttribute "optimum"
 
 -- | The @pattern@ attribute.
-pattern_ :: Text -> (Text,Text)
-pattern_ = (,) ("pattern")
+pattern_ :: Text -> Attribute
+pattern_ = makeAttribute "pattern"
 
 -- | The @ping@ attribute.
-ping_ :: Text -> (Text,Text)
-ping_ = (,) ("ping")
+ping_ :: Text -> Attribute
+ping_ = makeAttribute "ping"
 
 -- | The @placeholder@ attribute.
-placeholder_ :: Text -> (Text,Text)
-placeholder_ = (,) ("placeholder")
+placeholder_ :: Text -> Attribute
+placeholder_ = makeAttribute "placeholder"
 
 -- | The @preload@ attribute.
-preload_ :: Text -> (Text,Text)
-preload_ = (,) ("preload")
+preload_ :: Text -> Attribute
+preload_ = makeAttribute "preload"
 
 -- | The @pubdate@ attribute.
-pubdate_ :: Text -> (Text,Text)
-pubdate_ = (,) ("pubdate")
+pubdate_ :: Text -> Attribute
+pubdate_ = makeAttribute "pubdate"
 
 -- | The @radiogroup@ attribute.
-radiogroup_ :: Text -> (Text,Text)
-radiogroup_ = (,) ("radiogroup")
+radiogroup_ :: Text -> Attribute
+radiogroup_ = makeAttribute "radiogroup"
 
 -- | The @readonly@ attribute.
-readonly_ :: Text -> (Text,Text)
-readonly_ = (,) ("readonly")
+readonly_ :: Text -> Attribute
+readonly_ = makeAttribute "readonly"
 
 -- | The @rel@ attribute.
-rel_ :: Text -> (Text,Text)
-rel_ = (,) ("rel")
+rel_ :: Text -> Attribute
+rel_ = makeAttribute "rel"
 
 -- | The @required@ attribute.
-required_ :: Text -> (Text,Text)
-required_ = (,) ("required")
+required_ :: Text -> Attribute
+required_ = makeAttribute "required"
 
 -- | The @reversed@ attribute.
-reversed_ :: Text -> (Text,Text)
-reversed_ = (,) ("reversed")
+reversed_ :: Text -> Attribute
+reversed_ = makeAttribute "reversed"
 
 -- | The @rows@ attribute.
-rows_ :: Text -> (Text,Text)
-rows_ = (,) ("rows")
+rows_ :: Text -> Attribute
+rows_ = makeAttribute "rows"
 
 -- | The @rowspan@ attribute.
-rowspan_ :: Text -> (Text,Text)
-rowspan_ = (,) ("rowspan")
+rowspan_ :: Text -> Attribute
+rowspan_ = makeAttribute "rowspan"
 
 -- | The @sandbox@ attribute.
-sandbox_ :: Text -> (Text,Text)
-sandbox_ = (,) ("sandbox")
+sandbox_ :: Text -> Attribute
+sandbox_ = makeAttribute "sandbox"
 
 -- | The @scope@ attribute.
-scope_ :: Text -> (Text,Text)
-scope_ = (,) ("scope")
+scope_ :: Text -> Attribute
+scope_ = makeAttribute "scope"
 
 -- | The @scoped@ attribute.
-scoped_ :: Text -> (Text,Text)
-scoped_ = (,) ("scoped")
+scoped_ :: Text -> Attribute
+scoped_ = makeAttribute "scoped"
 
 -- | The @seamless@ attribute.
-seamless_ :: Text -> (Text,Text)
-seamless_ = (,) ("seamless")
+seamless_ :: Text -> Attribute
+seamless_ = makeAttribute "seamless"
 
 -- | The @selected@ attribute.
-selected_ :: Text -> (Text,Text)
-selected_ = (,) ("selected")
+selected_ :: Text -> Attribute
+selected_ = makeAttribute "selected"
 
 -- | The @shape@ attribute.
-shape_ :: Text -> (Text,Text)
-shape_ = (,) ("shape")
+shape_ :: Text -> Attribute
+shape_ = makeAttribute "shape"
 
 -- | The @size@ attribute.
-size_ :: Text -> (Text,Text)
-size_ = (,) ("size")
+size_ :: Text -> Attribute
+size_ = makeAttribute "size"
 
 -- | The @sizes@ attribute.
-sizes_ :: Text -> (Text,Text)
-sizes_ = (,) ("sizes")
+sizes_ :: Text -> Attribute
+sizes_ = makeAttribute "sizes"
 
 -- | The @spellcheck@ attribute.
-spellcheck_ :: Text -> (Text,Text)
-spellcheck_ = (,) ("spellcheck")
+spellcheck_ :: Text -> Attribute
+spellcheck_ = makeAttribute "spellcheck"
 
 -- | The @src@ attribute.
-src_ :: Text -> (Text,Text)
-src_ = (,) ("src")
+src_ :: Text -> Attribute
+src_ = makeAttribute "src"
 
 -- | The @srcdoc@ attribute.
-srcdoc_ :: Text -> (Text,Text)
-srcdoc_ = (,) ("srcdoc")
+srcdoc_ :: Text -> Attribute
+srcdoc_ = makeAttribute "srcdoc"
 
 -- | The @start@ attribute.
-start_ :: Text -> (Text,Text)
-start_ = (,) ("start")
+start_ :: Text -> Attribute
+start_ = makeAttribute "start"
 
 -- | The @step@ attribute.
-step_ :: Text -> (Text,Text)
-step_ = (,) ("step")
+step_ :: Text -> Attribute
+step_ = makeAttribute "step"
 
 -- | The @subject@ attribute.
-subject_ :: Text -> (Text,Text)
-subject_ = (,) ("subject")
+subject_ :: Text -> Attribute
+subject_ = makeAttribute "subject"
 
 -- | The @tabindex@ attribute.
-tabindex_ :: Text -> (Text,Text)
-tabindex_ = (,) ("tabindex")
+tabindex_ :: Text -> Attribute
+tabindex_ = makeAttribute "tabindex"
 
 -- | The @target@ attribute.
-target_ :: Text -> (Text,Text)
-target_ = (,) ("target")
+target_ :: Text -> Attribute
+target_ = makeAttribute "target"
 
 -- | The @type@ attribute.
-type_ :: Text -> (Text,Text)
-type_ = (,) ("type")
+type_ :: Text -> Attribute
+type_ = makeAttribute "type"
 
 -- | The @usemap@ attribute.
-usemap_ :: Text -> (Text,Text)
-usemap_ = (,) ("usemap")
+usemap_ :: Text -> Attribute
+usemap_ = makeAttribute "usemap"
 
 -- | The @value@ attribute.
-value_ :: Text -> (Text,Text)
-value_ = (,) ("value")
+value_ :: Text -> Attribute
+value_ = makeAttribute "value"
 
 -- | The @width@ attribute.
-width_ :: Text -> (Text,Text)
-width_ = (,) ("width")
+width_ :: Text -> Attribute
+width_ = makeAttribute "width"
 
 -- | The @wrap@ attribute.
-wrap_ :: Text -> (Text,Text)
-wrap_ = (,) ("wrap")
+wrap_ :: Text -> Attribute
+wrap_ = makeAttribute "wrap"
 
 -- | The @xmlns@ attribute.
-xmlns_ :: Text -> (Text,Text)
-xmlns_ = (,) ("xmlns")
+xmlns_ :: Text -> Attribute
+xmlns_ = makeAttribute "xmlns"
