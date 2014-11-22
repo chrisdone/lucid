@@ -4,7 +4,7 @@
 
 -- | Examples that should always compile.
 
-module Lucid.Example where
+module Lucid.Example2 where
 
 import Lucid
 
