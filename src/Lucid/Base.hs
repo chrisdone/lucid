@@ -289,13 +289,14 @@ makeElementNoEnd name =
   HtmlT (return (\attr _ -> s "<" <> name <> foldlMapWithKey buildAttr attr <> s ">",
                  ()))
 
+-- | Build and encode an attribute.
 buildAttr :: Text -> Text -> Builder
 buildAttr key val =
   s " " <>
   Blaze.fromText key <>
   if val == mempty
      then mempty
-     else s "=\"" <> Blaze.fromText val <> s "\""
+     else s "=\"" <> encode val <> s "\""
 
 foldlMapWithKey :: Monoid m => (k -> v -> m) -> HashMap k v -> m
 foldlMapWithKey f = M.foldlWithKey' (\m k v -> m <> f k v) mempty
