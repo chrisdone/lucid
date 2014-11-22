@@ -370,8 +370,8 @@ strong_  :: Monad m => HtmlT m () -> HtmlT m ()
 strong_ = makeElement (Blaze.fromString "strong")
 
 -- | @style@ element or @style@ attribute
-style_  :: Mixed a r => a -> r
-style_ = mixed ("style")
+style_  :: MixedRaw a r => a -> r
+style_ = mixedRaw "style"
 
 -- | @sub@ element
 sub_  :: Monad m => HtmlT m () -> HtmlT m ()

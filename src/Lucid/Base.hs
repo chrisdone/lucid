@@ -28,6 +28,7 @@ module Lucid.Base
   ,ToText(..)
   ,ToHtml(..)
   ,Mixed(..)
+  ,MixedRaw(..)
   ,With)
   where
 
@@ -155,6 +156,20 @@ instance (ToText a) => Mixed a (Text,Text) where
 -- | HTML elements can be a mixed thing e.g. 'style_'.
 instance (Monad m,a ~ HtmlT m r,r ~ ()) => Mixed a (HtmlT m r) where
   mixed = makeElement . Blaze.fromText
+
+-- | Used for names that are mixed, e.g. 'style_'. Doesn't encode the
+-- inner content of its element.
+class MixedRaw a r where
+  mixedRaw :: Text -> a -> r
+
+-- | Attributes can be a mixed thing e.g. 'style_'.
+instance (ToText a) => MixedRaw a (Text,Text) where
+  mixedRaw key value = (key,toText value)
+
+-- | HTML elements can be a mixed thing e.g. 'style_'. Doesn't encode
+-- the text content.
+instance (Monad m,ToHtml a,r ~ ()) => MixedRaw a (HtmlT m r) where
+  mixedRaw n = makeElement (Blaze.fromText n) . toHtmlRaw
 
 -- | With an element use these attributes.
 class With a where
