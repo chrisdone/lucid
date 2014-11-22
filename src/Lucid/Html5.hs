@@ -342,8 +342,9 @@ samp_  :: Monad m => HtmlT m () -> HtmlT m ()
 samp_ = makeElement (Blaze.fromString "samp")
 
 -- | @script@ element
+-- | Will still html escape the javascript passed to it.
 script_  :: Monad m => HtmlT m () -> HtmlT m ()
-script_ = makeElement (Blaze.fromString "script")
+script_ = makeElement (Blaze.fromString "script") 
 
 -- | @section@ element
 section_  :: Monad m => HtmlT m () -> HtmlT m ()
