@@ -12,8 +12,6 @@ module Lucid
   ,execHtmlT
   ,evalHtmlT
   ,runHtmlT
-  -- * Combinators
-  ,with
    -- * Types
   ,Html
    -- * Classes
