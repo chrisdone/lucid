@@ -342,8 +342,8 @@ samp_  :: Monad m => HtmlT m () -> HtmlT m ()
 samp_ = makeElement (Blaze.fromString "samp")
 
 -- | @script@ element
-script_  :: Monad m => HtmlT m () -> HtmlT m ()
-script_ = makeElement (Blaze.fromString "script")
+script_  :: (ToHtml t,Monad m) => t -> HtmlT m ()
+script_ = makeElement (Blaze.fromString "script") . toHtmlRaw
 
 -- | @section@ element
 section_  :: Monad m => HtmlT m () -> HtmlT m ()
