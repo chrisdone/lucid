@@ -125,7 +125,7 @@ deepTree n = p_ $ table_ $ tr_ $ td_ $ div_ $ deepTree (n - 1)
 --
 manyAttributes :: [String]  -- ^ List of attribute values.
                -> Html ()      -- ^ Result.
-manyAttributes as = with img_ (map id_ as)
+manyAttributes as = with img_ (map (id_ . T.pack) as)
 
 customAttributes :: [(String, String)]  -- ^ List of attribute name, value pairs
                  -> Html ()                -- ^ Result

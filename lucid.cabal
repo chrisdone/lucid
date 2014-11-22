@@ -43,3 +43,16 @@ test-suite test
                    bifunctors,
                    text,
                    mtl
+
+benchmark bench
+  type:             exitcode-stdio-1.0
+  hs-source-dirs:   benchmarks
+  main-is:          Main.hs
+  build-depends:    base,
+                    deepseq,
+                    criterion,
+                    blaze-builder,
+                    text,
+                    bytestring,
+                    lucid
+  ghc-options:      -O2
