@@ -446,637 +446,637 @@ wbr_  :: Monad m => HtmlT m ()
 wbr_ = makeElementNoEnd (Blaze.fromString "wbr")
 
 -- | The @accept@ attribute.
-accept_ :: ToText a => a -> (Text,Text)
-accept_ = (,) ("accept") . toText
+accept_ :: Text -> (Text,Text)
+accept_ = (,) ("accept")
 
 -- | The @acceptCharset@ attribute.
-acceptCharset_ :: ToText a => a -> (Text,Text)
-acceptCharset_ = (,) ("acceptCharset") . toText
+acceptCharset_ :: Text -> (Text,Text)
+acceptCharset_ = (,) ("acceptCharset")
 
 -- | The @accesskey@ attribute.
-accesskey_ :: ToText a => a -> (Text,Text)
-accesskey_ = (,) ("accesskey") . toText
+accesskey_ :: Text -> (Text,Text)
+accesskey_ = (,) ("accesskey")
 
 -- | The @action@ attribute.
-action_ :: ToText a => a -> (Text,Text)
-action_ = (,) ("action") . toText
+action_ :: Text -> (Text,Text)
+action_ = (,) ("action")
 
 -- | The @alt@ attribute.
-alt_ :: ToText a => a -> (Text,Text)
-alt_ = (,) ("alt") . toText
+alt_ :: Text -> (Text,Text)
+alt_ = (,) ("alt")
 
 -- | The @async@ attribute.
-async_ :: ToText a => a -> (Text,Text)
-async_ = (,) ("async") . toText
+async_ :: Text -> (Text,Text)
+async_ = (,) ("async")
 
 -- | The @autocomplete@ attribute.
-autocomplete_ :: ToText a => a -> (Text,Text)
-autocomplete_ = (,) ("autocomplete") . toText
+autocomplete_ :: Text -> (Text,Text)
+autocomplete_ = (,) ("autocomplete")
 
 -- | The @autofocus@ attribute.
 autofocus_ :: (Text,Text)
 autofocus_ = (,) ("autofocus") mempty
 
 -- | The @autoplay@ attribute.
-autoplay_ :: ToText a => a -> (Text,Text)
-autoplay_ = (,) ("autoplay") . toText
+autoplay_ :: Text -> (Text,Text)
+autoplay_ = (,) ("autoplay")
 
 -- | The @challenge@ attribute.
-challenge_ :: ToText a => a -> (Text,Text)
-challenge_ = (,) ("challenge") . toText
+challenge_ :: Text -> (Text,Text)
+challenge_ = (,) ("challenge")
 
 -- | The @charset@ attribute.
-charset_ :: ToText a => a -> (Text,Text)
-charset_ = (,) ("charset") . toText
+charset_ :: Text -> (Text,Text)
+charset_ = (,) ("charset")
 
 -- | The @checked@ attribute.
 checked_ :: (Text,Text)
 checked_ = (,) ("checked") mempty
 
 -- | The @class@ attribute.
-class_ :: ToText a => a -> (Text,Text)
-class_ = (,) ("class") . toText
+class_ :: Text -> (Text,Text)
+class_ = (,) ("class")
 
 -- | The @cols@ attribute.
-cols_ :: ToText a => a -> (Text,Text)
-cols_ = (,) ("cols") . toText
+cols_ :: Text -> (Text,Text)
+cols_ = (,) ("cols")
 
 -- | The @colspan@ attribute.
-colspan_ :: ToText a => a -> (Text,Text)
-colspan_ = (,) ("colspan") . toText
+colspan_ :: Text -> (Text,Text)
+colspan_ = (,) ("colspan")
 
 -- | The @content@ attribute.
-content_ :: ToText a => a -> (Text,Text)
-content_ = (,) ("content") . toText
+content_ :: Text -> (Text,Text)
+content_ = (,) ("content")
 
 -- | The @contenteditable@ attribute.
-contenteditable_ :: ToText a => a -> (Text,Text)
-contenteditable_ = (,) ("contenteditable") . toText
+contenteditable_ :: Text -> (Text,Text)
+contenteditable_ = (,) ("contenteditable")
 
 -- | The @contextmenu@ attribute.
-contextmenu_ :: ToText a => a -> (Text,Text)
-contextmenu_ = (,) ("contextmenu") . toText
+contextmenu_ :: Text -> (Text,Text)
+contextmenu_ = (,) ("contextmenu")
 
 -- | The @controls@ attribute.
-controls_ :: ToText a => a -> (Text,Text)
-controls_ = (,) ("controls") . toText
+controls_ :: Text -> (Text,Text)
+controls_ = (,) ("controls")
 
 -- | The @coords@ attribute.
-coords_ :: ToText a => a -> (Text,Text)
-coords_ = (,) ("coords") . toText
+coords_ :: Text -> (Text,Text)
+coords_ = (,) ("coords")
 
 -- | The @data@ attribute.
-data_ :: ToText a => a -> (Text,Text)
-data_ = (,) ("data") . toText
+data_ :: Text -> (Text,Text)
+data_ = (,) ("data")
 
 -- | The @datetime@ attribute.
-datetime_ :: ToText a => a -> (Text,Text)
-datetime_ = (,) ("datetime") . toText
+datetime_ :: Text -> (Text,Text)
+datetime_ = (,) ("datetime")
 
 -- | The @defer@ attribute.
-defer_ :: ToText a => a -> (Text,Text)
-defer_ = (,) ("defer") . toText
+defer_ :: Text -> (Text,Text)
+defer_ = (,) ("defer")
 
 -- | The @dir@ attribute.
-dir_ :: ToText a => a -> (Text,Text)
-dir_ = (,) ("dir") . toText
+dir_ :: Text -> (Text,Text)
+dir_ = (,) ("dir")
 
 -- | The @disabled@ attribute.
-disabled_ :: ToText a => a -> (Text,Text)
-disabled_ = (,) ("disabled") . toText
+disabled_ :: Text -> (Text,Text)
+disabled_ = (,) ("disabled")
 
 -- | The @draggable@ attribute.
-draggable_ :: ToText a => a -> (Text,Text)
-draggable_ = (,) ("draggable") . toText
+draggable_ :: Text -> (Text,Text)
+draggable_ = (,) ("draggable")
 
 -- | The @enctype@ attribute.
-enctype_ :: ToText a => a -> (Text,Text)
-enctype_ = (,) ("enctype") . toText
+enctype_ :: Text -> (Text,Text)
+enctype_ = (,) ("enctype")
 
 -- | The @for@ attribute.
-for_ :: ToText a => a -> (Text,Text)
-for_ = (,) ("for") . toText
+for_ :: Text -> (Text,Text)
+for_ = (,) ("for")
 
 -- | The @formaction@ attribute.
-formaction_ :: ToText a => a -> (Text,Text)
-formaction_ = (,) ("formaction") . toText
+formaction_ :: Text -> (Text,Text)
+formaction_ = (,) ("formaction")
 
 -- | The @formenctype@ attribute.
-formenctype_ :: ToText a => a -> (Text,Text)
-formenctype_ = (,) ("formenctype") . toText
+formenctype_ :: Text -> (Text,Text)
+formenctype_ = (,) ("formenctype")
 
 -- | The @formmethod@ attribute.
-formmethod_ :: ToText a => a -> (Text,Text)
-formmethod_ = (,) ("formmethod") . toText
+formmethod_ :: Text -> (Text,Text)
+formmethod_ = (,) ("formmethod")
 
 -- | The @formnovalidate@ attribute.
-formnovalidate_ :: ToText a => a -> (Text,Text)
-formnovalidate_ = (,) ("formnovalidate") . toText
+formnovalidate_ :: Text -> (Text,Text)
+formnovalidate_ = (,) ("formnovalidate")
 
 -- | The @formtarget@ attribute.
-formtarget_ :: ToText a => a -> (Text,Text)
-formtarget_ = (,) ("formtarget") . toText
+formtarget_ :: Text -> (Text,Text)
+formtarget_ = (,) ("formtarget")
 
 -- | The @headers@ attribute.
-headers_ :: ToText a => a -> (Text,Text)
-headers_ = (,) ("headers") . toText
+headers_ :: Text -> (Text,Text)
+headers_ = (,) ("headers")
 
 -- | The @height@ attribute.
-height_ :: ToText a => a -> (Text,Text)
-height_ = (,) ("height") . toText
+height_ :: Text -> (Text,Text)
+height_ = (,) ("height")
 
 -- | The @hidden@ attribute.
-hidden_ :: ToText a => a -> (Text,Text)
-hidden_ = (,) ("hidden") . toText
+hidden_ :: Text -> (Text,Text)
+hidden_ = (,) ("hidden")
 
 -- | The @high@ attribute.
-high_ :: ToText a => a -> (Text,Text)
-high_ = (,) ("high") . toText
+high_ :: Text -> (Text,Text)
+high_ = (,) ("high")
 
 -- | The @href@ attribute.
-href_ :: ToText a => a -> (Text,Text)
-href_ = (,) ("href") . toText
+href_ :: Text -> (Text,Text)
+href_ = (,) ("href")
 
 -- | The @hreflang@ attribute.
-hreflang_ :: ToText a => a -> (Text,Text)
-hreflang_ = (,) ("hreflang") . toText
+hreflang_ :: Text -> (Text,Text)
+hreflang_ = (,) ("hreflang")
 
 -- | The @httpEquiv@ attribute.
-httpEquiv_ :: ToText a => a -> (Text,Text)
-httpEquiv_ = (,) ("httpEquiv") . toText
+httpEquiv_ :: Text -> (Text,Text)
+httpEquiv_ = (,) ("httpEquiv")
 
 -- | The @icon@ attribute.
-icon_ :: ToText a => a -> (Text,Text)
-icon_ = (,) ("icon") . toText
+icon_ :: Text -> (Text,Text)
+icon_ = (,) ("icon")
 
 -- | The @id@ attribute.
-id_ :: ToText a => a -> (Text,Text)
-id_ = (,) ("id") . toText
+id_ :: Text -> (Text,Text)
+id_ = (,) ("id")
 
 -- | The @ismap@ attribute.
-ismap_ :: ToText a => a -> (Text,Text)
-ismap_ = (,) ("ismap") . toText
+ismap_ :: Text -> (Text,Text)
+ismap_ = (,) ("ismap")
 
 -- | The @item@ attribute.
-item_ :: ToText a => a -> (Text,Text)
-item_ = (,) ("item") . toText
+item_ :: Text -> (Text,Text)
+item_ = (,) ("item")
 
 -- | The @itemprop@ attribute.
-itemprop_ :: ToText a => a -> (Text,Text)
-itemprop_ = (,) ("itemprop") . toText
+itemprop_ :: Text -> (Text,Text)
+itemprop_ = (,) ("itemprop")
 
 -- | The @keytype@ attribute.
-keytype_ :: ToText a => a -> (Text,Text)
-keytype_ = (,) ("keytype") . toText
+keytype_ :: Text -> (Text,Text)
+keytype_ = (,) ("keytype")
 
 -- | The @lang@ attribute.
-lang_ :: ToText a => a -> (Text,Text)
-lang_ = (,) ("lang") . toText
+lang_ :: Text -> (Text,Text)
+lang_ = (,) ("lang")
 
 -- | The @list@ attribute.
-list_ :: ToText a => a -> (Text,Text)
-list_ = (,) ("list") . toText
+list_ :: Text -> (Text,Text)
+list_ = (,) ("list")
 
 -- | The @loop@ attribute.
-loop_ :: ToText a => a -> (Text,Text)
-loop_ = (,) ("loop") . toText
+loop_ :: Text -> (Text,Text)
+loop_ = (,) ("loop")
 
 -- | The @low@ attribute.
-low_ :: ToText a => a -> (Text,Text)
-low_ = (,) ("low") . toText
+low_ :: Text -> (Text,Text)
+low_ = (,) ("low")
 
 -- | The @manifest@ attribute.
-manifest_ :: ToText a => a -> (Text,Text)
-manifest_ = (,) ("manifest") . toText
+manifest_ :: Text -> (Text,Text)
+manifest_ = (,) ("manifest")
 
 -- | The @max@ attribute.
-max_ :: ToText a => a -> (Text,Text)
-max_ = (,) ("max") . toText
+max_ :: Text -> (Text,Text)
+max_ = (,) ("max")
 
 -- | The @maxlength@ attribute.
-maxlength_ :: ToText a => a -> (Text,Text)
-maxlength_ = (,) ("maxlength") . toText
+maxlength_ :: Text -> (Text,Text)
+maxlength_ = (,) ("maxlength")
 
 -- | The @media@ attribute.
-media_ :: ToText a => a -> (Text,Text)
-media_ = (,) ("media") . toText
+media_ :: Text -> (Text,Text)
+media_ = (,) ("media")
 
 -- | The @method@ attribute.
-method_ :: ToText a => a -> (Text,Text)
-method_ = (,) ("method") . toText
+method_ :: Text -> (Text,Text)
+method_ = (,) ("method")
 
 -- | The @min@ attribute.
-min_ :: ToText a => a -> (Text,Text)
-min_ = (,) ("min") . toText
+min_ :: Text -> (Text,Text)
+min_ = (,) ("min")
 
 -- | The @multiple@ attribute.
-multiple_ :: ToText a => a -> (Text,Text)
-multiple_ = (,) ("multiple") . toText
+multiple_ :: Text -> (Text,Text)
+multiple_ = (,) ("multiple")
 
 -- | The @name@ attribute.
-name_ :: ToText a => a -> (Text,Text)
-name_ = (,) ("name") . toText
+name_ :: Text -> (Text,Text)
+name_ = (,) ("name")
 
 -- | The @novalidate@ attribute.
-novalidate_ :: ToText a => a -> (Text,Text)
-novalidate_ = (,) ("novalidate") . toText
+novalidate_ :: Text -> (Text,Text)
+novalidate_ = (,) ("novalidate")
 
 -- | The @onbeforeonload@ attribute.
-onbeforeonload_ :: ToText a => a -> (Text,Text)
-onbeforeonload_ = (,) ("onbeforeonload") . toText
+onbeforeonload_ :: Text -> (Text,Text)
+onbeforeonload_ = (,) ("onbeforeonload")
 
 -- | The @onbeforeprint@ attribute.
-onbeforeprint_ :: ToText a => a -> (Text,Text)
-onbeforeprint_ = (,) ("onbeforeprint") . toText
+onbeforeprint_ :: Text -> (Text,Text)
+onbeforeprint_ = (,) ("onbeforeprint")
 
 -- | The @onblur@ attribute.
-onblur_ :: ToText a => a -> (Text,Text)
-onblur_ = (,) ("onblur") . toText
+onblur_ :: Text -> (Text,Text)
+onblur_ = (,) ("onblur")
 
 -- | The @oncanplay@ attribute.
-oncanplay_ :: ToText a => a -> (Text,Text)
-oncanplay_ = (,) ("oncanplay") . toText
+oncanplay_ :: Text -> (Text,Text)
+oncanplay_ = (,) ("oncanplay")
 
 -- | The @oncanplaythrough@ attribute.
-oncanplaythrough_ :: ToText a => a -> (Text,Text)
-oncanplaythrough_ = (,) ("oncanplaythrough") . toText
+oncanplaythrough_ :: Text -> (Text,Text)
+oncanplaythrough_ = (,) ("oncanplaythrough")
 
 -- | The @onchange@ attribute.
-onchange_ :: ToText a => a -> (Text,Text)
-onchange_ = (,) ("onchange") . toText
+onchange_ :: Text -> (Text,Text)
+onchange_ = (,) ("onchange")
 
 -- | The @onclick@ attribute.
-onclick_ :: ToText a => a -> (Text,Text)
-onclick_ = (,) ("onclick") . toText
+onclick_ :: Text -> (Text,Text)
+onclick_ = (,) ("onclick")
 
 -- | The @oncontextmenu@ attribute.
-oncontextmenu_ :: ToText a => a -> (Text,Text)
-oncontextmenu_ = (,) ("oncontextmenu") . toText
+oncontextmenu_ :: Text -> (Text,Text)
+oncontextmenu_ = (,) ("oncontextmenu")
 
 -- | The @ondblclick@ attribute.
-ondblclick_ :: ToText a => a -> (Text,Text)
-ondblclick_ = (,) ("ondblclick") . toText
+ondblclick_ :: Text -> (Text,Text)
+ondblclick_ = (,) ("ondblclick")
 
 -- | The @ondrag@ attribute.
-ondrag_ :: ToText a => a -> (Text,Text)
-ondrag_ = (,) ("ondrag") . toText
+ondrag_ :: Text -> (Text,Text)
+ondrag_ = (,) ("ondrag")
 
 -- | The @ondragend@ attribute.
-ondragend_ :: ToText a => a -> (Text,Text)
-ondragend_ = (,) ("ondragend") . toText
+ondragend_ :: Text -> (Text,Text)
+ondragend_ = (,) ("ondragend")
 
 -- | The @ondragenter@ attribute.
-ondragenter_ :: ToText a => a -> (Text,Text)
-ondragenter_ = (,) ("ondragenter") . toText
+ondragenter_ :: Text -> (Text,Text)
+ondragenter_ = (,) ("ondragenter")
 
 -- | The @ondragleave@ attribute.
-ondragleave_ :: ToText a => a -> (Text,Text)
-ondragleave_ = (,) ("ondragleave") . toText
+ondragleave_ :: Text -> (Text,Text)
+ondragleave_ = (,) ("ondragleave")
 
 -- | The @ondragover@ attribute.
-ondragover_ :: ToText a => a -> (Text,Text)
-ondragover_ = (,) ("ondragover") . toText
+ondragover_ :: Text -> (Text,Text)
+ondragover_ = (,) ("ondragover")
 
 -- | The @ondragstart@ attribute.
-ondragstart_ :: ToText a => a -> (Text,Text)
-ondragstart_ = (,) ("ondragstart") . toText
+ondragstart_ :: Text -> (Text,Text)
+ondragstart_ = (,) ("ondragstart")
 
 -- | The @ondrop@ attribute.
-ondrop_ :: ToText a => a -> (Text,Text)
-ondrop_ = (,) ("ondrop") . toText
+ondrop_ :: Text -> (Text,Text)
+ondrop_ = (,) ("ondrop")
 
 -- | The @ondurationchange@ attribute.
-ondurationchange_ :: ToText a => a -> (Text,Text)
-ondurationchange_ = (,) ("ondurationchange") . toText
+ondurationchange_ :: Text -> (Text,Text)
+ondurationchange_ = (,) ("ondurationchange")
 
 -- | The @onemptied@ attribute.
-onemptied_ :: ToText a => a -> (Text,Text)
-onemptied_ = (,) ("onemptied") . toText
+onemptied_ :: Text -> (Text,Text)
+onemptied_ = (,) ("onemptied")
 
 -- | The @onended@ attribute.
-onended_ :: ToText a => a -> (Text,Text)
-onended_ = (,) ("onended") . toText
+onended_ :: Text -> (Text,Text)
+onended_ = (,) ("onended")
 
 -- | The @onerror@ attribute.
-onerror_ :: ToText a => a -> (Text,Text)
-onerror_ = (,) ("onerror") . toText
+onerror_ :: Text -> (Text,Text)
+onerror_ = (,) ("onerror")
 
 -- | The @onfocus@ attribute.
-onfocus_ :: ToText a => a -> (Text,Text)
-onfocus_ = (,) ("onfocus") . toText
+onfocus_ :: Text -> (Text,Text)
+onfocus_ = (,) ("onfocus")
 
 -- | The @onformchange@ attribute.
-onformchange_ :: ToText a => a -> (Text,Text)
-onformchange_ = (,) ("onformchange") . toText
+onformchange_ :: Text -> (Text,Text)
+onformchange_ = (,) ("onformchange")
 
 -- | The @onforminput@ attribute.
-onforminput_ :: ToText a => a -> (Text,Text)
-onforminput_ = (,) ("onforminput") . toText
+onforminput_ :: Text -> (Text,Text)
+onforminput_ = (,) ("onforminput")
 
 -- | The @onhaschange@ attribute.
-onhaschange_ :: ToText a => a -> (Text,Text)
-onhaschange_ = (,) ("onhaschange") . toText
+onhaschange_ :: Text -> (Text,Text)
+onhaschange_ = (,) ("onhaschange")
 
 -- | The @oninput@ attribute.
-oninput_ :: ToText a => a -> (Text,Text)
-oninput_ = (,) ("oninput") . toText
+oninput_ :: Text -> (Text,Text)
+oninput_ = (,) ("oninput")
 
 -- | The @oninvalid@ attribute.
-oninvalid_ :: ToText a => a -> (Text,Text)
-oninvalid_ = (,) ("oninvalid") . toText
+oninvalid_ :: Text -> (Text,Text)
+oninvalid_ = (,) ("oninvalid")
 
 -- | The @onkeydown@ attribute.
-onkeydown_ :: ToText a => a -> (Text,Text)
-onkeydown_ = (,) ("onkeydown") . toText
+onkeydown_ :: Text -> (Text,Text)
+onkeydown_ = (,) ("onkeydown")
 
 -- | The @onkeyup@ attribute.
-onkeyup_ :: ToText a => a -> (Text,Text)
-onkeyup_ = (,) ("onkeyup") . toText
+onkeyup_ :: Text -> (Text,Text)
+onkeyup_ = (,) ("onkeyup")
 
 -- | The @onload@ attribute.
-onload_ :: ToText a => a -> (Text,Text)
-onload_ = (,) ("onload") . toText
+onload_ :: Text -> (Text,Text)
+onload_ = (,) ("onload")
 
 -- | The @onloadeddata@ attribute.
-onloadeddata_ :: ToText a => a -> (Text,Text)
-onloadeddata_ = (,) ("onloadeddata") . toText
+onloadeddata_ :: Text -> (Text,Text)
+onloadeddata_ = (,) ("onloadeddata")
 
 -- | The @onloadedmetadata@ attribute.
-onloadedmetadata_ :: ToText a => a -> (Text,Text)
-onloadedmetadata_ = (,) ("onloadedmetadata") . toText
+onloadedmetadata_ :: Text -> (Text,Text)
+onloadedmetadata_ = (,) ("onloadedmetadata")
 
 -- | The @onloadstart@ attribute.
-onloadstart_ :: ToText a => a -> (Text,Text)
-onloadstart_ = (,) ("onloadstart") . toText
+onloadstart_ :: Text -> (Text,Text)
+onloadstart_ = (,) ("onloadstart")
 
 -- | The @onmessage@ attribute.
-onmessage_ :: ToText a => a -> (Text,Text)
-onmessage_ = (,) ("onmessage") . toText
+onmessage_ :: Text -> (Text,Text)
+onmessage_ = (,) ("onmessage")
 
 -- | The @onmousedown@ attribute.
-onmousedown_ :: ToText a => a -> (Text,Text)
-onmousedown_ = (,) ("onmousedown") . toText
+onmousedown_ :: Text -> (Text,Text)
+onmousedown_ = (,) ("onmousedown")
 
 -- | The @onmousemove@ attribute.
-onmousemove_ :: ToText a => a -> (Text,Text)
-onmousemove_ = (,) ("onmousemove") . toText
+onmousemove_ :: Text -> (Text,Text)
+onmousemove_ = (,) ("onmousemove")
 
 -- | The @onmouseout@ attribute.
-onmouseout_ :: ToText a => a -> (Text,Text)
-onmouseout_ = (,) ("onmouseout") . toText
+onmouseout_ :: Text -> (Text,Text)
+onmouseout_ = (,) ("onmouseout")
 
 -- | The @onmouseover@ attribute.
-onmouseover_ :: ToText a => a -> (Text,Text)
-onmouseover_ = (,) ("onmouseover") . toText
+onmouseover_ :: Text -> (Text,Text)
+onmouseover_ = (,) ("onmouseover")
 
 -- | The @onmouseup@ attribute.
-onmouseup_ :: ToText a => a -> (Text,Text)
-onmouseup_ = (,) ("onmouseup") . toText
+onmouseup_ :: Text -> (Text,Text)
+onmouseup_ = (,) ("onmouseup")
 
 -- | The @onmousewheel@ attribute.
-onmousewheel_ :: ToText a => a -> (Text,Text)
-onmousewheel_ = (,) ("onmousewheel") . toText
+onmousewheel_ :: Text -> (Text,Text)
+onmousewheel_ = (,) ("onmousewheel")
 
 -- | The @ononline@ attribute.
-ononline_ :: ToText a => a -> (Text,Text)
-ononline_ = (,) ("ononline") . toText
+ononline_ :: Text -> (Text,Text)
+ononline_ = (,) ("ononline")
 
 -- | The @onpagehide@ attribute.
-onpagehide_ :: ToText a => a -> (Text,Text)
-onpagehide_ = (,) ("onpagehide") . toText
+onpagehide_ :: Text -> (Text,Text)
+onpagehide_ = (,) ("onpagehide")
 
 -- | The @onpageshow@ attribute.
-onpageshow_ :: ToText a => a -> (Text,Text)
-onpageshow_ = (,) ("onpageshow") . toText
+onpageshow_ :: Text -> (Text,Text)
+onpageshow_ = (,) ("onpageshow")
 
 -- | The @onpause@ attribute.
-onpause_ :: ToText a => a -> (Text,Text)
-onpause_ = (,) ("onpause") . toText
+onpause_ :: Text -> (Text,Text)
+onpause_ = (,) ("onpause")
 
 -- | The @onplay@ attribute.
-onplay_ :: ToText a => a -> (Text,Text)
-onplay_ = (,) ("onplay") . toText
+onplay_ :: Text -> (Text,Text)
+onplay_ = (,) ("onplay")
 
 -- | The @onplaying@ attribute.
-onplaying_ :: ToText a => a -> (Text,Text)
-onplaying_ = (,) ("onplaying") . toText
+onplaying_ :: Text -> (Text,Text)
+onplaying_ = (,) ("onplaying")
 
 -- | The @onprogress@ attribute.
-onprogress_ :: ToText a => a -> (Text,Text)
-onprogress_ = (,) ("onprogress") . toText
+onprogress_ :: Text -> (Text,Text)
+onprogress_ = (,) ("onprogress")
 
 -- | The @onpropstate@ attribute.
-onpropstate_ :: ToText a => a -> (Text,Text)
-onpropstate_ = (,) ("onpropstate") . toText
+onpropstate_ :: Text -> (Text,Text)
+onpropstate_ = (,) ("onpropstate")
 
 -- | The @onratechange@ attribute.
-onratechange_ :: ToText a => a -> (Text,Text)
-onratechange_ = (,) ("onratechange") . toText
+onratechange_ :: Text -> (Text,Text)
+onratechange_ = (,) ("onratechange")
 
 -- | The @onreadystatechange@ attribute.
-onreadystatechange_ :: ToText a => a -> (Text,Text)
-onreadystatechange_ = (,) ("onreadystatechange") . toText
+onreadystatechange_ :: Text -> (Text,Text)
+onreadystatechange_ = (,) ("onreadystatechange")
 
 -- | The @onredo@ attribute.
-onredo_ :: ToText a => a -> (Text,Text)
-onredo_ = (,) ("onredo") . toText
+onredo_ :: Text -> (Text,Text)
+onredo_ = (,) ("onredo")
 
 -- | The @onresize@ attribute.
-onresize_ :: ToText a => a -> (Text,Text)
-onresize_ = (,) ("onresize") . toText
+onresize_ :: Text -> (Text,Text)
+onresize_ = (,) ("onresize")
 
 -- | The @onscroll@ attribute.
-onscroll_ :: ToText a => a -> (Text,Text)
-onscroll_ = (,) ("onscroll") . toText
+onscroll_ :: Text -> (Text,Text)
+onscroll_ = (,) ("onscroll")
 
 -- | The @onseeked@ attribute.
-onseeked_ :: ToText a => a -> (Text,Text)
-onseeked_ = (,) ("onseeked") . toText
+onseeked_ :: Text -> (Text,Text)
+onseeked_ = (,) ("onseeked")
 
 -- | The @onseeking@ attribute.
-onseeking_ :: ToText a => a -> (Text,Text)
-onseeking_ = (,) ("onseeking") . toText
+onseeking_ :: Text -> (Text,Text)
+onseeking_ = (,) ("onseeking")
 
 -- | The @onselect@ attribute.
-onselect_ :: ToText a => a -> (Text,Text)
-onselect_ = (,) ("onselect") . toText
+onselect_ :: Text -> (Text,Text)
+onselect_ = (,) ("onselect")
 
 -- | The @onstalled@ attribute.
-onstalled_ :: ToText a => a -> (Text,Text)
-onstalled_ = (,) ("onstalled") . toText
+onstalled_ :: Text -> (Text,Text)
+onstalled_ = (,) ("onstalled")
 
 -- | The @onstorage@ attribute.
-onstorage_ :: ToText a => a -> (Text,Text)
-onstorage_ = (,) ("onstorage") . toText
+onstorage_ :: Text -> (Text,Text)
+onstorage_ = (,) ("onstorage")
 
 -- | The @onsubmit@ attribute.
-onsubmit_ :: ToText a => a -> (Text,Text)
-onsubmit_ = (,) ("onsubmit") . toText
+onsubmit_ :: Text -> (Text,Text)
+onsubmit_ = (,) ("onsubmit")
 
 -- | The @onsuspend@ attribute.
-onsuspend_ :: ToText a => a -> (Text,Text)
-onsuspend_ = (,) ("onsuspend") . toText
+onsuspend_ :: Text -> (Text,Text)
+onsuspend_ = (,) ("onsuspend")
 
 -- | The @ontimeupdate@ attribute.
-ontimeupdate_ :: ToText a => a -> (Text,Text)
-ontimeupdate_ = (,) ("ontimeupdate") . toText
+ontimeupdate_ :: Text -> (Text,Text)
+ontimeupdate_ = (,) ("ontimeupdate")
 
 -- | The @onundo@ attribute.
-onundo_ :: ToText a => a -> (Text,Text)
-onundo_ = (,) ("onundo") . toText
+onundo_ :: Text -> (Text,Text)
+onundo_ = (,) ("onundo")
 
 -- | The @onunload@ attribute.
-onunload_ :: ToText a => a -> (Text,Text)
-onunload_ = (,) ("onunload") . toText
+onunload_ :: Text -> (Text,Text)
+onunload_ = (,) ("onunload")
 
 -- | The @onvolumechange@ attribute.
-onvolumechange_ :: ToText a => a -> (Text,Text)
-onvolumechange_ = (,) ("onvolumechange") . toText
+onvolumechange_ :: Text -> (Text,Text)
+onvolumechange_ = (,) ("onvolumechange")
 
 -- | The @onwaiting@ attribute.
-onwaiting_ :: ToText a => a -> (Text,Text)
-onwaiting_ = (,) ("onwaiting") . toText
+onwaiting_ :: Text -> (Text,Text)
+onwaiting_ = (,) ("onwaiting")
 
 -- | The @open@ attribute.
-open_ :: ToText a => a -> (Text,Text)
-open_ = (,) ("open") . toText
+open_ :: Text -> (Text,Text)
+open_ = (,) ("open")
 
 -- | The @optimum@ attribute.
-optimum_ :: ToText a => a -> (Text,Text)
-optimum_ = (,) ("optimum") . toText
+optimum_ :: Text -> (Text,Text)
+optimum_ = (,) ("optimum")
 
 -- | The @pattern@ attribute.
-pattern_ :: ToText a => a -> (Text,Text)
-pattern_ = (,) ("pattern") . toText
+pattern_ :: Text -> (Text,Text)
+pattern_ = (,) ("pattern")
 
 -- | The @ping@ attribute.
-ping_ :: ToText a => a -> (Text,Text)
-ping_ = (,) ("ping") . toText
+ping_ :: Text -> (Text,Text)
+ping_ = (,) ("ping")
 
 -- | The @placeholder@ attribute.
-placeholder_ :: ToText a => a -> (Text,Text)
-placeholder_ = (,) ("placeholder") . toText
+placeholder_ :: Text -> (Text,Text)
+placeholder_ = (,) ("placeholder")
 
 -- | The @preload@ attribute.
-preload_ :: ToText a => a -> (Text,Text)
-preload_ = (,) ("preload") . toText
+preload_ :: Text -> (Text,Text)
+preload_ = (,) ("preload")
 
 -- | The @pubdate@ attribute.
-pubdate_ :: ToText a => a -> (Text,Text)
-pubdate_ = (,) ("pubdate") . toText
+pubdate_ :: Text -> (Text,Text)
+pubdate_ = (,) ("pubdate")
 
 -- | The @radiogroup@ attribute.
-radiogroup_ :: ToText a => a -> (Text,Text)
-radiogroup_ = (,) ("radiogroup") . toText
+radiogroup_ :: Text -> (Text,Text)
+radiogroup_ = (,) ("radiogroup")
 
 -- | The @readonly@ attribute.
-readonly_ :: ToText a => a -> (Text,Text)
-readonly_ = (,) ("readonly") . toText
+readonly_ :: Text -> (Text,Text)
+readonly_ = (,) ("readonly")
 
 -- | The @rel@ attribute.
-rel_ :: ToText a => a -> (Text,Text)
-rel_ = (,) ("rel") . toText
+rel_ :: Text -> (Text,Text)
+rel_ = (,) ("rel")
 
 -- | The @required@ attribute.
-required_ :: ToText a => a -> (Text,Text)
-required_ = (,) ("required") . toText
+required_ :: Text -> (Text,Text)
+required_ = (,) ("required")
 
 -- | The @reversed@ attribute.
-reversed_ :: ToText a => a -> (Text,Text)
-reversed_ = (,) ("reversed") . toText
+reversed_ :: Text -> (Text,Text)
+reversed_ = (,) ("reversed")
 
 -- | The @rows@ attribute.
-rows_ :: ToText a => a -> (Text,Text)
-rows_ = (,) ("rows") . toText
+rows_ :: Text -> (Text,Text)
+rows_ = (,) ("rows")
 
 -- | The @rowspan@ attribute.
-rowspan_ :: ToText a => a -> (Text,Text)
-rowspan_ = (,) ("rowspan") . toText
+rowspan_ :: Text -> (Text,Text)
+rowspan_ = (,) ("rowspan")
 
 -- | The @sandbox@ attribute.
-sandbox_ :: ToText a => a -> (Text,Text)
-sandbox_ = (,) ("sandbox") . toText
+sandbox_ :: Text -> (Text,Text)
+sandbox_ = (,) ("sandbox")
 
 -- | The @scope@ attribute.
-scope_ :: ToText a => a -> (Text,Text)
-scope_ = (,) ("scope") . toText
+scope_ :: Text -> (Text,Text)
+scope_ = (,) ("scope")
 
 -- | The @scoped@ attribute.
-scoped_ :: ToText a => a -> (Text,Text)
-scoped_ = (,) ("scoped") . toText
+scoped_ :: Text -> (Text,Text)
+scoped_ = (,) ("scoped")
 
 -- | The @seamless@ attribute.
-seamless_ :: ToText a => a -> (Text,Text)
-seamless_ = (,) ("seamless") . toText
+seamless_ :: Text -> (Text,Text)
+seamless_ = (,) ("seamless")
 
 -- | The @selected@ attribute.
-selected_ :: ToText a => a -> (Text,Text)
-selected_ = (,) ("selected") . toText
+selected_ :: Text -> (Text,Text)
+selected_ = (,) ("selected")
 
 -- | The @shape@ attribute.
-shape_ :: ToText a => a -> (Text,Text)
-shape_ = (,) ("shape") . toText
+shape_ :: Text -> (Text,Text)
+shape_ = (,) ("shape")
 
 -- | The @size@ attribute.
-size_ :: ToText a => a -> (Text,Text)
-size_ = (,) ("size") . toText
+size_ :: Text -> (Text,Text)
+size_ = (,) ("size")
 
 -- | The @sizes@ attribute.
-sizes_ :: ToText a => a -> (Text,Text)
-sizes_ = (,) ("sizes") . toText
+sizes_ :: Text -> (Text,Text)
+sizes_ = (,) ("sizes")
 
 -- | The @spellcheck@ attribute.
-spellcheck_ :: ToText a => a -> (Text,Text)
-spellcheck_ = (,) ("spellcheck") . toText
+spellcheck_ :: Text -> (Text,Text)
+spellcheck_ = (,) ("spellcheck")
 
 -- | The @src@ attribute.
-src_ :: ToText a => a -> (Text,Text)
-src_ = (,) ("src") . toText
+src_ :: Text -> (Text,Text)
+src_ = (,) ("src")
 
 -- | The @srcdoc@ attribute.
-srcdoc_ :: ToText a => a -> (Text,Text)
-srcdoc_ = (,) ("srcdoc") . toText
+srcdoc_ :: Text -> (Text,Text)
+srcdoc_ = (,) ("srcdoc")
 
 -- | The @start@ attribute.
-start_ :: ToText a => a -> (Text,Text)
-start_ = (,) ("start") . toText
+start_ :: Text -> (Text,Text)
+start_ = (,) ("start")
 
 -- | The @step@ attribute.
-step_ :: ToText a => a -> (Text,Text)
-step_ = (,) ("step") . toText
+step_ :: Text -> (Text,Text)
+step_ = (,) ("step")
 
 -- | The @subject@ attribute.
-subject_ :: ToText a => a -> (Text,Text)
-subject_ = (,) ("subject") . toText
+subject_ :: Text -> (Text,Text)
+subject_ = (,) ("subject")
 
 -- | The @tabindex@ attribute.
-tabindex_ :: ToText a => a -> (Text,Text)
-tabindex_ = (,) ("tabindex") . toText
+tabindex_ :: Text -> (Text,Text)
+tabindex_ = (,) ("tabindex")
 
 -- | The @target@ attribute.
-target_ :: ToText a => a -> (Text,Text)
-target_ = (,) ("target") . toText
+target_ :: Text -> (Text,Text)
+target_ = (,) ("target")
 
 -- | The @type@ attribute.
-type_ :: ToText a => a -> (Text,Text)
-type_ = (,) ("type") . toText
+type_ :: Text -> (Text,Text)
+type_ = (,) ("type")
 
 -- | The @usemap@ attribute.
-usemap_ :: ToText a => a -> (Text,Text)
-usemap_ = (,) ("usemap") . toText
+usemap_ :: Text -> (Text,Text)
+usemap_ = (,) ("usemap")
 
 -- | The @value@ attribute.
-value_ :: ToText a => a -> (Text,Text)
-value_ = (,) ("value") . toText
+value_ :: Text -> (Text,Text)
+value_ = (,) ("value")
 
 -- | The @width@ attribute.
-width_ :: ToText a => a -> (Text,Text)
-width_ = (,) ("width") . toText
+width_ :: Text -> (Text,Text)
+width_ = (,) ("width")
 
 -- | The @wrap@ attribute.
-wrap_ :: ToText a => a -> (Text,Text)
-wrap_ = (,) ("wrap") . toText
+wrap_ :: Text -> (Text,Text)
+wrap_ = (,) ("wrap")
 
 -- | The @xmlns@ attribute.
-xmlns_ :: ToText a => a -> (Text,Text)
-xmlns_ = (,) ("xmlns") . toText
+xmlns_ :: Text -> (Text,Text)
+xmlns_ = (,) ("xmlns")

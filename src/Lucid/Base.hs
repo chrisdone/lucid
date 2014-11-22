@@ -25,7 +25,6 @@ module Lucid.Base
   ,Html
   ,HtmlT
    -- * Classes
-  ,ToText(..)
   ,ToHtml(..)
   ,Mixed(..)
   ,MixedRaw(..)
@@ -122,16 +121,6 @@ instance (Monad m,a ~ ()) => IsString (HtmlT m a) where
 instance (m ~ Identity) => Show (HtmlT m a) where
   show = LT.unpack . renderText
 
--- | Used for attributes.
-class ToText a where
-  toText :: a -> Text
-
-instance ToText String where
-  toText = T.pack
-
-instance ToText Text where
-  toText = id
-
 -- | Can be converted to HTML.
 class ToHtml a where
   toHtml :: Monad m => a -> HtmlT m ()
@@ -150,8 +139,8 @@ class Mixed a r where
   mixed :: Text -> a -> r
 
 -- | Attributes can be a mixed thing e.g. 'style_'.
-instance (ToText a) => Mixed a (Text,Text) where
-  mixed key value = (key,toText value)
+instance (a ~ Text) => Mixed a (Text,Text) where
+  mixed key value = (key,value)
 
 -- | HTML elements can be a mixed thing e.g. 'style_'.
 instance (Monad m,a ~ HtmlT m r,r ~ ()) => Mixed a (HtmlT m r) where
@@ -163,8 +152,8 @@ class MixedRaw a r where
   mixedRaw :: Text -> a -> r
 
 -- | Attributes can be a mixed thing e.g. 'style_'.
-instance (ToText a) => MixedRaw a (Text,Text) where
-  mixedRaw key value = (key,toText value)
+instance (a ~ Text) => MixedRaw a (Text,Text) where
+  mixedRaw key value = (key,value)
 
 -- | HTML elements can be a mixed thing e.g. 'style_'. Doesn't encode
 -- the text content.

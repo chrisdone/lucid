@@ -17,7 +17,6 @@ module Lucid
    -- * Types
   ,Html
    -- * Classes
-  ,ToText(..)
   ,ToHtml(..)
   ,Mixed(..)
   ,With
