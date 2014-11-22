@@ -1,5 +1,5 @@
 name:                lucid
-version:             0.4
+version:             1.0
 synopsis:            Clear to write, read and edit DSL for HTML
 description:         Clear to write, read and edit DSL for HTML. See the 'Lucid' module
                      for description and documentation.
