@@ -11,8 +11,8 @@
 
 module Variadic where
 
-import Control.Applicative
-import Control.Monad
+-- -- import Control.Applicative
+-- -- import Control.Monad
 import Data.Monoid
 import Data.String
 import GHC.Exts
@@ -22,20 +22,45 @@ data Attrs = Attrs [(String,String)]
 
 data H m a where
   -- Attributes
-  AttrList :: [(String,String)] -> H m Attrs
+  AttrList :: [H m ()] -> H m Attrs
 
   -- Waiting constructors
   WantsAttrsOnly :: String -> H m (Attrs -> H m ())
   WantsAttrsChildren :: String -> H m (Attrs -> (H m () -> H m ()))
-  WantsChildren :: String -> [(String,String)] -> H m (H m () -> H m ())
+  WantsChildren :: String -> [H m ()] -> H m (H m () -> H m ())
 
   -- Completed elements
-  HasAttrs :: String -> [(String,String)] -> H m ()
-  HasAttrsChildren :: String -> [(String,String)] -> H m () -> H m ()
+  HasAttrs :: String -> [H m ()] -> H m ()
+  HasAttrsChildren :: String -> [H m ()] -> H m () -> H m ()
   --
   Elements :: [H m ()] -> H m ()
   Text :: String -> H m ()
   Return :: a -> H m a
+
+renderH :: H m () -> String
+renderH (Elements es) = mconcat (map renderH es)
+renderH (Text t) = encode t
+  where encode = id
+renderH (Return a) = mempty
+renderH (HasAttrs name attrs) =
+  "<" <> name <>
+  concatMap showAttr attrs <>
+  ">"
+  where showAttr (HasAttrsChildren t _ c) = " " <> t <> "=\"" <> renderH c <>
+                                            "\""
+        showAttr c = error ""
+renderH (HasAttrsChildren name attrs cs) =
+  "<" <> name <>
+  concatMap showAttr attrs <>
+  ">" <>
+  renderH cs <>
+  "</" <>
+  name <>
+  ">"
+  where showAttr (HasAttrsChildren t _ c) = " " <> t <> "=\"" <> renderH c <>
+                                            "\""
+        showAttr c = error ""
+
 
 deriving instance Show a => Show (H m a)
 deriving instance Eq a => Eq (H m a)
@@ -96,21 +121,11 @@ tr_ = makeElement (WantsAttrsChildren "tr")
 strong_ :: H m b -> MakeElement Attrs b (H m () -> H m ())
 strong_ = makeElement (WantsAttrsChildren "strong")
 
-divdemo :: H m ()
-divdemo = div_ (AttrList [("class","demo")]) (Text "Hello, World!")
-
 divdemo' :: H m ()
 divdemo' = div_ (Text "Hello, World!")
 
 divdemo'' :: H m ()
 divdemo'' = div_ (div_ (Text "Hello, world!"))
-
-divdemo''' :: H m ()
-divdemo''' = div_ (AttrList [("id","foo")])
-                  (div_ (Elements [div_ (AttrList [("class","demo")])
-                                        (Text "Hello, world!")
-                                  ,div_ (AttrList [("class","demo")])
-                                        (Text "Hello, world!")]))
 
 input_ :: H m b -> MakeElement Attrs b (H m ())
 input_ = makeElement (WantsAttrsOnly "input")
@@ -118,11 +133,6 @@ input_ = makeElement (WantsAttrsOnly "input")
 br_ :: H m b -> MakeElement Attrs b (H m ())
 br_ = makeElement (WantsAttrsOnly "br")
 
-inputdemo :: H m ()
-inputdemo = input_ (AttrList [("type","text")])
-
-combined :: H m ()
-combined = div_ (input_ (AttrList [("type","text")]))
 
 -- overloaded versions
 
@@ -130,7 +140,7 @@ instance (a ~ ()) => IsString (H m a) where
   fromString = Text
 
 instance (a ~ Attrs) => IsList (H m a) where
-  type Item (H m a) = (String,String)
+  type Item (H m a) = H m ()
   fromList = AttrList
   toList (AttrList l) = l
   toList _ = error "H.toList: Invalid constructor"
@@ -176,60 +186,58 @@ instance (Monoid a) => Monoid (H m a) where
               HasAttrsChildren{} -> Elements ([a,b])
               _ -> error "inaccessible code"
 
-instance Monad (H m) where
-  return = Return
-  m >>= f =
-    case m of
-      Return a -> f a
-      HasAttrs{} ->
-        case f () of Elements{} -> m <> f ()
-                     Return{} -> f ()
-                     HasAttrsChildren{} -> m <> f ()
-                     HasAttrs{} -> m <> f ()
-                     Text{} -> m <> f ()
-                     WantsAttrsChildren{} -> error ""
-                     WantsAttrsOnly{} -> error ""
-                     WantsChildren{} -> error ""
-      HasAttrsChildren{} -> f ()
-      Elements{} -> f ()
-      Text{} -> f ()
-      AttrList xs -> f (Attrs xs)
-      WantsChildren name as ->
-        f (\c -> HasAttrsChildren name as c)
-      WantsAttrsOnly name ->
-        f (\_ -> HasAttrs name [])
-      WantsAttrsChildren name ->
-        f (\_ cs -> HasAttrsChildren name [] cs)
+-- instance Monad (H m) where
+  -- return = Return
+  -- m >>= f =
+  --   case m of
+  --     Return a -> f a
+  --     HasAttrs{} ->
+  --       case f () of Elements{} -> m <> f ()
+  --                    Return{} -> f ()
+  --                    HasAttrsChildren{} -> m <> f ()
+  --                    HasAttrs{} -> m <> f ()
+  --                    Text{} -> m <> f ()
+  --                    WantsAttrsChildren{} -> error ""
+  --                    WantsAttrsOnly{} -> error ""
+  --                    WantsChildren{} -> error ""
+  --     HasAttrsChildren{} -> f ()
+  --     Elements{} -> f ()
+  --     Text{} -> f ()
+  --     AttrList xs -> f (Attrs xs)
+  --     WantsChildren name as ->
+  --       f (\c -> HasAttrsChildren name as c)
+  --     WantsAttrsOnly name ->
+  --       f (\_ -> HasAttrs name [])
+  --     WantsAttrsChildren name ->
+  --       f (\_ cs -> HasAttrsChildren name [] cs)
 
-instance Functor (H m) where
-  fmap = liftM
+-- instance Functor (H m) where
+--   fmap = liftM
 
-instance Applicative (H m) where
-  (<*>) = ap
-  pure = return
+-- instance Applicative (H m) where
+--   (<*>) = ap
+--   pure = return
 
-id_ :: String -> (String, String)
-id_ = ("id",)
+-- id_ :: String -> (String, String)
+-- id_ = ("id",)
 
-type_ :: String -> (String, String)
-type_ = ("type",)
+-- type_ :: String -> (String, String)
+-- type_ = ("type",)
 
-class_ :: String -> (String, String)
-class_ = ("class",)
+-- class_ :: String -> (String, String)
+-- class_ = ("class",)
 
-style_ :: String -> (String, String)
-style_ = ("style",)
+style_ :: H m b -> MakeElement Attrs b (H m () -> H m ())
+style_ = makeElement (WantsAttrsChildren "style")
 
-style__ :: H m b -> MakeElement Attrs b (H m () -> H m ())
-style__ = makeElement (WantsAttrsChildren "style")
+class_ :: H m b -> MakeElement Attrs b (H m () -> H m ())
+class_ = makeElement (WantsAttrsChildren "class")
 
--- class Mixed a r | r -> a where
---   mixed :: String -> a -> r
+id_ :: H m b -> MakeElement Attrs b (H m () -> H m ())
+id_ = makeElement (WantsAttrsChildren "id")
 
--- instance Mixed String (String,String) where
---   mixed key val = (key,val)
-
--- instance Mixed (H m b) (MakeElement Attrs b (H m () -> H m ())) where
+type_ :: H m b -> MakeElement Attrs b (H m () -> H m ())
+type_ = makeElement (WantsAttrsChildren "type")
 
 divdemo_ :: H m ()
 divdemo_ =
@@ -240,17 +248,17 @@ divdemo'_ = div_ "Hello, World!"
 
 divdemo''_ :: H m ()
 divdemo''_ =
-  div_ (do div_ "Hello, world!"
-           "Sup?"
-           br_ []
-           style__ "body{background:red}"
-           table_ (do tr_ (do td_ "Some datum"
-                              td_ "Another datum")
-                      tr_ [class_ "alt",style_ "color:red"]
-                          (do td_ "Some datum"
-                              td_ "Another datum"))
-           div_ (span_ [class_ "awesome"]
-                       (strong_ "OK, go!")))
+  div_ (Elements [div_ "Hello, world!"
+                 ,"Sup?"
+                 ,br_ []
+                 ,style_ "body{background:red}"
+                 ,table_ (Elements [tr_ (Elements [td_ "Some datum"
+                                                  ,td_ "Another datum"])
+                                   ,tr_ [class_ "alt",style_ "color:red"]
+                                        (Elements [td_ "Some datum"
+                                                  ,td_ "Another datum"])])
+                 ,div_ (span_ [class_ "awesome"]
+                              (strong_ "OK, go!"))])
 
 divdemo'''_ :: H m ()
 divdemo'''_ =
@@ -265,9 +273,7 @@ combined_ :: H m ()
 combined_ = div_ (input_ [type_ "text"])
 
 test :: [H m ()]
-test =
-  [divdemo,divdemo',divdemo'',divdemo''',inputdemo,combined] ++
-  [divdemo_,divdemo'_,divdemo''_,divdemo'''_,inputdemo_,combined_]
+test =[divdemo_,divdemo'_,divdemo''_,divdemo'''_,inputdemo_,combined_]
 
-check :: Bool
-check = test == [HasAttrsChildren "div" [("class","demo")] (Text "Hello, World!"),HasAttrsChildren "div" [] (Text "Hello, World!"),HasAttrsChildren "div" [] (HasAttrsChildren "div" [] (Text "Hello, world!")),HasAttrsChildren "div" [("id","foo")] (HasAttrsChildren "div" [] (Elements [HasAttrsChildren "div" [("class","demo")] (Text "Hello, world!"),HasAttrsChildren "div" [("class","demo")] (Text "Hello, world!")])),HasAttrs "input" [("type","text")],HasAttrsChildren "div" [] (HasAttrs "input" [("type","text")]),HasAttrsChildren "div" [("class","demo")] (Text "Hello, World!"),HasAttrsChildren "div" [] (Text "Hello, World!"),HasAttrsChildren "div" [] (HasAttrsChildren "div" [] (Text "Hello, world!")),HasAttrsChildren "div" [("id","foo")] (HasAttrsChildren "div" [] (Elements [HasAttrsChildren "div" [("class","demo")] (Text "Hello, world!"),HasAttrsChildren "div" [("class","demo")] (Text "Hello, world!")])),HasAttrs "input" [("type","text")],HasAttrsChildren "div" [] (HasAttrs "input" [("type","text")])]
+-- check :: Bool
+-- check = test == [HasAttrsChildren "div" [("class","demo")] (Text "Hello, World!"),HasAttrsChildren "div" [] (Text "Hello, World!"),HasAttrsChildren "div" [] (HasAttrsChildren "div" [] (Text "Hello, world!")),HasAttrsChildren "div" [("id","foo")] (HasAttrsChildren "div" [] (Elements [HasAttrsChildren "div" [("class","demo")] (Text "Hello, world!"),HasAttrsChildren "div" [("class","demo")] (Text "Hello, world!")])),HasAttrs "input" [("type","text")],HasAttrsChildren "div" [] (HasAttrs "input" [("type","text")]),HasAttrsChildren "div" [("class","demo")] (Text "Hello, World!"),HasAttrsChildren "div" [] (Text "Hello, World!"),HasAttrsChildren "div" [] (HasAttrsChildren "div" [] (Text "Hello, world!")),HasAttrsChildren "div" [("id","foo")] (HasAttrsChildren "div" [] (Elements [HasAttrsChildren "div" [("class","demo")] (Text "Hello, world!"),HasAttrsChildren "div" [("class","demo")] (Text "Hello, world!")])),HasAttrs "input" [("type","text")],HasAttrsChildren "div" [] (HasAttrs "input" [("type","text")])]
