@@ -17,7 +17,7 @@ module Lucid
    -- * Classes
   ,ToHtml(..)
   ,Mixed(..)
-  ,With
+  ,With(..)
   -- * Re-exports
   ,module Lucid.Html5)
  where
