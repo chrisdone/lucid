@@ -13,9 +13,12 @@ module Variadic where
 
 -- -- import Control.Applicative
 -- -- import Control.Monad
+
+import qualified Data.Map.Strict as M
 import Data.Monoid
 import Data.String
 import GHC.Exts
+
 
 data Attrs = Attrs [(String,String)]
   deriving Eq
@@ -25,8 +28,8 @@ data H m a where
   AttrList :: [H m ()] -> H m Attrs
 
   -- Waiting constructors
-  WantsAttrsOnly :: String -> H m (Attrs -> H m ())
-  WantsAttrsChildren :: String -> H m (Attrs -> (H m () -> H m ()))
+  WantsAttrsOnly :: String -> ([H m ()] -> [H m ()]) -> H m (Attrs -> H m ())
+  WantsAttrsChildren :: String -> ([H m ()] -> [H m ()]) -> H m (Attrs -> (H m () -> H m ()))
   WantsChildren :: String -> [H m ()] -> H m (H m () -> H m ())
 
   -- Completed elements
@@ -61,9 +64,8 @@ renderH (HasAttrsChildren name attrs cs) =
                                             "\""
         showAttr c = error ""
 
-
-deriving instance Show a => Show (H m a)
-deriving instance Eq a => Eq (H m a)
+-- deriving instance Show a => Show (H m a)
+-- deriving instance Eq a => Eq (H m a)
 
 type family MakeElement a b r where
   MakeElement Attrs Attrs (H m ()) = H m ()
@@ -76,26 +78,26 @@ makeElement fun arg =
   case arg of
     AttrList as ->
       case fun of
-        WantsAttrsOnly name -> HasAttrs name as
-        WantsAttrsChildren name -> HasAttrsChildren name as
+        WantsAttrsOnly name cont -> HasAttrs name (cont as)
+        WantsAttrsChildren name cont -> HasAttrsChildren name (cont as)
         --
         WantsChildren{} -> error "AttrList->WantsChildren: impossible case"
         Return{} -> error "AttrList->Return: impossible case"
     Text{} -> case fun of
                 WantsChildren name as -> HasAttrsChildren name as arg
-                WantsAttrsChildren name -> HasAttrsChildren name [] arg
+                WantsAttrsChildren name cont -> HasAttrsChildren name (cont []) arg
                 _ -> error "Text: imposible case"
     HasAttrs{} -> case fun of
                     WantsChildren name as -> HasAttrsChildren name as arg
-                    WantsAttrsChildren name -> HasAttrsChildren name [] arg
+                    WantsAttrsChildren name cont -> HasAttrsChildren name (cont []) arg
                     _ -> error "HasAttrs: impossible case"
     Elements{} -> case fun of
                     WantsChildren name as -> HasAttrsChildren name as arg
-                    WantsAttrsChildren name -> HasAttrsChildren name [] arg
+                    WantsAttrsChildren name cont -> HasAttrsChildren name (cont []) arg
                     _ -> error "Elements: impossible case"
     HasAttrsChildren{} -> case fun of
                             WantsChildren name as -> HasAttrsChildren name as arg
-                            WantsAttrsChildren name -> HasAttrsChildren name [] arg
+                            WantsAttrsChildren name cont -> HasAttrsChildren name (cont []) arg
                             _ -> error "HasAttrsChildren: impossible case"
     --
     WantsAttrsOnly{} -> error "WantsAttrsOnly: impossible case"
@@ -104,22 +106,22 @@ makeElement fun arg =
     Return{} -> error "Return: impossible case"
 
 div_ :: H m b -> MakeElement Attrs b (H m () -> H m ())
-div_ = makeElement (WantsAttrsChildren "div")
+div_ = makeElement (WantsAttrsChildren "div" id)
 
 span_ :: H m b -> MakeElement Attrs b (H m () -> H m ())
-span_ = makeElement (WantsAttrsChildren "span")
+span_ = makeElement (WantsAttrsChildren "span" id)
 
 td_ :: H m b -> MakeElement Attrs b (H m () -> H m ())
-td_ = makeElement (WantsAttrsChildren "td")
+td_ = makeElement (WantsAttrsChildren "td" id)
 
 table_ :: H m b -> MakeElement Attrs b (H m () -> H m ())
-table_ = makeElement (WantsAttrsChildren "table")
+table_ = makeElement (WantsAttrsChildren "table" id)
 
 tr_ :: H m b -> MakeElement Attrs b (H m () -> H m ())
-tr_ = makeElement (WantsAttrsChildren "tr")
+tr_ = makeElement (WantsAttrsChildren "tr" id)
 
 strong_ :: H m b -> MakeElement Attrs b (H m () -> H m ())
-strong_ = makeElement (WantsAttrsChildren "strong")
+strong_ = makeElement (WantsAttrsChildren "strong" id)
 
 divdemo' :: H m ()
 divdemo' = div_ (Text "Hello, World!")
@@ -128,11 +130,48 @@ divdemo'' :: H m ()
 divdemo'' = div_ (div_ (Text "Hello, world!"))
 
 input_ :: H m b -> MakeElement Attrs b (H m ())
-input_ = makeElement (WantsAttrsOnly "input")
+input_ = makeElement (WantsAttrsOnly "input" id)
 
 br_ :: H m b -> MakeElement Attrs b (H m ())
-br_ = makeElement (WantsAttrsOnly "br")
+br_ = makeElement (WantsAttrsOnly "br" id)
 
+container_ =
+  makeElement
+    (WantsAttrsChildren
+       "div"
+       (composingAttr class_
+                      "container"
+                      (\x y -> x <> " " <> y)))
+
+composingAttr name value f =
+  composingAttrs
+    (\key x y ->
+       if key == fst (toKeyValue (name value))
+          then f x y
+          else x)
+    [name value]
+
+composingAttrs :: (String -> String -> String -> String)
+               -> [H m ()]
+               -> [H m ()]
+               -> [H m ()]
+composingAttrs compose xs ys =
+  map pack
+      (M.toList (M.unionWithKey compose
+                                (M.fromList (map toKeyValue xs))
+                                (M.fromList (map toKeyValue ys))))
+  where
+
+toKeyValue :: H m () -> (String,String)
+toKeyValue (HasAttrsChildren name _ (Text value)) =
+  (name,value)
+pack (name,value) =
+  HasAttrsChildren name
+                   []
+                   (Text value)
+
+instance (a ~ ()) => Show (H m a) where
+  show = renderH
 
 -- overloaded versions
 
@@ -228,16 +267,16 @@ instance (Monoid a) => Monoid (H m a) where
 -- class_ = ("class",)
 
 style_ :: H m b -> MakeElement Attrs b (H m () -> H m ())
-style_ = makeElement (WantsAttrsChildren "style")
+style_ = makeElement (WantsAttrsChildren "style" id)
 
 class_ :: H m b -> MakeElement Attrs b (H m () -> H m ())
-class_ = makeElement (WantsAttrsChildren "class")
+class_ = makeElement (WantsAttrsChildren "class" id)
 
 id_ :: H m b -> MakeElement Attrs b (H m () -> H m ())
-id_ = makeElement (WantsAttrsChildren "id")
+id_ = makeElement (WantsAttrsChildren "id" id)
 
 type_ :: H m b -> MakeElement Attrs b (H m () -> H m ())
-type_ = makeElement (WantsAttrsChildren "type")
+type_ = makeElement (WantsAttrsChildren "type" id)
 
 divdemo_ :: H m ()
 divdemo_ =
