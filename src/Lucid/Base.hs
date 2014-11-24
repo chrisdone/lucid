@@ -134,6 +134,10 @@ instance ToHtml Text where
   toHtml m = HtmlT (return ((\_ _ -> encode m),()))
   toHtmlRaw m = HtmlT (return ((\_ _ -> Blaze.fromText m),()))
 
+instance ToHtml LT.Text where
+  toHtml m = HtmlT (return ((\_ _ -> Blaze.fromHtmlEscapedLazyText m),()))
+  toHtmlRaw m = HtmlT (return ((\_ _ -> Blaze.fromLazyText m),()))
+
 -- | Used for names that are mixed, e.g. 'style_'.
 class Mixed a r where
   mixed :: Text -> a -> r
