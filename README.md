@@ -26,7 +26,7 @@ Plain text is written using the `OverloadedStrings` and
 Elements nest by function application:
 
 ``` haskell
-λ> table_ (tr_ (td_ (p_ "Hello, World!")))
+λ> table_ (tr_ (td_ (p_ "Hello, World!"))) :: Html ()
 ```
 
 ``` html
@@ -36,7 +36,7 @@ Elements nest by function application:
 Elements are juxtaposed via monoidal append:
 
 ``` haskell
-λ> p_ "hello" <> p_ "sup"
+λ> p_ "hello" <> p_ "sup" :: Html ()
 ```
 
 ``` html
@@ -46,7 +46,7 @@ Elements are juxtaposed via monoidal append:
 Or monadic sequencing:
 
 ``` haskell
-λ> div_ (do p_ "hello"; p_ "sup")
+λ> div_ (do p_ "hello"; p_ "sup") :: Html ()
 ```
 
 ``` html
@@ -56,7 +56,7 @@ Or monadic sequencing:
 Attributes are set using the 'with' combinator:
 
 ``` haskell
-λ> with p_ [class_ "brand"] "Lucid Inc"
+λ> with p_ [class_ "brand"] "Lucid Inc" :: Html ()
 ```
 
 ``` html
@@ -121,7 +121,10 @@ using it as a monad transformer.
 You can use `lift` to call parent monads.
 
 ``` haskell
-λ> runReader (renderTextT (html_ (body_ (do name <- lift ask; p_ (toHtml name)))))
+λ> runReader (renderTextT (html_ (body_ (do name <- lift ask
+                                            p_ [class_ "name"] (toHtml name)))))
              ("Chris" :: String)
-"<html><body><p>Chris</p></body></html>"
+```
+``` html
+"<html><body><p class=\"name\">Chris</p></body></html>"
 ```

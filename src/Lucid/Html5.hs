@@ -1,448 +1,449 @@
 {-# LANGUAGE OverloadedStrings #-}
+{-# LANGUAGE NoMonomorphismRestriction #-}
 {-# OPTIONS -fno-warn-type-defaults #-}
 
 -- | Html5 terms.
 
 module Lucid.Html5 where
 
-import           Data.Text (Text)
 import           Lucid.Base
 
 import qualified Blaze.ByteString.Builder.Char.Utf8 as Blaze
 import           Data.Monoid
+import           Data.Text (Text)
 
 -- | @DOCTYPE@ element
-doctype_  :: Monad m => HtmlT m ()
+doctype_ :: Monad m => HtmlT m ()
 doctype_ = makeElementNoEnd (Blaze.fromString "!DOCTYPE HTML")
 
 -- | @DOCTYPE@ element + @html@ element
-doctypehtml_  :: Monad m => HtmlT m () -> HtmlT m ()
+doctypehtml_ :: Monad m => HtmlT m () -> HtmlT m ()
 doctypehtml_ m =
   do doctype_
      html_ m
 
 -- | @a@ element
-a_  :: Monad m => HtmlT m () -> HtmlT m ()
-a_ = makeElement (Blaze.fromString "a")
+a_ :: Term arg result => arg -> result
+a_ = term (Blaze.fromString "a")
 
 -- | @abbr@ element
-abbr_  :: Monad m => HtmlT m () -> HtmlT m ()
-abbr_ = makeElement (Blaze.fromString "abbr")
+abbr_ :: Term arg result => arg -> result
+abbr_ = term (Blaze.fromString "abbr")
 
 -- | @address@ element
-address_  :: Monad m => HtmlT m () -> HtmlT m ()
-address_ = makeElement (Blaze.fromString "address")
+address_ :: Term arg result => arg -> result
+address_ = term (Blaze.fromString "address")
 
 -- | @area@ element
-area_  :: Monad m => HtmlT m ()
+area_ :: Monad m => HtmlT m ()
 area_ = makeElementNoEnd (Blaze.fromString "area")
 
 -- | @article@ element
-article_  :: Monad m => HtmlT m () -> HtmlT m ()
-article_ = makeElement (Blaze.fromString "article")
+article_ :: Term arg result => arg -> result
+article_ = term (Blaze.fromString "article")
 
 -- | @aside@ element
-aside_  :: Monad m => HtmlT m () -> HtmlT m ()
-aside_ = makeElement (Blaze.fromString "aside")
+aside_ :: Term arg result => arg -> result
+aside_ = term (Blaze.fromString "aside")
 
 -- | @audio@ element
-audio_  :: Monad m => HtmlT m () -> HtmlT m ()
-audio_ = makeElement (Blaze.fromString "audio")
+audio_ :: Term arg result => arg -> result
+audio_ = term (Blaze.fromString "audio")
 
 -- | @b@ element
-b_  :: Monad m => HtmlT m () -> HtmlT m ()
-b_ = makeElement (Blaze.fromString "b")
+b_ :: Term arg result => arg -> result
+b_ = term (Blaze.fromString "b")
 
 -- | @base@ element
-base_  :: Monad m => HtmlT m ()
+base_ :: Monad m => HtmlT m ()
 base_ = makeElementNoEnd (Blaze.fromString "base")
 
 -- | @bdo@ element
-bdo_  :: Monad m => HtmlT m () -> HtmlT m ()
-bdo_ = makeElement (Blaze.fromString "bdo")
+bdo_ :: Term arg result => arg -> result
+bdo_ = term (Blaze.fromString "bdo")
 
 -- | @blockquote@ element
-blockquote_  :: Monad m => HtmlT m () -> HtmlT m ()
-blockquote_ = makeElement (Blaze.fromString "blockquote")
+blockquote_ :: Term arg result => arg -> result
+blockquote_ = term (Blaze.fromString "blockquote")
 
 -- | @body@ element
-body_  :: Monad m => HtmlT m () -> HtmlT m ()
-body_ = makeElement (Blaze.fromString "body")
+body_ :: Term arg result => arg -> result
+body_ = term (Blaze.fromString "body")
 
 -- | @br@ element
-br_  :: Monad m => HtmlT m ()
+br_ :: Monad m => HtmlT m ()
 br_ = makeElementNoEnd (Blaze.fromString "br")
 
 -- | @button@ element
-button_  :: Monad m => HtmlT m () -> HtmlT m ()
-button_ = makeElement (Blaze.fromString "button")
+button_ :: Term arg result => arg -> result
+button_ = term (Blaze.fromString "button")
 
 -- | @canvas@ element
-canvas_  :: Monad m => HtmlT m () -> HtmlT m ()
-canvas_ = makeElement (Blaze.fromString "canvas")
+canvas_ :: Term arg result => arg -> result
+canvas_ = term (Blaze.fromString "canvas")
 
 -- | @caption@ element
-caption_  :: Monad m => HtmlT m () -> HtmlT m ()
-caption_ = makeElement (Blaze.fromString "caption")
+caption_ :: Term arg result => arg -> result
+caption_ = term (Blaze.fromString "caption")
 
 -- | @cite@ element or @cite@ attribute.
-cite_ :: Mixed a r => a -> r
-cite_ = mixed ("cite")
+cite_ :: Term arg result => arg -> result
+cite_ = term (Blaze.fromString "cite")
 
 -- | @code@ element
-code_  :: Monad m => HtmlT m () -> HtmlT m ()
-code_ = makeElement (Blaze.fromString "code")
+code_ :: Term arg result => arg -> result
+code_ = term (Blaze.fromString "code")
 
 -- | @col@ element
-col_  :: Monad m => HtmlT m ()
+col_ :: Monad m => HtmlT m ()
 col_ = makeElementNoEnd (Blaze.fromString "col")
 
 -- | @colgroup@ element
-colgroup_  :: Monad m => HtmlT m () -> HtmlT m ()
-colgroup_ = makeElement (Blaze.fromString "colgroup")
+colgroup_ :: Term arg result => arg -> result
+colgroup_ = term (Blaze.fromString "colgroup")
 
 -- | @command@ element
-command_  :: Monad m => HtmlT m () -> HtmlT m ()
-command_ = makeElement (Blaze.fromString "command")
+command_ :: Term arg result => arg -> result
+command_ = term (Blaze.fromString "command")
 
 -- | @datalist@ element
-datalist_  :: Monad m => HtmlT m () -> HtmlT m ()
-datalist_ = makeElement (Blaze.fromString "datalist")
+datalist_ :: Term arg result => arg -> result
+datalist_ = term (Blaze.fromString "datalist")
 
 -- | @dd@ element
-dd_  :: Monad m => HtmlT m () -> HtmlT m ()
-dd_ = makeElement (Blaze.fromString "dd")
+dd_ :: Term arg result => arg -> result
+dd_ = term (Blaze.fromString "dd")
 
 -- | @del@ element
-del_  :: Monad m => HtmlT m () -> HtmlT m ()
-del_ = makeElement (Blaze.fromString "del")
+del_ :: Term arg result => arg -> result
+del_ = term (Blaze.fromString "del")
 
 -- | @details@ element
-details_  :: Monad m => HtmlT m () -> HtmlT m ()
-details_ = makeElement (Blaze.fromString "details")
+details_ :: Term arg result => arg -> result
+details_ = term (Blaze.fromString "details")
 
 -- | @dfn@ element
-dfn_  :: Monad m => HtmlT m () -> HtmlT m ()
-dfn_ = makeElement (Blaze.fromString "dfn")
+dfn_ :: Term arg result => arg -> result
+dfn_ = term (Blaze.fromString "dfn")
 
 -- | @div@ element
-div_  :: Monad m => HtmlT m () -> HtmlT m ()
-div_ = makeElement (Blaze.fromString "div")
+div_ :: Term arg result => arg -> result
+div_ = term (Blaze.fromString "div")
 
 -- | @dl@ element
-dl_  :: Monad m => HtmlT m () -> HtmlT m ()
-dl_ = makeElement (Blaze.fromString "dl")
+dl_ :: Term arg result => arg -> result
+dl_ = term (Blaze.fromString "dl")
 
 -- | @dt@ element
-dt_  :: Monad m => HtmlT m () -> HtmlT m ()
-dt_ = makeElement (Blaze.fromString "dt")
+dt_ :: Term arg result => arg -> result
+dt_ = term (Blaze.fromString "dt")
 
 -- | @em@ element
-em_  :: Monad m => HtmlT m () -> HtmlT m ()
-em_ = makeElement (Blaze.fromString "em")
+em_ :: Term arg result => arg -> result
+em_ = term (Blaze.fromString "em")
 
 -- | @embed@ element
-embed_  :: Monad m => HtmlT m ()
+embed_ :: Monad m => HtmlT m ()
 embed_ = makeElementNoEnd (Blaze.fromString "embed")
 
 -- | @fieldset@ element
-fieldset_  :: Monad m => HtmlT m () -> HtmlT m ()
-fieldset_ = makeElement (Blaze.fromString "fieldset")
+fieldset_ :: Term arg result => arg -> result
+fieldset_ = term (Blaze.fromString "fieldset")
 
 -- | @figcaption@ element
-figcaption_  :: Monad m => HtmlT m () -> HtmlT m ()
-figcaption_ = makeElement (Blaze.fromString "figcaption")
+figcaption_ :: Term arg result => arg -> result
+figcaption_ = term (Blaze.fromString "figcaption")
 
 -- | @figure@ element
-figure_  :: Monad m => HtmlT m () -> HtmlT m ()
-figure_ = makeElement (Blaze.fromString "figure")
+figure_ :: Term arg result => arg -> result
+figure_ = term (Blaze.fromString "figure")
 
 -- | @footer@ element
-footer_  :: Monad m => HtmlT m () -> HtmlT m ()
-footer_ = makeElement (Blaze.fromString "footer")
+footer_ :: Term arg result => arg -> result
+footer_ = term (Blaze.fromString "footer")
 
 -- | @form@ element or @form@ attribute
-form_ :: Mixed a r => a -> r
-form_ = mixed ("form")
+form_ :: Term arg result => arg -> result
+form_ = term (Blaze.fromString "form")
 
 -- | @h1@ element
-h1_  :: Monad m => HtmlT m () -> HtmlT m ()
-h1_ = makeElement (Blaze.fromString "h1")
+h1_ :: Term arg result => arg -> result
+h1_ = term (Blaze.fromString "h1")
 
 -- | @h2@ element
-h2_  :: Monad m => HtmlT m () -> HtmlT m ()
-h2_ = makeElement (Blaze.fromString "h2")
+h2_ :: Term arg result => arg -> result
+h2_ = term (Blaze.fromString "h2")
 
 -- | @h3@ element
-h3_  :: Monad m => HtmlT m () -> HtmlT m ()
-h3_ = makeElement (Blaze.fromString "h3")
+h3_ :: Term arg result => arg -> result
+h3_ = term (Blaze.fromString "h3")
 
 -- | @h4@ element
-h4_  :: Monad m => HtmlT m () -> HtmlT m ()
-h4_ = makeElement (Blaze.fromString "h4")
+h4_ :: Term arg result => arg -> result
+h4_ = term (Blaze.fromString "h4")
 
 -- | @h5@ element
-h5_  :: Monad m => HtmlT m () -> HtmlT m ()
-h5_ = makeElement (Blaze.fromString "h5")
+h5_ :: Term arg result => arg -> result
+h5_ = term (Blaze.fromString "h5")
 
 -- | @h6@ element
-h6_  :: Monad m => HtmlT m () -> HtmlT m ()
-h6_ = makeElement (Blaze.fromString "h6")
+h6_ :: Term arg result => arg -> result
+h6_ = term (Blaze.fromString "h6")
 
 -- | @head@ element
-head_  :: Monad m => HtmlT m () -> HtmlT m ()
-head_ = makeElement (Blaze.fromString "head")
+head_ :: Term arg result => arg -> result
+head_ = term (Blaze.fromString "head")
 
 -- | @header@ element
-header_  :: Monad m => HtmlT m () -> HtmlT m ()
-header_ = makeElement (Blaze.fromString "header")
+header_ :: Term arg result => arg -> result
+header_ = term (Blaze.fromString "header")
 
 -- | @hgroup@ element
-hgroup_  :: Monad m => HtmlT m () -> HtmlT m ()
-hgroup_ = makeElement (Blaze.fromString "hgroup")
+hgroup_ :: Term arg result => arg -> result
+hgroup_ = term (Blaze.fromString "hgroup")
 
 -- | @hr@ element
-hr_  :: Monad m => HtmlT m ()
+hr_ :: Monad m => HtmlT m ()
 hr_ = makeElementNoEnd (Blaze.fromString "hr")
 
 -- | @html@ element
-html_  :: Monad m => HtmlT m () -> HtmlT m ()
-html_ = makeElement (Blaze.fromString "html")
+html_ :: Term arg result => arg -> result
+html_ = term (Blaze.fromString "html")
 
 -- | @i@ element
-i_  :: Monad m => HtmlT m () -> HtmlT m ()
-i_ = makeElement (Blaze.fromString "i")
+i_ :: Term arg result => arg -> result
+i_ = term (Blaze.fromString "i")
 
 -- | @iframe@ element
-iframe_  :: Monad m => HtmlT m () -> HtmlT m ()
-iframe_ = makeElement (Blaze.fromString "iframe")
+iframe_ :: Term arg result => arg -> result
+iframe_ = term (Blaze.fromString "iframe")
 
 -- | @img@ element
-img_  :: Monad m => HtmlT m ()
+img_ :: Monad m => HtmlT m ()
 img_ = makeElementNoEnd (Blaze.fromString "img")
 
 -- | @input@ element
-input_  :: Monad m => HtmlT m ()
+input_ :: Monad m => HtmlT m ()
 input_ = makeElementNoEnd (Blaze.fromString "input")
 
 -- | @ins@ element
-ins_  :: Monad m => HtmlT m () -> HtmlT m ()
-ins_ = makeElement (Blaze.fromString "ins")
+ins_ :: Term arg result => arg -> result
+ins_ = term (Blaze.fromString "ins")
 
 -- | @kbd@ element
-kbd_  :: Monad m => HtmlT m () -> HtmlT m ()
-kbd_ = makeElement (Blaze.fromString "kbd")
+kbd_ :: Term arg result => arg -> result
+kbd_ = term (Blaze.fromString "kbd")
 
 -- | @keygen@ element
-keygen_  :: Monad m => HtmlT m ()
+keygen_ :: Monad m => HtmlT m ()
 keygen_ = makeElementNoEnd (Blaze.fromString "keygen")
 
 -- | @label@ element or @label@ attribute
-label_ :: Mixed a r => a -> r
-label_ = mixed ("label")
+label_ :: Term arg result => arg -> result
+label_ = term (Blaze.fromString "label")
 
 -- | @legend@ element
-legend_  :: Monad m => HtmlT m () -> HtmlT m ()
-legend_ = makeElement (Blaze.fromString "legend")
+legend_ :: Term arg result => arg -> result
+legend_ = term (Blaze.fromString "legend")
 
 -- | @li@ element
-li_  :: Monad m => HtmlT m () -> HtmlT m ()
-li_ = makeElement (Blaze.fromString "li")
+li_ :: Term arg result => arg -> result
+li_ = term (Blaze.fromString "li")
 
 -- | @link@ element
-link_  :: Monad m => HtmlT m ()
+link_ :: Monad m => HtmlT m ()
 link_ = makeElementNoEnd (Blaze.fromString "link")
 
 -- | @map@ element
-map_  :: Monad m => HtmlT m () -> HtmlT m ()
-map_ = makeElement (Blaze.fromString "map")
+map_ :: Term arg result => arg -> result
+map_ = term (Blaze.fromString "map")
 
 -- | @mark@ element
-mark_  :: Monad m => HtmlT m () -> HtmlT m ()
-mark_ = makeElement (Blaze.fromString "mark")
+mark_ :: Term arg result => arg -> result
+mark_ = term (Blaze.fromString "mark")
 
 -- | @menu@ element
-menu_  :: Monad m => HtmlT m () -> HtmlT m ()
-menu_ = makeElement (Blaze.fromString "menu")
+menu_ :: Term arg result => arg -> result
+menu_ = term (Blaze.fromString "menu")
 
 -- | @menuitem@ element
-menuitem_  :: Monad m => HtmlT m ()
+menuitem_ :: Monad m => HtmlT m ()
 menuitem_ = makeElementNoEnd (Blaze.fromString "menuitem")
 
 -- | @meta@ element
-meta_  :: Monad m => HtmlT m ()
+meta_ :: Monad m => HtmlT m ()
 meta_ = makeElementNoEnd (Blaze.fromString "meta")
 
 -- | @meter@ element
-meter_  :: Monad m => HtmlT m () -> HtmlT m ()
-meter_ = makeElement (Blaze.fromString "meter")
+meter_ :: Term arg result => arg -> result
+meter_ = term (Blaze.fromString "meter")
 
 -- | @nav@ element
-nav_  :: Monad m => HtmlT m () -> HtmlT m ()
-nav_ = makeElement (Blaze.fromString "nav")
+nav_ :: Term arg result => arg -> result
+nav_ = term (Blaze.fromString "nav")
 
 -- | @noscript@ element
-noscript_  :: Monad m => HtmlT m () -> HtmlT m ()
-noscript_ = makeElement (Blaze.fromString "noscript")
+noscript_ :: Term arg result => arg -> result
+noscript_ = term (Blaze.fromString "noscript")
 
 -- | @object@ element
-object_  :: Monad m => HtmlT m () -> HtmlT m ()
-object_ = makeElement (Blaze.fromString "object")
+object_ :: Term arg result => arg -> result
+object_ = term (Blaze.fromString "object")
 
 -- | @ol@ element
-ol_  :: Monad m => HtmlT m () -> HtmlT m ()
-ol_ = makeElement (Blaze.fromString "ol")
+ol_ :: Term arg result => arg -> result
+ol_ = term (Blaze.fromString "ol")
 
 -- | @optgroup@ element
-optgroup_  :: Monad m => HtmlT m () -> HtmlT m ()
-optgroup_ = makeElement (Blaze.fromString "optgroup")
+optgroup_ :: Term arg result => arg -> result
+optgroup_ = term (Blaze.fromString "optgroup")
 
 -- | @option@ element
-option_  :: Monad m => HtmlT m () -> HtmlT m ()
-option_ = makeElement (Blaze.fromString "option")
+option_ :: Term arg result => arg -> result
+option_ = term (Blaze.fromString "option")
 
 -- | @output@ element
-output_  :: Monad m => HtmlT m () -> HtmlT m ()
-output_ = makeElement (Blaze.fromString "output")
+output_ :: Term arg result => arg -> result
+output_ = term (Blaze.fromString "output")
 
 -- | @p@ element
-p_  :: Monad m => HtmlT m () -> HtmlT m ()
-p_ = makeElement (Blaze.fromString "p")
+p_ :: Term arg result => arg -> result
+p_ = term (Blaze.fromString "p")
 
 -- | @param@ element
-param_  :: Monad m => HtmlT m ()
+param_ :: Monad m => HtmlT m ()
 param_ = makeElementNoEnd (Blaze.fromString "param")
 
 -- | @pre@ element
-pre_  :: Monad m => HtmlT m () -> HtmlT m ()
-pre_ = makeElement (Blaze.fromString "pre")
+pre_ :: Term arg result => arg -> result
+pre_ = term (Blaze.fromString "pre")
 
 -- | @progress@ element
-progress_  :: Monad m => HtmlT m () -> HtmlT m ()
-progress_ = makeElement (Blaze.fromString "progress")
+progress_ :: Term arg result => arg -> result
+progress_ = term (Blaze.fromString "progress")
 
 -- | @q@ element
-q_  :: Monad m => HtmlT m () -> HtmlT m ()
-q_ = makeElement (Blaze.fromString "q")
+q_ :: Term arg result => arg -> result
+q_ = term (Blaze.fromString "q")
 
 -- | @rp@ element
-rp_  :: Monad m => HtmlT m () -> HtmlT m ()
-rp_ = makeElement (Blaze.fromString "rp")
+rp_ :: Term arg result => arg -> result
+rp_ = term (Blaze.fromString "rp")
 
 -- | @rt@ element
-rt_  :: Monad m => HtmlT m () -> HtmlT m ()
-rt_ = makeElement (Blaze.fromString "rt")
+rt_ :: Term arg result => arg -> result
+rt_ = term (Blaze.fromString "rt")
 
 -- | @ruby@ element
-ruby_  :: Monad m => HtmlT m () -> HtmlT m ()
-ruby_ = makeElement (Blaze.fromString "ruby")
+ruby_ :: Term arg result => arg -> result
+ruby_ = term (Blaze.fromString "ruby")
 
 -- | @samp@ element
-samp_  :: Monad m => HtmlT m () -> HtmlT m ()
-samp_ = makeElement (Blaze.fromString "samp")
+samp_ :: Term arg result => arg -> result
+samp_ = term (Blaze.fromString "samp")
 
 -- | @script@ element
-script_  :: (ToHtml t,Monad m) => t -> HtmlT m ()
-script_ = makeElement (Blaze.fromString "script") . toHtmlRaw
+script_ :: TermRaw arg result => arg -> result
+script_ = termRaw (Blaze.fromString "script")
 
 -- | @section@ element
-section_  :: Monad m => HtmlT m () -> HtmlT m ()
-section_ = makeElement (Blaze.fromString "section")
+section_ :: Term arg result => arg -> result
+section_ = term (Blaze.fromString "section")
 
 -- | @select@ element
-select_  :: Monad m => HtmlT m () -> HtmlT m ()
-select_ = makeElement (Blaze.fromString "select")
+select_ :: Term arg result => arg -> result
+select_ = term (Blaze.fromString "select")
 
 -- | @small@ element
-small_  :: Monad m => HtmlT m () -> HtmlT m ()
-small_ = makeElement (Blaze.fromString "small")
+small_ :: Term arg result => arg -> result
+small_ = term (Blaze.fromString "small")
 
 -- | @source@ element
-source_  :: Monad m => HtmlT m ()
+source_ :: Monad m => HtmlT m ()
 source_ = makeElementNoEnd (Blaze.fromString "source")
 
 -- | @span@ element or @span@ attribute
-span_  :: Mixed a r => a -> r
-span_ = mixed ("span")
+span_ :: Term arg result => arg -> result
+span_ = term (Blaze.fromString "span")
 
 -- | @strong@ element
-strong_  :: Monad m => HtmlT m () -> HtmlT m ()
-strong_ = makeElement (Blaze.fromString "strong")
+strong_ :: Term arg result => arg -> result
+strong_ = term (Blaze.fromString "strong")
 
 -- | @style@ element or @style@ attribute
-style_  :: MixedRaw a r => a -> r
-style_ = mixedRaw "style"
+style_ :: TermRaw arg result => arg -> result
+style_ = termRaw (Blaze.fromString "style")
 
 -- | @sub@ element
-sub_  :: Monad m => HtmlT m () -> HtmlT m ()
-sub_ = makeElement (Blaze.fromString "sub")
+sub_ :: Term arg result => arg -> result
+sub_ = term (Blaze.fromString "sub")
 
 -- | @summary@ element or @summary@ attribute
-summary_  :: Mixed a r => a -> r
-summary_ = mixed ("summary")
+summary_ :: Term arg result => arg -> result
+summary_ = term (Blaze.fromString "summary")
 
 -- | @sup@ element
-sup_  :: Monad m => HtmlT m () -> HtmlT m ()
-sup_ = makeElement (Blaze.fromString "sup")
+sup_ :: Term arg result => arg -> result
+sup_ = term (Blaze.fromString "sup")
 
 -- | @table@ element
-table_  :: Monad m => HtmlT m () -> HtmlT m ()
-table_ = makeElement (Blaze.fromString "table")
+table_ :: Term arg result => arg -> result
+table_ = term (Blaze.fromString "table")
 
 -- | @tbody@ element
-tbody_  :: Monad m => HtmlT m () -> HtmlT m ()
-tbody_ = makeElement (Blaze.fromString "tbody")
+tbody_ :: Term arg result => arg -> result
+tbody_ = term (Blaze.fromString "tbody")
 
 -- | @td@ element
-td_  :: Monad m => HtmlT m () -> HtmlT m ()
-td_ = makeElement (Blaze.fromString "td")
+td_ :: Term arg result => arg -> result
+td_ = term (Blaze.fromString "td")
 
 -- | @textarea@ element
-textarea_  :: Monad m => HtmlT m () -> HtmlT m ()
-textarea_ = makeElement (Blaze.fromString "textarea")
+textarea_ :: Term arg result => arg -> result
+textarea_ = term (Blaze.fromString "textarea")
 
 -- | @tfoot@ element
-tfoot_  :: Monad m => HtmlT m () -> HtmlT m ()
-tfoot_ = makeElement (Blaze.fromString "tfoot")
+tfoot_ :: Term arg result => arg -> result
+tfoot_ = term (Blaze.fromString "tfoot")
 
 -- | @th@ element
-th_  :: Monad m => HtmlT m () -> HtmlT m ()
-th_ = makeElement (Blaze.fromString "th")
+th_ :: Term arg result => arg -> result
+th_ = term (Blaze.fromString "th")
 
 -- | @thead@ element
-thead_  :: Monad m => HtmlT m () -> HtmlT m ()
-thead_ = makeElement (Blaze.fromString "thead")
+thead_ :: Term arg result => arg -> result
+thead_ = term (Blaze.fromString "thead")
 
 -- | @time@ element
-time_  :: Monad m => HtmlT m () -> HtmlT m ()
-time_ = makeElement (Blaze.fromString "time")
+time_ :: Term arg result => arg -> result
+time_ = term (Blaze.fromString "time")
 
 -- | @title@ element or @title@ attribute
-title_  :: Mixed a r => a -> r
-title_ = mixed ("title")
+title_ :: Term arg result => arg -> result
+title_ = term (Blaze.fromString "title")
 
 -- | @tr@ element
-tr_  :: Monad m => HtmlT m () -> HtmlT m ()
-tr_ = makeElement (Blaze.fromString "tr")
+tr_ :: Term arg result => arg -> result
+tr_ = term (Blaze.fromString "tr")
 
 -- | @track@ element
-track_  :: Monad m => HtmlT m ()
+track_ :: Monad m => HtmlT m ()
 track_ = makeElementNoEnd (Blaze.fromString "track")
 
 -- | @ul@ element
-ul_  :: Monad m => HtmlT m () -> HtmlT m ()
-ul_ = makeElement (Blaze.fromString "ul")
+ul_ :: Term arg result => arg -> result
+ul_ = term (Blaze.fromString "ul")
 
 -- | @var@ element
-var_  :: Monad m => HtmlT m () -> HtmlT m ()
-var_ = makeElement (Blaze.fromString "var")
+var_ :: Term arg result => arg -> result
+var_ = term (Blaze.fromString "var")
 
 -- | @video@ element
-video_  :: Monad m => HtmlT m () -> HtmlT m ()
-video_ = makeElement (Blaze.fromString "video")
+video_ :: Term arg result => arg -> result
+video_ = term (Blaze.fromString "video")
 
 -- | @wbr@ element
-wbr_  :: Monad m => HtmlT m ()
+wbr_ :: Monad m => HtmlT m ()
 wbr_ = makeElementNoEnd (Blaze.fromString "wbr")
 
 -- | The @accept@ attribute.

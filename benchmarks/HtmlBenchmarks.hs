@@ -9,7 +9,7 @@ module HtmlBenchmarks where
 import           Data.Monoid (Monoid,mappend,mempty)
 import qualified Data.Text as T
 -- import qualified Data.Text.Lazy.Builder as B
-import qualified Blaze.ByteString.Builder.Char.Utf8 as Blaze
+
 import qualified Prelude as P
 import           Prelude hiding (div, id)
 import           Data.String
@@ -90,8 +90,9 @@ customAttributesData = zip wideTreeData wideTreeData
 bigTable :: [[Int]]  -- ^ Matrix.
          -> Html ()     -- ^ Result.
 bigTable t = table_ (mapM_ row t)
-  where
-    row r = tr_ (mapM_ (td_ . toHtml . show) r)
+
+row :: [Int] -> Html ()
+row r = tr_ (mapM_ (td_ . toHtml . show) r)
 
 -- | Render a simple HTML page with some data.
 --
