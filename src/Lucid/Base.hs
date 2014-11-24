@@ -1,3 +1,5 @@
+{-# LANGUAGE ExtendedDefaultRules #-}
+{-# LANGUAGE TypeFamilies #-}
 {-# LANGUAGE KindSignatures #-}
 {-# LANGUAGE OverloadedStrings #-}
 {-# LANGUAGE GADTs #-}
@@ -172,7 +174,7 @@ instance (Monad m,a ~ ()) => With (HtmlT m a) where
     \attr ->
       HtmlT (do ~(f',_) <- runHtmlT f
                 return (\attr' m' ->
-                          f' (unionArgs (M.fromList attr) attr') m'
+                          f' (unionArgs (M.fromListWith (<>) attr) attr') m'
                        ,()))
 
 -- | For the contentful elements: 'div_'
@@ -181,7 +183,7 @@ instance (Monad m,a ~ ()) => With (HtmlT m a -> HtmlT m a) where
     \attr inner ->
       HtmlT (do ~(f',_) <- runHtmlT (f inner)
                 return ((\attr' m' ->
-                           f' (unionArgs (M.fromList attr) attr') m')
+                           f' (unionArgs (M.fromListWith (<>) attr) attr') m')
                        ,()))
 
 -- | Union two sets of arguments and append duplicate keys.
