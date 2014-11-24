@@ -20,17 +20,16 @@ module Lucid.Base
   ,evalHtmlT
   ,runHtmlT
   -- * Combinators
-  ,with
   ,makeElement
   ,makeElementNoEnd
    -- * Types
   ,Html
   ,HtmlT
    -- * Classes
+  ,Term(..)
+  ,TermRaw(..)
   ,ToHtml(..)
-  ,Mixed(..)
-  ,MixedRaw(..)
-  ,With)
+  ,With(..))
   where
 
 import           Blaze.ByteString.Builder (Builder)
@@ -136,33 +135,70 @@ instance ToHtml Text where
   toHtml m = HtmlT (return ((\_ _ -> encode m),()))
   toHtmlRaw m = HtmlT (return ((\_ _ -> Blaze.fromText m),()))
 
--- | Used for names that are mixed, e.g. 'style_'.
-class Mixed a r where
-  mixed :: Text -> a -> r
+-- | Used to represent HTML terms. Very overloaded for three cases:
+--
+-- * The first case is the basic @arg@ of @[(Text,Text)]@ which will
+--   return a function that wants children.
+-- * The second is an @arg@ which is @HtmlT m ()@, in which case the
+--   term accepts no attributes and just the children are used for the
+--   element.
+-- * Finally, this is also used for overloaded attributes, like
+--   `_style` or `_title`. If a return type of @(Text,Text)@ is inferred
+--   then an attribute will be made.
+--
+-- The instances look intimidating but actually the constraints make
+-- it very general so that type inference works very well even in the
+-- presence of things like @OverloadedLists@ and such. The last thing
+-- you want to do is add type annotations to your HTML templates.
+class Term arg result where
+  termWith :: Builder       -- ^ Name.
+           -> [(Text,Text)] -- ^ Attribute transformer.
+           -> arg           -- ^ Some argument.
+           -> result        -- ^ Result: either an element or an attribute.
+  term :: Builder -> arg -> result
+  term = flip termWith []
 
--- | Attributes can be a mixed thing e.g. 'style_'.
-instance (a ~ Text) => Mixed a (Text,Text) where
-  mixed key value = (key,value)
+-- | Given attributes, expect more child input.
+instance (Monad m,children ~ HtmlT m unit,unit ~ (),attribute ~ (Text,Text))
+         => Term [attribute] (children -> HtmlT m unit) where
+  termWith name f = with (makeElement name) . (<> f)
 
--- | HTML elements can be a mixed thing e.g. 'style_'.
-instance (Monad m,a ~ HtmlT m r,r ~ ()) => Mixed a (HtmlT m r) where
-  mixed = makeElement . Blaze.fromText
+-- | Given children immediately, just use that and expect no
+-- attributes.
+instance (Monad m,f ~ HtmlT m unit,unit ~ ()) => Term f (HtmlT m unit) where
+  termWith name f = with (makeElement name) f
 
--- | Used for names that are mixed, e.g. 'style_'. Doesn't encode the
--- inner content of its element.
-class MixedRaw a r where
-  mixedRaw :: Text -> a -> r
+-- | Some terms (like style_, title_) can be used for attributes as
+-- well as elements.
+instance (a ~ Text) => Term a (Text,Text) where
+  termWith key _ value = (blazeToString key,value)
 
--- | Attributes can be a mixed thing e.g. 'style_'.
-instance (a ~ Text) => MixedRaw a (Text,Text) where
-  mixedRaw key value = (key,value)
+class TermRaw arg result where
+  termRawWith :: Builder    -- ^ Name.
+           -> [(Text,Text)] -- ^ Attribute transformer.
+           -> arg           -- ^ Some argument.
+           -> result        -- ^ Result: either an element or an attribute.
+  termRaw :: Builder -> arg -> result
+  termRaw = flip termRawWith []
 
--- | HTML elements can be a mixed thing e.g. 'style_'. Doesn't encode
--- the text content.
-instance (Monad m,ToHtml a,r ~ ()) => MixedRaw a (HtmlT m r) where
-  mixedRaw n = makeElement (Blaze.fromText n) . toHtmlRaw
+-- | Given attributes, expect more child input.
+instance (Monad m,ToHtml html,unit ~ (),attribute ~ (Text,Text))
+         => TermRaw [attribute] (html -> HtmlT m unit) where
+  termRawWith name f attrs = with (makeElement name) (attrs <> f) . toHtmlRaw
 
--- | With an element use these attributes.
+-- | Given children immediately, just use that and expect no
+-- attributes.
+instance (Monad m,ToHtml html,unit ~ ()) => TermRaw html (HtmlT m unit) where
+  termRawWith name f = with (makeElement name) f . toHtmlRaw
+
+-- | Some terms (like style_, title_) can be used for attributes as
+-- well as elements.
+instance (a ~ Text) => TermRaw a (Text,Text) where
+  termRawWith key _ value = (blazeToString key,value)
+
+-- | With an element use these attributes. An overloaded way of adding
+-- attributes either to an element accepting attributes-and-children
+-- or one that just accepts attributes. See the two instances.
 class With a where
   -- | With the given element(s), use the given attributes.
   with :: a -- ^ Some element, either @Html ()@ or @Html () -> Html ()@.
@@ -317,3 +353,7 @@ s = Blaze.fromString
 -- | Encode the given strict plain text to an encoded HTML builder.
 encode :: Text -> Builder
 encode = Blaze.fromHtmlEscapedText
+
+-- | Helper to convert a builder to text.
+blazeToString :: Builder -> Text
+blazeToString = LT.toStrict . LT.decodeUtf8 . Blaze.toLazyByteString

@@ -9,7 +9,7 @@ module HtmlBenchmarks where
 import           Data.Monoid (Monoid,mappend,mempty)
 import qualified Data.Text as T
 -- import qualified Data.Text.Lazy.Builder as B
-import qualified Blaze.ByteString.Builder.Char.Utf8 as Blaze
+
 import qualified Prelude as P
 import           Prelude hiding (div, id)
 import           Data.String
@@ -90,8 +90,9 @@ customAttributesData = zip wideTreeData wideTreeData
 bigTable :: [[Int]]  -- ^ Matrix.
          -> Html ()     -- ^ Result.
 bigTable t = table_ (mapM_ row t)
-  where
-    row r = tr_ (mapM_ (td_ . toHtml . show) r)
+
+row :: [Int] -> Html ()
+row r = tr_ (mapM_ (td_ . toHtml . show) r)
 
 -- | Render a simple HTML page with some data.
 --
@@ -125,9 +126,9 @@ deepTree n = p_ $ table_ $ tr_ $ td_ $ div_ $ deepTree (n - 1)
 --
 manyAttributes :: [String]  -- ^ List of attribute values.
                -> Html ()      -- ^ Result.
-manyAttributes as = with img_ (map (id_ . T.pack) as)
+manyAttributes as = img_ (map (id_ . T.pack) as)
 
 customAttributes :: [(String, String)]  -- ^ List of attribute name, value pairs
                  -> Html ()                -- ^ Result
 customAttributes xs =
-  with img_ (map (\(key,val) -> (,) (fromString key) (T.pack val)) xs)
+  img_ (map (\(key,val) -> (,) (fromString key) (T.pack val)) xs)
