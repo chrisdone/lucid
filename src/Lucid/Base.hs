@@ -1,3 +1,4 @@
+{-# LANGUAGE FunctionalDependencies #-}
 {-# LANGUAGE ExtendedDefaultRules #-}
 {-# LANGUAGE TypeFamilies #-}
 {-# LANGUAGE KindSignatures #-}
@@ -161,10 +162,9 @@ instance ToHtml LT.Text where
 --   then an attribute will be made.
 --
 -- The instances look intimidating but actually the constraints make
--- it very general so that type inference works very well even in the
--- presence of things like @OverloadedLists@ and such. The last thing
--- you want to do is add type annotations to your HTML templates.
-class Term arg result where
+-- it very general so that type inference works well even in the
+-- presence of things like @OverloadedLists@ and such.
+class Term arg result | result -> arg where
   -- | Used for constructing elements e.g. @term "p"@ yields 'Lucid.Html5.p_'.
   term :: Text   -- ^ Name of the element or attribute.
        -> arg    -- ^ Either an attribute list or children.
@@ -178,45 +178,47 @@ class Term arg result where
            -> result        -- ^ Result: either an element or an attribute.
 
 -- | Given attributes, expect more child input.
-instance (Monad m,children ~ HtmlT m unit,unit ~ (),attribute ~ Attribute)
-         => Term [attribute] (children -> HtmlT m unit) where
+instance (Monad m,f ~ HtmlT m a, a ~ ()) => Term [Attribute] (f -> HtmlT m a) where
   termWith name f = with (makeElement name) . (<> f)
 
 -- | Given children immediately, just use that and expect no
 -- attributes.
-instance (Monad m,f ~ HtmlT m unit,unit ~ ()) => Term f (HtmlT m unit) where
+instance (Monad m,a ~ ()) => Term (HtmlT m a) (HtmlT m a) where
   termWith name f = with (makeElement name) f
 
 -- | Some terms (like 'Lucid.Html5.style_', 'Lucid.Html5.title_') can be used for
 -- attributes as well as elements.
-instance (a ~ Text) => Term a Attribute where
+instance Term Text Attribute where
   termWith key _ value = makeAttribute key value
 
 -- | Same as the 'Term' class, but will not HTML escape its
 -- children. Useful for elements like 'Lucid.Html5.style_' or
 -- 'Lucid.Html5.script_'.
-class TermRaw arg result where
-  termRawWith :: Text       -- ^ Name.
+class TermRaw arg result | result -> arg where
+  -- | Used for constructing elements e.g. @termRaw "p"@ yields 'Lucid.Html5.p_'.
+  termRaw :: Text   -- ^ Name of the element or attribute.
+       -> arg    -- ^ Either an attribute list or children.
+       -> result -- ^ Result: either an element or an attribute.
+  termRaw = flip termRawWith []
+  -- | Use this if you want to make an element which inserts some
+  -- pre-prepared attributes into the element.
+  termRawWith :: Text          -- ^ Name.
            -> [Attribute]   -- ^ Attribute transformer.
            -> arg           -- ^ Some argument.
            -> result        -- ^ Result: either an element or an attribute.
-  termRaw :: Text -> arg -> result
-  termRaw = flip termRawWith []
 
 -- | Given attributes, expect more child input.
-instance (Monad m,ToHtml html,unit ~ (),attribute ~ Attribute)
-         => TermRaw [attribute] (html -> HtmlT m unit) where
+instance (Monad m,ToHtml f, a ~ ()) => TermRaw [Attribute] (f -> HtmlT m a) where
   termRawWith name f attrs = with (makeElement name) (attrs <> f) . toHtmlRaw
 
 -- | Given children immediately, just use that and expect no
 -- attributes.
-instance (Monad m,ToHtml html,unit ~ ()) => TermRaw html (HtmlT m unit) where
+instance (Monad m,a ~ ()) => TermRaw Text (HtmlT m a) where
   termRawWith name f = with (makeElement name) f . toHtmlRaw
 
--- | Some terms (like 'Lucid.Html5.style_', 'Lucid.Html5.title_') can be used for
--- attributes as well as elements. Contents of attributes are always
--- encoded.
-instance (a ~ Text) => TermRaw a Attribute where
+-- | Some termRaws (like 'Lucid.Html5.style_', 'Lucid.Html5.title_') can be used for
+-- attributes as well as elements.
+instance TermRaw Text Attribute where
   termRawWith key _ value = makeAttribute key value
 
 -- | With an element use these attributes. An overloaded way of adding
