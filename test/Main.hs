@@ -93,8 +93,9 @@ testAttributes =
      it "mixed"
         (renderText
            (p_ [class_ "foo",style_ "attrib"]
-               (style_ "")) ==
-         "<p style=\"attrib\" class=\"foo\"><style></style></p>")
+               (do style_ ""
+                   style_ "")) ==
+         "<p style=\"attrib\" class=\"foo\"><style></style><style></style></p>")
      it "no closing"
         (renderText (p_ [class_ "foo"] (input_ [])) ==
          "<p class=\"foo\"><input></p>")
