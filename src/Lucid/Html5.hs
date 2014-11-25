@@ -16,7 +16,7 @@ doctype_ :: Monad m => HtmlT m ()
 doctype_ = makeElementNoEnd "!DOCTYPE HTML"
 
 -- | @DOCTYPE@ element + @html@ element
-doctypehtml_ :: Monad m => HtmlT m () -> HtmlT m ()
+doctypehtml_ :: Monad m => HtmlT m a -> HtmlT m a
 doctypehtml_ m =
   do doctype_
      html_ m

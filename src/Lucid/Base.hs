@@ -178,12 +178,12 @@ class Term arg result | result -> arg where
            -> result        -- ^ Result: either an element or an attribute.
 
 -- | Given attributes, expect more child input.
-instance (Monad m,f ~ HtmlT m a, a ~ ()) => Term [Attribute] (f -> HtmlT m a) where
+instance (Monad m,f ~ HtmlT m a) => Term [Attribute] (f -> HtmlT m a) where
   termWith name f = with (makeElement name) . (<> f)
 
 -- | Given children immediately, just use that and expect no
 -- attributes.
-instance (Monad m,a ~ ()) => Term (HtmlT m a) (HtmlT m a) where
+instance (Monad m) => Term (HtmlT m a) (HtmlT m a) where
   termWith name f = with (makeElement name) f
 
 -- | Some terms (like 'Lucid.Html5.style_', 'Lucid.Html5.title_') can be used for
@@ -226,28 +226,28 @@ instance TermRaw Text Attribute where
 -- or one that just accepts attributes. See the two instances.
 class With a  where
   -- | With the given element(s), use the given attributes.
-  with :: a -- ^ Some element, either @Html ()@ or @Html () -> Html ()@.
+  with :: a -- ^ Some element, either @Html a@ or @Html a -> Html a@.
        -> [Attribute]
        -> a
 
 -- | For the contentless elements: 'Lucid.Html5.br_'
-instance (Monad m,a ~ ()) => With (HtmlT m a) where
+instance (Monad m) => With (HtmlT m a) where
   with f =
     \attr ->
-      HtmlT (do ~(f',_) <- runHtmlT f
+      HtmlT (do ~(f',a) <- runHtmlT f
                 return (\attr' m' ->
                           f' (unionArgs (M.fromListWith (<>) (map toPair attr)) attr') m'
-                       ,()))
+                       ,a))
     where toPair (Attribute x) = x
 
 -- | For the contentful elements: 'Lucid.Html5.div_'
-instance (Monad m,a ~ ()) => With (HtmlT m a -> HtmlT m a) where
+instance (Monad m) => With (HtmlT m a -> HtmlT m a) where
   with f =
     \attr inner ->
-      HtmlT (do ~(f',_) <- runHtmlT (f inner)
+      HtmlT (do ~(f',a) <- runHtmlT (f inner)
                 return ((\attr' m' ->
                            f' (unionArgs (M.fromListWith (<>) (map toPair attr)) attr') m')
-                       ,()))
+                       ,a))
     where toPair (Attribute x) = x
 
 -- | Union two sets of arguments and append duplicate keys.
@@ -348,15 +348,15 @@ makeAttribute x y = Attribute (x,y)
 makeElement :: Monad m
             => Text       -- ^ Name.
             -> HtmlT m a  -- ^ Children HTML.
-            -> HtmlT m () -- ^ A parent element.
+            -> HtmlT m a -- ^ A parent element.
 makeElement name =
   \m' ->
-    HtmlT (do ~(f,_) <- runHtmlT m'
+    HtmlT (do ~(f,a) <- runHtmlT m'
               return (\attr m -> s "<" <> Blaze.fromText name
                               <> foldlMapWithKey buildAttr attr <> s ">"
                               <> m <> f mempty mempty
                               <> s "</" <> Blaze.fromText name <> s ">",
-                      ()))
+                      a))
 
 -- | Make an HTML builder for elements which have no ending tag.
 makeElementNoEnd :: Monad m
