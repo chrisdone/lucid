@@ -22,9 +22,11 @@ module Lucid.Base
   -- * Combinators
   ,makeElement
   ,makeElementNoEnd
+  ,makeAttribute
    -- * Types
   ,Html
   ,HtmlT
+  ,Attribute
    -- * Classes
   ,Term(..)
   ,TermRaw(..)
@@ -52,6 +54,10 @@ import qualified Data.Text.Lazy.Encoding as LT
 
 --------------------------------------------------------------------------------
 -- Types
+
+-- | A simple attribute.
+newtype Attribute = Attribute (Text,Text)
+  deriving (Show,Eq)
 
 -- | Simple HTML builder type. Defined in terms of 'HtmlT'. Check out
 -- that type for instance information.
@@ -152,14 +158,14 @@ instance ToHtml Text where
 -- you want to do is add type annotations to your HTML templates.
 class Term arg result where
   termWith :: Builder       -- ^ Name.
-           -> [(Text,Text)] -- ^ Attribute transformer.
+           -> [Attribute] -- ^ Attribute transformer.
            -> arg           -- ^ Some argument.
            -> result        -- ^ Result: either an element or an attribute.
   term :: Builder -> arg -> result
   term = flip termWith []
 
 -- | Given attributes, expect more child input.
-instance (Monad m,children ~ HtmlT m unit,unit ~ (),attribute ~ (Text,Text))
+instance (Monad m,children ~ HtmlT m unit,unit ~ (),attribute ~ Attribute)
          => Term [attribute] (children -> HtmlT m unit) where
   termWith name f = with (makeElement name) . (<> f)
 
@@ -170,19 +176,19 @@ instance (Monad m,f ~ HtmlT m unit,unit ~ ()) => Term f (HtmlT m unit) where
 
 -- | Some terms (like style_, title_) can be used for attributes as
 -- well as elements.
-instance (a ~ Text) => Term a (Text,Text) where
-  termWith key _ value = (blazeToString key,value)
+instance (a ~ Text) => Term a Attribute where
+  termWith key _ value = makeAttribute (blazeToString key) value
 
 class TermRaw arg result where
   termRawWith :: Builder    -- ^ Name.
-           -> [(Text,Text)] -- ^ Attribute transformer.
+           -> [Attribute] -- ^ Attribute transformer.
            -> arg           -- ^ Some argument.
            -> result        -- ^ Result: either an element or an attribute.
   termRaw :: Builder -> arg -> result
   termRaw = flip termRawWith []
 
 -- | Given attributes, expect more child input.
-instance (Monad m,ToHtml html,unit ~ (),attribute ~ (Text,Text))
+instance (Monad m,ToHtml html,unit ~ (),attribute ~ Attribute)
          => TermRaw [attribute] (html -> HtmlT m unit) where
   termRawWith name f attrs = with (makeElement name) (attrs <> f) . toHtmlRaw
 
@@ -193,16 +199,17 @@ instance (Monad m,ToHtml html,unit ~ ()) => TermRaw html (HtmlT m unit) where
 
 -- | Some terms (like style_, title_) can be used for attributes as
 -- well as elements.
-instance (a ~ Text) => TermRaw a (Text,Text) where
-  termRawWith key _ value = (blazeToString key,value)
+instance (a ~ Text) => TermRaw a Attribute where
+  termRawWith key _ value = makeAttribute (blazeToString key) value
 
 -- | With an element use these attributes. An overloaded way of adding
 -- attributes either to an element accepting attributes-and-children
 -- or one that just accepts attributes. See the two instances.
-class With a where
+class With a  where
   -- | With the given element(s), use the given attributes.
   with :: a -- ^ Some element, either @Html ()@ or @Html () -> Html ()@.
-       -> [(Text,Text)] -> a
+       -> [Attribute]
+       -> a
 
 -- | For the contentless elements: 'br_'
 instance (Monad m,a ~ ()) => With (HtmlT m a) where
@@ -210,8 +217,9 @@ instance (Monad m,a ~ ()) => With (HtmlT m a) where
     \attr ->
       HtmlT (do ~(f',_) <- runHtmlT f
                 return (\attr' m' ->
-                          f' (unionArgs (M.fromListWith (<>) attr) attr') m'
+                          f' (unionArgs (M.fromListWith (<>) (map toPair attr)) attr') m'
                        ,()))
+    where toPair (Attribute x) = x
 
 -- | For the contentful elements: 'div_'
 instance (Monad m,a ~ ()) => With (HtmlT m a -> HtmlT m a) where
@@ -219,8 +227,9 @@ instance (Monad m,a ~ ()) => With (HtmlT m a -> HtmlT m a) where
     \attr inner ->
       HtmlT (do ~(f',_) <- runHtmlT (f inner)
                 return ((\attr' m' ->
-                           f' (unionArgs (M.fromListWith (<>) attr) attr') m')
+                           f' (unionArgs (M.fromListWith (<>) (map toPair attr)) attr') m')
                        ,()))
+    where toPair (Attribute x) = x
 
 -- | Union two sets of arguments and append duplicate keys.
 unionArgs :: HashMap Text Text -> HashMap Text Text -> HashMap Text Text
@@ -310,6 +319,12 @@ evalHtmlT m =
 --------------------------------------------------------------------------------
 -- Combinators
 
+-- | Make an attribute builder.
+makeAttribute :: Text -- ^ Attribute name.
+              -> Text -- ^ Attribute value.
+              -> Attribute
+makeAttribute x y = Attribute (x,y)
+
 -- | Make an HTML builder.
 makeElement :: Monad m
             => Builder -- ^ Name.
@@ -340,9 +355,11 @@ buildAttr key val =
      then mempty
      else s "=\"" <> encode val <> s "\""
 
+-- | Folding and monoidally appending attributes.
 foldlMapWithKey :: Monoid m => (k -> v -> m) -> HashMap k v -> m
 foldlMapWithKey f = M.foldlWithKey' (\m k v -> m <> f k v) mempty
 
+-- | Convenience function for constructing builders.
 s :: String -> Builder
 s = Blaze.fromString
 {-# INLINE s #-}

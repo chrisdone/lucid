@@ -16,6 +16,7 @@ import           Data.String
 
 -- import BenchmarkUtils
 import           Lucid
+import           Lucid.Base
 -- import qualified BenchmarkUtils as H
 
 -- | Description of an HTML benchmark
@@ -131,4 +132,4 @@ manyAttributes as = img_ (map (id_ . T.pack) as)
 customAttributes :: [(String, String)]  -- ^ List of attribute name, value pairs
                  -> Html ()                -- ^ Result
 customAttributes xs =
-  img_ (map (\(key,val) -> (,) (fromString key) (T.pack val)) xs)
+  img_ (map (\(key,val) -> makeAttribute (fromString key) (T.pack val)) xs)
