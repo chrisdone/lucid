@@ -166,13 +166,13 @@ instance ToHtml LT.Text where
 -- you want to do is add type annotations to your HTML templates.
 class Term arg result where
   -- | Used for constructing elements e.g. @term "p"@ yields 'Lucid.Html5.p_'.
-  term :: Builder -- ^ Name of the element or attribute.
-       -> arg     -- ^ Either an attribute list or children.
-       -> result  -- ^ Result: either an element or an attribute.
+  term :: Text   -- ^ Name of the element or attribute.
+       -> arg    -- ^ Either an attribute list or children.
+       -> result -- ^ Result: either an element or an attribute.
   term = flip termWith []
   -- | Use this if you want to make an element which inserts some
   -- pre-prepared attributes into the element.
-  termWith :: Builder       -- ^ Name.
+  termWith :: Text          -- ^ Name.
            -> [Attribute]   -- ^ Attribute transformer.
            -> arg           -- ^ Some argument.
            -> result        -- ^ Result: either an element or an attribute.
@@ -190,17 +190,17 @@ instance (Monad m,f ~ HtmlT m unit,unit ~ ()) => Term f (HtmlT m unit) where
 -- | Some terms (like 'Lucid.Html5.style_', 'Lucid.Html5.title_') can be used for
 -- attributes as well as elements.
 instance (a ~ Text) => Term a Attribute where
-  termWith key _ value = makeAttribute (blazeToString key) value
+  termWith key _ value = makeAttribute key value
 
 -- | Same as the 'Term' class, but will not HTML escape its
 -- children. Useful for elements like 'Lucid.Html5.style_' or
 -- 'Lucid.Html5.script_'.
 class TermRaw arg result where
-  termRawWith :: Builder    -- ^ Name.
-           -> [Attribute] -- ^ Attribute transformer.
+  termRawWith :: Text       -- ^ Name.
+           -> [Attribute]   -- ^ Attribute transformer.
            -> arg           -- ^ Some argument.
            -> result        -- ^ Result: either an element or an attribute.
-  termRaw :: Builder -> arg -> result
+  termRaw :: Text -> arg -> result
   termRaw = flip termRawWith []
 
 -- | Given attributes, expect more child input.
@@ -217,7 +217,7 @@ instance (Monad m,ToHtml html,unit ~ ()) => TermRaw html (HtmlT m unit) where
 -- attributes as well as elements. Contents of attributes are always
 -- encoded.
 instance (a ~ Text) => TermRaw a Attribute where
-  termRawWith key _ value = makeAttribute (blazeToString key) value
+  termRawWith key _ value = makeAttribute key value
 
 -- | With an element use these attributes. An overloaded way of adding
 -- attributes either to an element accepting attributes-and-children
@@ -344,23 +344,25 @@ makeAttribute x y = Attribute (x,y)
 
 -- | Make an HTML builder.
 makeElement :: Monad m
-            => Builder -- ^ Name.
+            => Text       -- ^ Name.
             -> HtmlT m a  -- ^ Children HTML.
             -> HtmlT m () -- ^ A parent element.
 makeElement name =
   \m' ->
     HtmlT (do ~(f,_) <- runHtmlT m'
-              return (\attr m -> s "<" <> name <> foldlMapWithKey buildAttr attr <> s ">"
+              return (\attr m -> s "<" <> Blaze.fromText name
+                              <> foldlMapWithKey buildAttr attr <> s ">"
                               <> m <> f mempty mempty
-                              <> s "</" <> name <> s ">",
+                              <> s "</" <> Blaze.fromText name <> s ">",
                       ()))
 
 -- | Make an HTML builder for elements which have no ending tag.
 makeElementNoEnd :: Monad m
-                 => Builder -- ^ Name.
+                 => Text       -- ^ Name.
                  -> HtmlT m () -- ^ A parent element.
 makeElementNoEnd name =
-  HtmlT (return (\attr _ -> s "<" <> name <> foldlMapWithKey buildAttr attr <> s ">",
+  HtmlT (return (\attr _ -> s "<" <> Blaze.fromText name
+                            <> foldlMapWithKey buildAttr attr <> s ">",
                  ()))
 
 -- | Build and encode an attribute.
@@ -391,7 +393,3 @@ encode = Blaze.fromHtmlEscapedText
 -- | Encode the given strict plain text to an encoded HTML builder.
 encodeLazy :: LT.Text -> Builder
 encodeLazy = Blaze.fromHtmlEscapedLazyText
-
--- | Helper to convert a builder to text.
-blazeToString :: Builder -> Text
-blazeToString = LT.toStrict . LT.decodeUtf8 . Blaze.toLazyByteString
