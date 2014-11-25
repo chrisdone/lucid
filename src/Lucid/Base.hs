@@ -141,7 +141,15 @@ instance ToHtml Text where
   toHtml m = HtmlT (return ((\_ _ -> encode m),()))
   toHtmlRaw m = HtmlT (return ((\_ _ -> Blaze.fromText m),()))
 
--- | Used to represent HTML terms. Very overloaded for three cases:
+instance ToHtml LT.Text where
+  toHtml m = HtmlT (return ((\_ _ -> encodeLazy m),()))
+  toHtmlRaw m = HtmlT (return ((\_ _ -> Blaze.fromLazyText m),()))
+
+-- | Used to construct HTML terms.
+--
+-- Simplest use: p_ = term "p" yields 'Lucid.Html5.p_'.
+--
+-- Very overloaded for three cases:
 --
 -- * The first case is the basic @arg@ of @[(Text,Text)]@ which will
 --   return a function that wants children.
@@ -149,7 +157,7 @@ instance ToHtml Text where
 --   term accepts no attributes and just the children are used for the
 --   element.
 -- * Finally, this is also used for overloaded attributes, like
---   `_style` or `_title`. If a return type of @(Text,Text)@ is inferred
+--   `Lucid.Html5.style_` or `Lucid.Html5.title_`. If a return type of @(Text,Text)@ is inferred
 --   then an attribute will be made.
 --
 -- The instances look intimidating but actually the constraints make
@@ -157,12 +165,17 @@ instance ToHtml Text where
 -- presence of things like @OverloadedLists@ and such. The last thing
 -- you want to do is add type annotations to your HTML templates.
 class Term arg result where
+  -- | Used for constructing elements e.g. @term "p"@ yields 'Lucid.Html5.p_'.
+  term :: Builder -- ^ Name of the element or attribute.
+       -> arg     -- ^ Either an attribute list or children.
+       -> result  -- ^ Result: either an element or an attribute.
+  term = flip termWith []
+  -- | Use this if you want to make an element which inserts some
+  -- pre-prepared attributes into the element.
   termWith :: Builder       -- ^ Name.
-           -> [Attribute] -- ^ Attribute transformer.
+           -> [Attribute]   -- ^ Attribute transformer.
            -> arg           -- ^ Some argument.
            -> result        -- ^ Result: either an element or an attribute.
-  term :: Builder -> arg -> result
-  term = flip termWith []
 
 -- | Given attributes, expect more child input.
 instance (Monad m,children ~ HtmlT m unit,unit ~ (),attribute ~ Attribute)
@@ -174,11 +187,14 @@ instance (Monad m,children ~ HtmlT m unit,unit ~ (),attribute ~ Attribute)
 instance (Monad m,f ~ HtmlT m unit,unit ~ ()) => Term f (HtmlT m unit) where
   termWith name f = with (makeElement name) f
 
--- | Some terms (like style_, title_) can be used for attributes as
--- well as elements.
+-- | Some terms (like 'Lucid.Html5.style_', 'Lucid.Html5.title_') can be used for
+-- attributes as well as elements.
 instance (a ~ Text) => Term a Attribute where
   termWith key _ value = makeAttribute (blazeToString key) value
 
+-- | Same as the 'Term' class, but will not HTML escape its
+-- children. Useful for elements like 'Lucid.Html5.style_' or
+-- 'Lucid.Html5.script_'.
 class TermRaw arg result where
   termRawWith :: Builder    -- ^ Name.
            -> [Attribute] -- ^ Attribute transformer.
@@ -197,8 +213,9 @@ instance (Monad m,ToHtml html,unit ~ (),attribute ~ Attribute)
 instance (Monad m,ToHtml html,unit ~ ()) => TermRaw html (HtmlT m unit) where
   termRawWith name f = with (makeElement name) f . toHtmlRaw
 
--- | Some terms (like style_, title_) can be used for attributes as
--- well as elements.
+-- | Some terms (like 'Lucid.Html5.style_', 'Lucid.Html5.title_') can be used for
+-- attributes as well as elements. Contents of attributes are always
+-- encoded.
 instance (a ~ Text) => TermRaw a Attribute where
   termRawWith key _ value = makeAttribute (blazeToString key) value
 
@@ -211,7 +228,7 @@ class With a  where
        -> [Attribute]
        -> a
 
--- | For the contentless elements: 'br_'
+-- | For the contentless elements: 'Lucid.Html5.br_'
 instance (Monad m,a ~ ()) => With (HtmlT m a) where
   with f =
     \attr ->
@@ -221,7 +238,7 @@ instance (Monad m,a ~ ()) => With (HtmlT m a) where
                        ,()))
     where toPair (Attribute x) = x
 
--- | For the contentful elements: 'div_'
+-- | For the contentful elements: 'Lucid.Html5.div_'
 instance (Monad m,a ~ ()) => With (HtmlT m a -> HtmlT m a) where
   with f =
     \attr inner ->
@@ -338,7 +355,7 @@ makeElement name =
                               <> s "</" <> name <> s ">",
                       ()))
 
--- | Make an HTML builder for
+-- | Make an HTML builder for elements which have no ending tag.
 makeElementNoEnd :: Monad m
                  => Builder -- ^ Name.
                  -> HtmlT m () -- ^ A parent element.
@@ -370,6 +387,10 @@ s = Blaze.fromString
 -- | Encode the given strict plain text to an encoded HTML builder.
 encode :: Text -> Builder
 encode = Blaze.fromHtmlEscapedText
+
+-- | Encode the given strict plain text to an encoded HTML builder.
+encodeLazy :: LT.Text -> Builder
+encodeLazy = Blaze.fromHtmlEscapedLazyText
 
 -- | Helper to convert a builder to text.
 blazeToString :: Builder -> Text

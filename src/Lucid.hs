@@ -1,4 +1,10 @@
 -- | Clear to write, read and edit DSL for writing HTML
+--
+-- See "Lucid.Html5" for a complete list of Html5 combinators. That
+-- module is re-exported from this module for your convenience.
+--
+-- See "Lucid.Base" for lower level functions like
+-- `makeElement`, `makeAttribute`, 'termRaw', etc.
 
 module Lucid
   (-- * Intro
@@ -14,7 +20,9 @@ module Lucid
   ,runHtmlT
    -- * Types
   ,Html
+  ,Attribute
    -- * Classes
+   -- $overloaded
   ,Term(..)
   ,ToHtml(..)
   ,With(..)
@@ -32,8 +40,9 @@ import Lucid.Html5
 --
 -- 'p_', 'class_', 'table_', 'style_'
 --
--- See "Lucid.Html5" for a complete list of Html5 combinators. That
--- module is re-exported from this module for your convenience.
+-- Note: If you're testing in the REPL you need to add a type annotation to
+-- indicate that you want HTML. In normal code your top-level
+-- declaration signatures handle that.
 --
 -- Plain text is written using the @OverloadedStrings@ and
 -- @ExtendedDefaultRules@ extensions, and is automatically escaped:
@@ -66,11 +75,19 @@ import Lucid.Html5
 -- >>> p_ [class_ "brand"] "Lucid Inc" :: Html ()
 -- <p class="brand">Lucid Inc</p>
 --
+-- >>> p_ [data_ "zot" "foo",checked_] "Go!" :: Html ()
+-- <p data-zot="foo" checked>go</p>
+--
+-- Attribute and element terms are not conflicting:
+--
+-- >>> style_ [style_ "inception"] "Go deeper." :: Html ()
+-- <style style="inception">Go deeper.</style>
+--
 -- Here is a fuller example of Lucid:
 --
 -- @
 -- table_ [rows_ "2"]
---        (tr_ (do td_ [class_ "top",colspan_ "2"]
+--        (tr_ (do td_ [class_ "top",colspan_ "2",style_ "color:red"]
 --                     (p_ "Hello, attributes!")
 --                 td_ "yay!"))
 -- @
@@ -88,6 +105,37 @@ import Lucid.Html5
 --
 -- For ease of use in GHCi, there is a 'Show' instance, as
 -- demonstrated above.
+
+-- $overloaded
+--
+-- To support convenient use of HTML terms, HTML terms are
+-- overloaded. Here are the following types possible for an element
+-- term accepting attributes and/or children:
+--
+-- @
+-- p_ :: Term arg result => arg -> result
+-- p_ :: Monad m => [Attribute] -> HtmlT m () -> HtmlT m ()
+-- p_ :: Monad m => HtmlT m () -> HtmlT m ()
+-- @
+--
+-- The first is the generic form. The latter two are the possible
+-- types for an element.
+--
+-- Elements that accept no content are always concrete:
+--
+-- @
+-- input_ :: Monad m => [Attribute] -> HtmlT m ()
+-- @
+--
+-- And some attributes share the same name as attributes, so you can
+-- also overload them as attributes:
+--
+-- @
+-- style_ :: TermRaw arg result => arg -> result
+-- style_ :: Monad m => [Attribute] -> Text -> HtmlT m ()
+-- style_ :: Monad m => Text -> HtmlT m ()
+-- style_ :: Text -> Attribute
+-- @
 
 -- $running
 --
