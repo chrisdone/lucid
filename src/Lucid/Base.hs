@@ -40,7 +40,7 @@ import qualified Blaze.ByteString.Builder as Blaze
 import qualified Blaze.ByteString.Builder.Html.Utf8 as Blaze
 import           Control.Applicative
 import           Control.Monad
-import           Control.Monad.Reader
+import           Control.Monad.Trans
 import           Data.ByteString.Lazy (ByteString)
 import qualified Data.ByteString.Lazy as L
 import           Data.Functor.Identity
@@ -126,7 +126,7 @@ instance (Monad m,a ~ ()) => IsString (HtmlT m a) where
     HtmlT (return (\_ _ -> encode (T.pack m'),()))
 
 -- | Just calls 'renderText'.
-instance (m ~ Identity) => Show (HtmlT m a) where
+instance Show (HtmlT Identity a) where
   show = LT.unpack . renderText
 
 -- | Can be converted to HTML.
@@ -178,12 +178,12 @@ class Term arg result | result -> arg where
            -> result        -- ^ Result: either an element or an attribute.
 
 -- | Given attributes, expect more child input.
-instance (Monad m,f ~ HtmlT m a, a ~ ()) => Term [Attribute] (f -> HtmlT m a) where
-  termWith name f = with (makeElement name) . (<> f)
+instance (Monad m,f ~ HtmlT m a) => Term [Attribute] (f -> HtmlT m a) where
+  termWith name f attrs = with (makeElement name) (attrs <> f)
 
 -- | Given children immediately, just use that and expect no
 -- attributes.
-instance (Monad m,a ~ ()) => Term (HtmlT m a) (HtmlT m a) where
+instance Monad m => Term (HtmlT m a) (HtmlT m a) where
   termWith name f = with (makeElement name) f
 
 -- | Some terms (like 'Lucid.Html5.style_', 'Lucid.Html5.title_') can be used for
@@ -208,12 +208,12 @@ class TermRaw arg result | result -> arg where
            -> result        -- ^ Result: either an element or an attribute.
 
 -- | Given attributes, expect more child input.
-instance (Monad m,ToHtml f, a ~ ()) => TermRaw [Attribute] (f -> HtmlT m a) where
+instance (Monad m,ToHtml f) => TermRaw [Attribute] (f -> HtmlT m ()) where
   termRawWith name f attrs = with (makeElement name) (attrs <> f) . toHtmlRaw
 
 -- | Given children immediately, just use that and expect no
 -- attributes.
-instance (Monad m,a ~ ()) => TermRaw Text (HtmlT m a) where
+instance Monad m => TermRaw Text (HtmlT m ()) where
   termRawWith name f = with (makeElement name) f . toHtmlRaw
 
 -- | Some termRaws (like 'Lucid.Html5.style_', 'Lucid.Html5.title_') can be used for
@@ -224,30 +224,30 @@ instance TermRaw Text Attribute where
 -- | With an element use these attributes. An overloaded way of adding
 -- attributes either to an element accepting attributes-and-children
 -- or one that just accepts attributes. See the two instances.
-class With a  where
+class With a where
   -- | With the given element(s), use the given attributes.
   with :: a -- ^ Some element, either @Html ()@ or @Html () -> Html ()@.
        -> [Attribute]
        -> a
 
 -- | For the contentless elements: 'Lucid.Html5.br_'
-instance (Monad m,a ~ ()) => With (HtmlT m a) where
+instance Monad m => With (HtmlT m a) where
   with f =
     \attr ->
-      HtmlT (do ~(f',_) <- runHtmlT f
+      HtmlT (do ~(f',a) <- runHtmlT f
                 return (\attr' m' ->
                           f' (unionArgs (M.fromListWith (<>) (map toPair attr)) attr') m'
-                       ,()))
+                       ,a))
     where toPair (Attribute x) = x
 
 -- | For the contentful elements: 'Lucid.Html5.div_'
-instance (Monad m,a ~ ()) => With (HtmlT m a -> HtmlT m a) where
+instance Monad m => With (HtmlT m a -> HtmlT m a) where
   with f =
     \attr inner ->
-      HtmlT (do ~(f',_) <- runHtmlT (f inner)
+      HtmlT (do ~(f',a) <- runHtmlT (f inner)
                 return ((\attr' m' ->
                            f' (unionArgs (M.fromListWith (<>) (map toPair attr)) attr') m')
-                       ,()))
+                       ,a))
     where toPair (Attribute x) = x
 
 -- | Union two sets of arguments and append duplicate keys.
@@ -346,24 +346,24 @@ makeAttribute x y = Attribute (x,y)
 
 -- | Make an HTML builder.
 makeElement :: Monad m
-            => Text       -- ^ Name.
-            -> HtmlT m a  -- ^ Children HTML.
-            -> HtmlT m () -- ^ A parent element.
+            => Text      -- ^ Name.
+            -> HtmlT m a -- ^ Children HTML.
+            -> HtmlT m a -- ^ A parent element.
 makeElement name =
   \m' ->
-    HtmlT (do ~(f,_) <- runHtmlT m'
-              return (\attr m -> s "<" <> Blaze.fromText name
+    HtmlT (do ~(f,a) <- runHtmlT m'
+              return (\attr m -> s "<" <> t name
                               <> foldlMapWithKey buildAttr attr <> s ">"
                               <> m <> f mempty mempty
-                              <> s "</" <> Blaze.fromText name <> s ">",
-                      ()))
+                              <> s "</" <> t name <> s ">",
+                      a))
 
 -- | Make an HTML builder for elements which have no ending tag.
 makeElementNoEnd :: Monad m
                  => Text       -- ^ Name.
                  -> HtmlT m () -- ^ A parent element.
 makeElementNoEnd name =
-  HtmlT (return (\attr _ -> s "<" <> Blaze.fromText name
+  HtmlT (return (\attr _ -> s "<" <> t name
                             <> foldlMapWithKey buildAttr attr <> s ">",
                  ()))
 
@@ -371,8 +371,8 @@ makeElementNoEnd name =
 buildAttr :: Text -> Text -> Builder
 buildAttr key val =
   s " " <>
-  Blaze.fromText key <>
-  if val == mempty
+  t key <>
+  if T.null val
      then mempty
      else s "=\"" <> encode val <> s "\""
 
@@ -380,10 +380,13 @@ buildAttr key val =
 foldlMapWithKey :: Monoid m => (k -> v -> m) -> HashMap k v -> m
 foldlMapWithKey f = M.foldlWithKey' (\m k v -> m <> f k v) mempty
 
--- | Convenience function for constructing builders.
+-- | Convenience function for constructing Builder from String.
 s :: String -> Builder
 s = Blaze.fromString
-{-# INLINE s #-}
+
+-- | Convenience function for constructing Builder from Text.
+t :: Text -> Builder
+t = Blaze.fromText
 
 --------------------------------------------------------------------------------
 -- Encoding
@@ -392,6 +395,6 @@ s = Blaze.fromString
 encode :: Text -> Builder
 encode = Blaze.fromHtmlEscapedText
 
--- | Encode the given strict plain text to an encoded HTML builder.
+-- | Encode the given lazy plain text to an encoded HTML builder.
 encodeLazy :: LT.Text -> Builder
 encodeLazy = Blaze.fromHtmlEscapedLazyText
