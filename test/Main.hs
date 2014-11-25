@@ -9,6 +9,8 @@ module Main where
 import Lucid
 import Lucid.Bootstrap
 
+import Example1
+
 import Test.HUnit
 import Test.Hspec
 
