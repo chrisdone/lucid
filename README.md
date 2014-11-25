@@ -53,10 +53,10 @@ Or monadic sequencing:
 <div><p>hello</p><p>sup</p></div>
 ```
 
-Attributes are set using the 'with' combinator:
+Attributes are set by providing an argument list:
 
 ``` haskell
-λ> with p_ [class_ "brand"] "Lucid Inc" :: Html ()
+λ> p_ [class_ "brand"] "Lucid Inc" :: Html ()
 ```
 
 ``` html
@@ -66,10 +66,10 @@ Attributes are set using the 'with' combinator:
 Here is a fuller example of Lucid:
 
 ``` haskell
-with table_ [rows_ "2"]
-     (tr_ (do with td_ [class_ "top",colspan_ "2"]
-                   (p_ "Hello, attributes!")
-              td_ "yay!"))
+table_ [rows_ "2"]
+       (tr_ (do td_ [class_ "top",colspan_ "2",style_ "color:red"]
+                    (p_ "Hello, attributes!")
+                td_ "yay!"))
 ```
 
 ``` html
@@ -98,7 +98,7 @@ For proper rendering you can easily run some HTML immediately with:
 Or to bytes:
 
 ``` haskell
-λ> renderBS (with p_ [style_ "color:red"] "Hello!")
+λ> renderBS (p_ [style_ "color:red"] "Hello!")
 ```
 
 ``` html
