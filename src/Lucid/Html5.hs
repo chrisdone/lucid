@@ -257,6 +257,10 @@ link_ = with (makeElementNoEnd "link")
 map_ :: Term arg result => arg -> result
 map_ = term "map"
 
+-- | @main@ element
+main_ :: Term arg result => arg -> result
+main_ = term "main"
+
 -- | @mark@ element
 mark_ :: Term arg result => arg -> result
 mark_ = term "mark"
@@ -408,6 +412,10 @@ tfoot_ = term "tfoot"
 -- | @th@ element
 th_ :: Term arg result => arg -> result
 th_ = term "th"
+
+-- | @template@ element
+template_ :: Term arg result => arg -> result
+template_ = term "template"
 
 -- | @thead@ element
 thead_ :: Term arg result => arg -> result
@@ -1000,6 +1008,10 @@ sandbox_ = makeAttribute "sandbox"
 -- | The @scope@ attribute.
 scope_ :: Text -> Attribute
 scope_ = makeAttribute "scope"
+
+-- | The @svg@ attribute.
+svg_ :: Text -> Attribute
+svg_ = makeAttribute "svg"
 
 -- | The @scoped@ attribute.
 scoped_ :: Text -> Attribute
