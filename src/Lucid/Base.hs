@@ -150,13 +150,13 @@ instance ToHtml LT.Text where
 --
 -- Very overloaded for three cases:
 --
--- * The first case is the basic @arg@ of @[(Text,Text)]@ which will
+-- * The first case is the basic @arg@ of @[Attribute]@ which will
 --   return a function that wants children.
 -- * The second is an @arg@ which is @HtmlT m ()@, in which case the
 --   term accepts no attributes and just the children are used for the
 --   element.
 -- * Finally, this is also used for overloaded attributes, like
---   `Lucid.Html5.style_` or `Lucid.Html5.title_`. If a return type of @(Text,Text)@ is inferred
+--   `Lucid.Html5.style_` or `Lucid.Html5.title_`. If a return type of @Attribute@ is inferred
 --   then an attribute will be made.
 --
 -- The instances look intimidating but actually the constraints make
