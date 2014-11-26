@@ -55,7 +55,7 @@ import qualified Data.Text.Lazy.Encoding as LT
 -- Types
 
 -- | A simple attribute.
-newtype Attribute = Attribute (Text,Text)
+data Attribute = Attribute !Text !Text
   deriving (Show,Eq)
 
 -- | Simple HTML builder type. Defined in terms of 'HtmlT'. Check out
@@ -222,7 +222,7 @@ instance TermRaw Text Attribute where
 -- | With an element use these attributes. An overloaded way of adding
 -- attributes either to an element accepting attributes-and-children
 -- or one that just accepts attributes. See the two instances.
-class With a  where
+class With a where
   -- | With the given element(s), use the given attributes.
   with :: a -- ^ Some element, either @Html a@ or @Html a -> Html a@.
        -> [Attribute]
@@ -233,24 +233,18 @@ instance (Monad m) => With (HtmlT m a) where
   with f =
     \attr ->
       HtmlT (do ~(f',a) <- runHtmlT f
-                return (\attr' m' ->
-                          f' (unionArgs (M.fromListWith (<>) (map toPair attr)) attr') m'
-                       ,a))
-    where toPair (Attribute x) = x
+                return (f' . insertArgs attr,a))
 
 -- | For the contentful elements: 'Lucid.Html5.div_'
 instance (Monad m) => With (HtmlT m a -> HtmlT m a) where
   with f =
     \attr inner ->
       HtmlT (do ~(f',a) <- runHtmlT (f inner)
-                return ((\attr' m' ->
-                           f' (unionArgs (M.fromListWith (<>) (map toPair attr)) attr') m')
-                       ,a))
-    where toPair (Attribute x) = x
+                return (f' . insertArgs attr,a))
 
--- | Union two sets of arguments and append duplicate keys.
-unionArgs :: HashMap Text Text -> HashMap Text Text -> HashMap Text Text
-unionArgs = M.unionWith (<>)
+-- | Insert a list of Attributes into a HashMap and append duplicate keys.
+insertArgs :: [Attribute] -> HashMap Text Text -> HashMap Text Text
+insertArgs = flip (foldr (\(Attribute k v) -> M.insertWith (<>) k v))
 
 --------------------------------------------------------------------------------
 -- Running
@@ -340,7 +334,7 @@ evalHtmlT m =
 makeAttribute :: Text -- ^ Attribute name.
               -> Text -- ^ Attribute value.
               -> Attribute
-makeAttribute x y = Attribute (x,y)
+makeAttribute = Attribute
 
 -- | Make an HTML builder.
 makeElement :: Monad m
