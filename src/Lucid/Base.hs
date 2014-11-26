@@ -68,7 +68,7 @@ type Html = HtmlT Identity
 -- | A monad transformer that generates HTML. Use the simpler 'Html'
 -- type if you don't want to transform over some other monad.
 newtype HtmlT m a =
-  HtmlT {runHtmlT :: m (HashMap Text Text -> Builder -> Builder,a)
+  HtmlT {runHtmlT :: m (HashMap Text Text -> Builder,a)
          -- ^ This is the low-level way to run the HTML transformer,
          -- finally returning an element builder and a value. You can
          -- pass 'mempty' for both arguments for a top-level call. See
@@ -77,14 +77,11 @@ newtype HtmlT m a =
 
 -- | Monoid is right-associative, a la the 'Builder' in it.
 instance Monoid a => Monoid (Html a) where
-  mempty = HtmlT (return (\_ _ -> mempty,mempty))
+  mempty = HtmlT (return (\_ -> mempty,mempty))
   mappend (HtmlT get_f_a) (HtmlT get_g_b) =
     HtmlT (do ~(f,a) <- get_f_a
               ~(g,b) <- get_g_b
-              return (\attr inner ->
-                        f attr inner <>
-                        g attr inner
-                     ,a <> b))
+              return (\attr -> f attr <> g attr,a <> b))
 
 -- | Based on the monad instance.
 instance Monad m => Applicative (HtmlT m) where
@@ -97,21 +94,18 @@ instance Monad m => Functor (HtmlT m) where
 
 -- | Basically acts like Writer.
 instance Monad m => Monad (HtmlT m) where
-  return a = HtmlT (return (\_ _ -> mempty,a))
+  return a = HtmlT (return (\_ -> mempty,a))
   HtmlT get_g_a >>= f =
     HtmlT (do ~(g,a) <- get_g_a
               let HtmlT get_f'_b = f a
               ~(f',b) <- get_f'_b
-              return (\attr inner ->
-                        g attr inner <>
-                        f' attr inner
-                     ,b))
+              return (\attr -> g attr <> f' attr,b))
 
 -- | Used for 'lift'.
 instance MonadTrans HtmlT where
   lift m =
     HtmlT (do a <- m
-              return (\_ _ -> mempty,a))
+              return (\_ -> mempty,a))
 
 -- | If you want to use IO in your HTML generation.
 instance MonadIO m => MonadIO (HtmlT m) where
@@ -121,7 +115,7 @@ instance MonadIO m => MonadIO (HtmlT m) where
 -- builder. That might be faster.
 instance (Monad m,a ~ ()) => IsString (HtmlT m a) where
   fromString m' =
-    HtmlT (return (\_ _ -> encode (T.pack m'),()))
+    HtmlT (return (\_ -> encode (T.pack m'),()))
 
 -- | Just calls 'renderText'.
 instance (m ~ Identity) => Show (HtmlT m a) where
@@ -134,15 +128,15 @@ class ToHtml a where
 
 instance ToHtml String where
   toHtml = fromString
-  toHtmlRaw m = HtmlT (return ((\_ _ -> Blaze.fromString m),()))
+  toHtmlRaw m = HtmlT (return ((\_ -> Blaze.fromString m),()))
 
 instance ToHtml Text where
-  toHtml m = HtmlT (return ((\_ _ -> encode m),()))
-  toHtmlRaw m = HtmlT (return ((\_ _ -> Blaze.fromText m),()))
+  toHtml m = HtmlT (return ((\_ -> encode m),()))
+  toHtmlRaw m = HtmlT (return ((\_ -> Blaze.fromText m),()))
 
 instance ToHtml LT.Text where
-  toHtml m = HtmlT (return ((\_ _ -> encodeLazy m),()))
-  toHtmlRaw m = HtmlT (return ((\_ _ -> Blaze.fromLazyText m),()))
+  toHtml m = HtmlT (return ((\_ -> encodeLazy m),()))
+  toHtmlRaw m = HtmlT (return ((\_ -> Blaze.fromLazyText m),()))
 
 -- | Used to construct HTML terms.
 --
@@ -308,7 +302,7 @@ execHtmlT :: Monad m
           -> m Builder  -- ^ The @a@ is discarded.
 execHtmlT m =
   do (f,_) <- runHtmlT m
-     return (f mempty mempty)
+     return (f mempty)
 
 -- | Evaluate the HTML to its return value. Analogous to @evalState@.
 --
@@ -342,12 +336,12 @@ makeElement :: Monad m
             -> HtmlT m a  -- ^ Children HTML.
             -> HtmlT m a -- ^ A parent element.
 makeElement name =
-  \m' ->
-    HtmlT (do ~(f,a) <- runHtmlT m'
-              return (\attr m -> s "<" <> Blaze.fromText name
-                              <> foldlMapWithKey buildAttr attr <> s ">"
-                              <> m <> f mempty mempty
-                              <> s "</" <> Blaze.fromText name <> s ">",
+  \m ->
+    HtmlT (do ~(f,a) <- runHtmlT m
+              return (\attr -> s "<" <> Blaze.fromText name
+                            <> foldlMapWithKey buildAttr attr <> s ">"
+                            <> f mempty
+                            <> s "</" <> Blaze.fromText name <> s ">",
                       a))
 
 -- | Make an HTML builder for elements which have no ending tag.
@@ -355,8 +349,8 @@ makeElementNoEnd :: Monad m
                  => Text       -- ^ Name.
                  -> HtmlT m () -- ^ A parent element.
 makeElementNoEnd name =
-  HtmlT (return (\attr _ -> s "<" <> Blaze.fromText name
-                            <> foldlMapWithKey buildAttr attr <> s ">",
+  HtmlT (return (\attr -> s "<" <> Blaze.fromText name
+                       <> foldlMapWithKey buildAttr attr <> s ">",
                  ()))
 
 -- | Build and encode an attribute.
@@ -364,7 +358,7 @@ buildAttr :: Text -> Text -> Builder
 buildAttr key val =
   s " " <>
   Blaze.fromText key <>
-  if val == mempty
+  if T.null val
      then mempty
      else s "=\"" <> encode val <> s "\""
 
@@ -384,6 +378,6 @@ s = Blaze.fromString
 encode :: Text -> Builder
 encode = Blaze.fromHtmlEscapedText
 
--- | Encode the given strict plain text to an encoded HTML builder.
+-- | Encode the given lazy plain text to an encoded HTML builder.
 encodeLazy :: LT.Text -> Builder
 encodeLazy = Blaze.fromHtmlEscapedLazyText
