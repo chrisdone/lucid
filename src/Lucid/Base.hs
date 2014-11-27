@@ -2,7 +2,6 @@
 {-# LANGUAGE FlexibleInstances #-}
 {-# LANGUAGE FunctionalDependencies #-}
 {-# LANGUAGE MultiParamTypeClasses #-}
-{-# LANGUAGE OverloadedStrings #-}
 {-# LANGUAGE TypeFamilies #-}
 
 -- | Base types and combinators.
@@ -35,6 +34,7 @@ module Lucid.Base
 
 import           Blaze.ByteString.Builder (Builder)
 import qualified Blaze.ByteString.Builder as Blaze
+import qualified Blaze.ByteString.Builder.Char.Utf8 as Blaze
 import qualified Blaze.ByteString.Builder.Html.Utf8 as Blaze
 import           Control.Applicative
 import           Control.Monad
@@ -330,49 +330,49 @@ makeElement :: Monad m
             => Text       -- ^ Name.
             -> HtmlT m a  -- ^ Children HTML.
             -> HtmlT m a -- ^ A parent element.
-makeElement name =
-  \m ->
-    HtmlT (do ~(f,a) <- runHtmlT m
-              return (\attr -> s "<" <> Blaze.fromText name
-                            <> foldlMapWithKey buildAttr attr <> s ">"
-                            <> f mempty
-                            <> s "</" <> Blaze.fromText name <> s ">",
-                      a))
+makeElement name child =
+  HtmlT (runHtmlT child >>= \ ~(f,a) ->
+    return (\attrs -> open name attrs <> f mempty <> close name,a))
+{-# INLINE makeElement #-}
 
 -- | Make an HTML builder for elements which have no ending tag.
 makeElementNoEnd :: Monad m
                  => Text       -- ^ Name.
                  -> HtmlT m () -- ^ A parent element.
-makeElementNoEnd name =
-  HtmlT (return (\attr -> s "<" <> Blaze.fromText name
-                       <> foldlMapWithKey buildAttr attr <> s ">",
-                 ()))
+makeElementNoEnd name = HtmlT (return (open name,()))
+{-# INLINE makeElementNoEnd #-}
 
 -- | Build and encode an attribute.
 buildAttr :: Text -> Text -> Builder
 buildAttr key val =
-  s " " <>
-  Blaze.fromText key <>
+  c ' ' <>
+  t key <>
   if T.null val
      then mempty
-     else s "=\"" <> encode val <> s "\""
+     else s "=\"" <> Blaze.fromHtmlEscapedText val <> c '"'
+
+-- | Build an opening tag with attributes.
+open :: Text -> HashMap Text Text -> Builder
+open name attrs = c '<' <> t name <> foldlMapWithKey buildAttr attrs <> c '>'
+{-# INLINE open #-}
+
+-- | Build a closing tag.
+close :: Text -> Builder
+close name = s "</" <> t name <> c '>'
+{-# INLINE close #-}
 
 -- | Folding and monoidally appending attributes.
 foldlMapWithKey :: Monoid m => (k -> v -> m) -> HashMap k v -> m
 foldlMapWithKey f = M.foldlWithKey' (\m k v -> m <> f k v) mempty
 
--- | Convenience function for constructing builders.
+-- | Convenience function for constructing 'Builder' from 'Char'.
+c :: Char -> Builder
+c = Blaze.fromChar
+
+-- | Convenience function for constructing 'Builder' from 'String'.
 s :: String -> Builder
 s = Blaze.fromString
-{-# INLINE s #-}
 
---------------------------------------------------------------------------------
--- Encoding
-
--- | Encode the given strict plain text to an encoded HTML builder.
-encode :: Text -> Builder
-encode = Blaze.fromHtmlEscapedText
-
--- | Encode the given lazy plain text to an encoded HTML builder.
-encodeLazy :: LT.Text -> Builder
-encodeLazy = Blaze.fromHtmlEscapedLazyText
+-- | Convenience function for constructing 'Builder' from 'Text'.
+t :: Text -> Builder
+t = Blaze.fromText
