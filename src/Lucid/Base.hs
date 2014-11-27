@@ -37,6 +37,7 @@ import qualified Blaze.ByteString.Builder as Blaze
 import qualified Blaze.ByteString.Builder.Char.Utf8 as Blaze
 import qualified Blaze.ByteString.Builder.Html.Utf8 as Blaze
 import           Control.Applicative
+import           Control.DeepSeq
 import           Control.Monad
 import           Control.Monad.Trans
 import           Data.ByteString.Lazy (ByteString)
@@ -74,6 +75,9 @@ newtype HtmlT m a =
          -- pass 'mempty' as an argument for a top-level call. See
          -- 'evalHtmlT' and 'execHtmlT' for easier to use functions.
          }
+
+instance NFData a => NFData (Html a) where
+  rnf (HtmlT m) = let (f,a) = runIdentity m in f mempty `seq` rnf a
 
 -- | Monoid is right-associative, a la the 'Builder' in it.
 instance (Monad m,Monoid a) => Monoid (HtmlT m a) where
