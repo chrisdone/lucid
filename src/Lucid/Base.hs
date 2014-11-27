@@ -76,36 +76,27 @@ newtype HtmlT m a =
          }
 
 -- | Monoid is right-associative, a la the 'Builder' in it.
-instance Monoid a => Monoid (Html a) where
-  mempty = HtmlT (return (\_ -> mempty,mempty))
-  mappend (HtmlT get_f_a) (HtmlT get_g_b) =
-    HtmlT (do ~(f,a) <- get_f_a
-              ~(g,b) <- get_g_b
-              return (\attr -> f attr <> g attr,a <> b))
-
--- | Based on the monad instance.
-instance Monad m => Applicative (HtmlT m) where
-  pure = return
-  (<*>) = ap
+instance (Monad m,Monoid a) => Monoid (HtmlT m a) where
+  mempty  = return mempty
+  mappend = liftM2 mappend
 
 -- | Just re-uses Monad.
 instance Monad m => Functor (HtmlT m) where
   fmap = liftM
 
--- | Basically acts like Writer.
-instance Monad m => Monad (HtmlT m) where
-  return a = HtmlT (return (\_ -> mempty,a))
-  HtmlT get_g_a >>= f =
-    HtmlT (do ~(g,a) <- get_g_a
-              let HtmlT get_f'_b = f a
-              ~(f',b) <- get_f'_b
-              return (\attr -> g attr <> f' attr,b))
+instance Monad m => Applicative (HtmlT m) where
+  pure  = return
+  (<*>) = ap
 
--- | Used for 'lift'.
+instance Monad m => Monad (HtmlT m) where
+  return a = HtmlT (return (mempty,a))
+  HtmlT m >>= f =
+    HtmlT (do ~(g,a) <- m
+              ~(h,b) <- runHtmlT (f a)
+              return (g <> h,b))
+
 instance MonadTrans HtmlT where
-  lift m =
-    HtmlT (do a <- m
-              return (\_ -> mempty,a))
+  lift m = HtmlT (m >>= \a -> return (mempty,a))
 
 -- | If you want to use IO in your HTML generation.
 instance MonadIO m => MonadIO (HtmlT m) where
