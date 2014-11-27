@@ -170,17 +170,19 @@ class Term arg result | result -> arg where
 
 -- | Given attributes, expect more child input.
 instance (Monad m,f ~ HtmlT m a) => Term [Attribute] (f -> HtmlT m a) where
-  termWith name f = with (makeElement name) . (<> f)
+  termWith name attrs = with (makeElement name) . (attrs ++)
+  {-# SPECIALIZE termWith :: Text -> [Attribute] -> [Attribute] -> (Html () -> Html ()) #-}
 
 -- | Given children immediately, just use that and expect no
 -- attributes.
 instance (Monad m) => Term (HtmlT m a) (HtmlT m a) where
-  termWith name f = with (makeElement name) f
+  termWith = with . makeElement
+  {-# SPECIALIZE termWith :: Text -> [Attribute] -> Html () -> Html () #-}
 
 -- | Some terms (like 'Lucid.Html5.style_', 'Lucid.Html5.title_') can be used for
 -- attributes as well as elements.
 instance Term Text Attribute where
-  termWith key _ value = makeAttribute key value
+  termWith = const . makeAttribute
 
 -- | Same as the 'Term' class, but will not HTML escape its
 -- children. Useful for elements like 'Lucid.Html5.style_' or
