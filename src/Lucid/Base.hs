@@ -111,11 +111,10 @@ instance MonadTrans HtmlT where
 instance MonadIO m => MonadIO (HtmlT m) where
   liftIO = lift . liftIO
 
--- | We pack it via string. Could possibly encode straight into a
--- builder. That might be faster.
+-- | Overloaded HTML string literals.
+--   ie. div_ "hello" :: Html ()
 instance (Monad m,a ~ ()) => IsString (HtmlT m a) where
-  fromString m' =
-    HtmlT (return (\_ -> encode (T.pack m'),()))
+  fromString = toHtml
 
 -- | Just calls 'renderText'.
 instance (m ~ Identity) => Show (HtmlT m a) where
@@ -127,16 +126,21 @@ class ToHtml a where
   toHtmlRaw :: Monad m => a -> HtmlT m ()
 
 instance ToHtml String where
-  toHtml = fromString
-  toHtmlRaw m = HtmlT (return ((\_ -> Blaze.fromString m),()))
+  toHtml = build . Blaze.fromHtmlEscapedString
+  toHtmlRaw = build . Blaze.fromString
 
 instance ToHtml Text where
-  toHtml m = HtmlT (return ((\_ -> encode m),()))
-  toHtmlRaw m = HtmlT (return ((\_ -> Blaze.fromText m),()))
+  toHtml = build . Blaze.fromHtmlEscapedText
+  toHtmlRaw = build . Blaze.fromText
 
 instance ToHtml LT.Text where
-  toHtml m = HtmlT (return ((\_ -> encodeLazy m),()))
-  toHtmlRaw m = HtmlT (return ((\_ -> Blaze.fromLazyText m),()))
+  toHtml = build . Blaze.fromHtmlEscapedLazyText
+  toHtmlRaw = build . Blaze.fromLazyText
+
+-- Create a 'HtmlT' directly from a 'Builder'.
+build :: Monad m => Builder -> HtmlT m ()
+build b = HtmlT (return (const b,()))
+{-# INLINE build #-}
 
 -- | Used to construct HTML terms.
 --
