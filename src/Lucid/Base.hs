@@ -222,22 +222,20 @@ class With a where
        -> a
 
 -- | For the contentless elements: 'Lucid.Html5.br_'
-instance (Monad m) => With (HtmlT m a) where
-  with f =
-    \attr ->
-      HtmlT (do ~(f',a) <- runHtmlT f
-                return (f' . insertArgs attr,a))
+instance Monad m => With (HtmlT m a) where
+  with m attr =
+    HtmlT (runHtmlT m >>= \ ~(f,a) -> return (f . insertArgs attr,a))
+  {-# SPECIALIZE with :: Html () -> [Attribute] -> Html () #-}
 
 -- | For the contentful elements: 'Lucid.Html5.div_'
-instance (Monad m) => With (HtmlT m a -> HtmlT m a) where
-  with f =
-    \attr inner ->
-      HtmlT (do ~(f',a) <- runHtmlT (f inner)
-                return (f' . insertArgs attr,a))
+instance Monad m => With (HtmlT m a -> HtmlT m a) where
+  with m attr child =
+    HtmlT (runHtmlT (m child) >>= \ ~(f,a) -> return (f . insertArgs attr,a))
+  {-# SPECIALIZE with :: (Html () -> Html ()) -> [Attribute] -> (Html () -> Html ()) #-}
 
 -- | Insert a list of Attributes into a HashMap and append duplicate keys.
 insertArgs :: [Attribute] -> HashMap Text Text -> HashMap Text Text
-insertArgs = flip (foldr (\(Attribute k v) -> M.insertWith (<>) k v))
+insertArgs = flip (foldr (\(Attribute k v) -> M.insertWith mappend k v))
 
 --------------------------------------------------------------------------------
 -- Running
