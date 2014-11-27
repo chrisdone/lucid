@@ -200,17 +200,17 @@ class TermRaw arg result | result -> arg where
 
 -- | Given attributes, expect more child input.
 instance (Monad m,ToHtml f, a ~ ()) => TermRaw [Attribute] (f -> HtmlT m a) where
-  termRawWith name f attrs = with (makeElement name) (attrs <> f) . toHtmlRaw
+  termRawWith name f attrs = termWith name f attrs . toHtmlRaw
 
 -- | Given children immediately, just use that and expect no
 -- attributes.
 instance (Monad m,a ~ ()) => TermRaw Text (HtmlT m a) where
-  termRawWith name f = with (makeElement name) f . toHtmlRaw
+  termRawWith name f = termWith name f . toHtmlRaw
 
 -- | Some termRaws (like 'Lucid.Html5.style_', 'Lucid.Html5.title_') can be used for
 -- attributes as well as elements.
 instance TermRaw Text Attribute where
-  termRawWith key _ value = makeAttribute key value
+  termRawWith = termWith
 
 -- | With an element use these attributes. An overloaded way of adding
 -- attributes either to an element accepting attributes-and-children
