@@ -71,7 +71,7 @@ newtype HtmlT m a =
   HtmlT {runHtmlT :: m (HashMap Text Text -> Builder,a)
          -- ^ This is the low-level way to run the HTML transformer,
          -- finally returning an element builder and a value. You can
-         -- pass 'mempty' for both arguments for a top-level call. See
+         -- pass 'mempty' as an argument for a top-level call. See
          -- 'evalHtmlT' and 'execHtmlT' for easier to use functions.
          }
 
