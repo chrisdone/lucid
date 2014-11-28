@@ -27,6 +27,7 @@ spec = do
   describe "attributes-with" testAttributesWith
   describe "extension" testExtension
   describe "special-elements" testSpecials
+  describe "self-closing" testSelfClosing
 
 -- | Test text/unicode.
 testText :: Spec
@@ -178,3 +179,15 @@ testSpecials =
      it "style"
         (renderText (style_ "body{background:url('Hello, World!')}") ==
          "<style>body{background:url('Hello, World!')}</style>")
+
+-- | Elements which do not contain children.
+testSelfClosing :: Spec
+testSelfClosing =
+  do it "br" (renderText (br_ []) == "<br>")
+     it "hr" (renderText (hr_ []) == "<br>")
+     it "input"
+        (renderText (input_ []) ==
+         "<input>")
+     it "input"
+        (renderText (input_ [type_ "text"]) ==
+         "<input type=\"text\">")
