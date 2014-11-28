@@ -49,7 +49,7 @@ demo =
                                                     " expiring "
                                                     toHtml (show w)))
                                          [1 .. 5]))
-                        hr_ []
+                        hr_
                         p_ [style_ "text-align: center;"]
                            (small_ (do "This website is not affiliated Youngstown "
                                        "State University in any way. It was "
@@ -67,6 +67,5 @@ demo =
                         img_ [style_ "display: block; margin: 0 auto; width: 180px;"
                              ,src_ "http://icons.wxug.com/logos/images/wundergroundLogo_4c_horz.jpg"
                              ,alt_ "Weather Underground Logo"])))
-  where t_ :: Term a r
-           => a -> r
+  where t_ :: Term a => a
         t_ = termWith "p" [class_ " t "]

@@ -22,15 +22,15 @@ doctypehtml_ m =
      html_ m
 
 -- | @a@ element
-a_ :: Term arg result => arg -> result
+a_ :: Term a => a
 a_ = term "a"
 
 -- | @abbr@ element
-abbr_ :: Term arg result => arg -> result
+abbr_ :: Term a => a
 abbr_ = term "abbr"
 
 -- | @address@ element
-address_ :: Term arg result => arg -> result
+address_ :: Term a => a
 address_ = term "address"
 
 -- | @area@ element
@@ -38,19 +38,19 @@ area_ :: Monad m => [Attribute] -> HtmlT m ()
 area_ = with (makeElementNoEnd "area")
 
 -- | @article@ element
-article_ :: Term arg result => arg -> result
+article_ :: Term a => a
 article_ = term "article"
 
 -- | @aside@ element
-aside_ :: Term arg result => arg -> result
+aside_ :: Term a => a
 aside_ = term "aside"
 
 -- | @audio@ element
-audio_ :: Term arg result => arg -> result
+audio_ :: Term a => a
 audio_ = term "audio"
 
 -- | @b@ element
-b_ :: Term arg result => arg -> result
+b_ :: Term a => a
 b_ = term "b"
 
 -- | @base@ element
@@ -58,39 +58,39 @@ base_ :: Monad m => [Attribute] -> HtmlT m ()
 base_ = with (makeElementNoEnd "base")
 
 -- | @bdo@ element
-bdo_ :: Term arg result => arg -> result
+bdo_ :: Term a => a
 bdo_ = term "bdo"
 
 -- | @blockquote@ element
-blockquote_ :: Term arg result => arg -> result
+blockquote_ :: Term a => a
 blockquote_ = term "blockquote"
 
 -- | @body@ element
-body_ :: Term arg result => arg -> result
+body_ :: Term a => a
 body_ = term "body"
 
 -- | @br@ element
-br_ :: Monad m => [Attribute] -> HtmlT m ()
-br_ = with (makeElementNoEnd "br")
+br_ :: Term a => a
+br_ = term "br"
 
 -- | @button@ element
-button_ :: Term arg result => arg -> result
+button_ :: Term a => a
 button_ = term "button"
 
 -- | @canvas@ element
-canvas_ :: Term arg result => arg -> result
+canvas_ :: Term a => a
 canvas_ = term "canvas"
 
 -- | @caption@ element
-caption_ :: Term arg result => arg -> result
+caption_ :: Term a => a
 caption_ = term "caption"
 
 -- | @cite@ element or @cite@ attribute.
-cite_ :: Term arg result => arg -> result
+cite_ :: Term a => a
 cite_ = term "cite"
 
 -- | @code@ element
-code_ :: Term arg result => arg -> result
+code_ :: Term a => a
 code_ = term "code"
 
 -- | @col@ element
@@ -98,47 +98,47 @@ col_ :: Monad m => [Attribute] -> HtmlT m ()
 col_ = with (makeElementNoEnd "col")
 
 -- | @colgroup@ element
-colgroup_ :: Term arg result => arg -> result
+colgroup_ :: Term a => a
 colgroup_ = term "colgroup"
 
 -- | @command@ element
-command_ :: Term arg result => arg -> result
+command_ :: Term a => a
 command_ = term "command"
 
 -- | @datalist@ element
-datalist_ :: Term arg result => arg -> result
+datalist_ :: Term a => a
 datalist_ = term "datalist"
 
 -- | @dd@ element
-dd_ :: Term arg result => arg -> result
+dd_ :: Term a => a
 dd_ = term "dd"
 
 -- | @del@ element
-del_ :: Term arg result => arg -> result
+del_ :: Term a => a
 del_ = term "del"
 
 -- | @details@ element
-details_ :: Term arg result => arg -> result
+details_ :: Term a => a
 details_ = term "details"
 
 -- | @dfn@ element
-dfn_ :: Term arg result => arg -> result
+dfn_ :: Term a => a
 dfn_ = term "dfn"
 
 -- | @div@ element
-div_ :: Term arg result => arg -> result
+div_ :: Term a => a
 div_ = term "div"
 
 -- | @dl@ element
-dl_ :: Term arg result => arg -> result
+dl_ :: Term a => a
 dl_ = term "dl"
 
 -- | @dt@ element
-dt_ :: Term arg result => arg -> result
+dt_ :: Term a => a
 dt_ = term "dt"
 
 -- | @em@ element
-em_ :: Term arg result => arg -> result
+em_ :: Term a => a
 em_ = term "em"
 
 -- | @embed@ element
@@ -146,75 +146,75 @@ embed_ :: Monad m => [Attribute] -> HtmlT m ()
 embed_ = with (makeElementNoEnd "embed")
 
 -- | @fieldset@ element
-fieldset_ :: Term arg result => arg -> result
+fieldset_ :: Term a => a
 fieldset_ = term "fieldset"
 
 -- | @figcaption@ element
-figcaption_ :: Term arg result => arg -> result
+figcaption_ :: Term a => a
 figcaption_ = term "figcaption"
 
 -- | @figure@ element
-figure_ :: Term arg result => arg -> result
+figure_ :: Term a => a
 figure_ = term "figure"
 
 -- | @footer@ element
-footer_ :: Term arg result => arg -> result
+footer_ :: Term a => a
 footer_ = term "footer"
 
 -- | @form@ element or @form@ attribute
-form_ :: Term arg result => arg -> result
+form_ :: Term a => a
 form_ = term "form"
 
 -- | @h1@ element
-h1_ :: Term arg result => arg -> result
+h1_ :: Term a => a
 h1_ = term "h1"
 
 -- | @h2@ element
-h2_ :: Term arg result => arg -> result
+h2_ :: Term a => a
 h2_ = term "h2"
 
 -- | @h3@ element
-h3_ :: Term arg result => arg -> result
+h3_ :: Term a => a
 h3_ = term "h3"
 
 -- | @h4@ element
-h4_ :: Term arg result => arg -> result
+h4_ :: Term a => a
 h4_ = term "h4"
 
 -- | @h5@ element
-h5_ :: Term arg result => arg -> result
+h5_ :: Term a => a
 h5_ = term "h5"
 
 -- | @h6@ element
-h6_ :: Term arg result => arg -> result
+h6_ :: Term a => a
 h6_ = term "h6"
 
 -- | @head@ element
-head_ :: Term arg result => arg -> result
+head_ :: Term a => a
 head_ = term "head"
 
 -- | @header@ element
-header_ :: Term arg result => arg -> result
+header_ :: Term a => a
 header_ = term "header"
 
 -- | @hgroup@ element
-hgroup_ :: Term arg result => arg -> result
+hgroup_ :: Term a => a
 hgroup_ = term "hgroup"
 
 -- | @hr@ element
-hr_ :: Monad m => [Attribute] -> HtmlT m ()
-hr_ = with (makeElementNoEnd "hr")
+hr_ :: Term a => a
+hr_ = term "hr"
 
 -- | @html@ element
-html_ :: Term arg result => arg -> result
+html_ :: Term a => a
 html_ = term "html"
 
 -- | @i@ element
-i_ :: Term arg result => arg -> result
+i_ :: Term a => a
 i_ = term "i"
 
 -- | @iframe@ element
-iframe_ :: Term arg result => arg -> result
+iframe_ :: Term a => a
 iframe_ = term "iframe"
 
 -- | @img@ element
@@ -222,15 +222,18 @@ img_ :: Monad m => [Attribute] -> HtmlT m ()
 img_ = with (makeElementNoEnd "img")
 
 -- | @input@ element
-input_ :: Monad m => [Attribute] -> HtmlT m ()
-input_ = with (makeElementNoEnd "input")
+input_ :: Term a => a
+input_ = term "input"
+
+text_ :: Monad m => [Attribute] -> HtmlT m ()
+text_ = with (with (makeElementNoEnd "input") [type_ "text"])
 
 -- | @ins@ element
-ins_ :: Term arg result => arg -> result
+ins_ :: Term a => a
 ins_ = term "ins"
 
 -- | @kbd@ element
-kbd_ :: Term arg result => arg -> result
+kbd_ :: Term a => a
 kbd_ = term "kbd"
 
 -- | @keygen@ element
@@ -238,15 +241,15 @@ keygen_ :: Monad m => [Attribute] -> HtmlT m ()
 keygen_ = with (makeElementNoEnd "keygen")
 
 -- | @label@ element or @label@ attribute
-label_ :: Term arg result => arg -> result
+label_ :: Term a => a
 label_ = term "label"
 
 -- | @legend@ element
-legend_ :: Term arg result => arg -> result
+legend_ :: Term a => a
 legend_ = term "legend"
 
 -- | @li@ element
-li_ :: Term arg result => arg -> result
+li_ :: Term a => a
 li_ = term "li"
 
 -- | @link@ element
@@ -254,19 +257,19 @@ link_ :: Monad m => [Attribute] -> HtmlT m ()
 link_ = with (makeElementNoEnd "link")
 
 -- | @map@ element
-map_ :: Term arg result => arg -> result
+map_ :: Term a => a
 map_ = term "map"
 
 -- | @main@ element
-main_ :: Term arg result => arg -> result
+main_ :: Term a => a
 main_ = term "main"
 
 -- | @mark@ element
-mark_ :: Term arg result => arg -> result
+mark_ :: Term a => a
 mark_ = term "mark"
 
 -- | @menu@ element
-menu_ :: Term arg result => arg -> result
+menu_ :: Term a => a
 menu_ = term "menu"
 
 -- | @menuitem@ element
@@ -278,39 +281,39 @@ meta_ :: Monad m => [Attribute] -> HtmlT m ()
 meta_ = with (makeElementNoEnd "meta")
 
 -- | @meter@ element
-meter_ :: Term arg result => arg -> result
+meter_ :: Term a => a
 meter_ = term "meter"
 
 -- | @nav@ element
-nav_ :: Term arg result => arg -> result
+nav_ :: Term a => a
 nav_ = term "nav"
 
 -- | @noscript@ element
-noscript_ :: Term arg result => arg -> result
+noscript_ :: Term a => a
 noscript_ = term "noscript"
 
 -- | @object@ element
-object_ :: Term arg result => arg -> result
+object_ :: Term a => a
 object_ = term "object"
 
 -- | @ol@ element
-ol_ :: Term arg result => arg -> result
+ol_ :: Term a => a
 ol_ = term "ol"
 
 -- | @optgroup@ element
-optgroup_ :: Term arg result => arg -> result
+optgroup_ :: Term a => a
 optgroup_ = term "optgroup"
 
 -- | @option@ element
-option_ :: Term arg result => arg -> result
+option_ :: Term a => a
 option_ = term "option"
 
 -- | @output@ element
-output_ :: Term arg result => arg -> result
+output_ :: Term a => a
 output_ = term "output"
 
 -- | @p@ element
-p_ :: Term arg result => arg -> result
+p_ :: Term a => a
 p_ = term "p"
 
 -- | @param@ element
@@ -318,31 +321,31 @@ param_ :: Monad m => [Attribute] -> HtmlT m ()
 param_ = with (makeElementNoEnd "param")
 
 -- | @pre@ element
-pre_ :: Term arg result => arg -> result
+pre_ :: Term a => a
 pre_ = term "pre"
 
 -- | @progress@ element
-progress_ :: Term arg result => arg -> result
+progress_ :: Term a => a
 progress_ = term "progress"
 
 -- | @q@ element
-q_ :: Term arg result => arg -> result
+q_ :: Term a => a
 q_ = term "q"
 
 -- | @rp@ element
-rp_ :: Term arg result => arg -> result
+rp_ :: Term a => a
 rp_ = term "rp"
 
 -- | @rt@ element
-rt_ :: Term arg result => arg -> result
+rt_ :: Term a => a
 rt_ = term "rt"
 
 -- | @ruby@ element
-ruby_ :: Term arg result => arg -> result
+ruby_ :: Term a => a
 ruby_ = term "ruby"
 
 -- | @samp@ element
-samp_ :: Term arg result => arg -> result
+samp_ :: Term a => a
 samp_ = term "samp"
 
 -- | @script@ element
@@ -350,15 +353,15 @@ script_ :: TermRaw arg result => arg -> result
 script_ = termRaw "script"
 
 -- | @section@ element
-section_ :: Term arg result => arg -> result
+section_ :: Term a => a
 section_ = term "section"
 
 -- | @select@ element
-select_ :: Term arg result => arg -> result
+select_ :: Term a => a
 select_ = term "select"
 
 -- | @small@ element
-small_ :: Term arg result => arg -> result
+small_ :: Term a => a
 small_ = term "small"
 
 -- | @source@ element
@@ -366,11 +369,11 @@ source_ :: Monad m => [Attribute] -> HtmlT m ()
 source_ = with (makeElementNoEnd "source")
 
 -- | @span@ element or @span@ attribute
-span_ :: Term arg result => arg -> result
+span_ :: Term a => a
 span_ = term "span"
 
 -- | @strong@ element
-strong_ :: Term arg result => arg -> result
+strong_ :: Term a => a
 strong_ = term "strong"
 
 -- | @style@ element or @style@ attribute
@@ -378,59 +381,59 @@ style_ :: TermRaw arg result => arg -> result
 style_ = termRaw "style"
 
 -- | @sub@ element
-sub_ :: Term arg result => arg -> result
+sub_ :: Term a => a
 sub_ = term "sub"
 
 -- | @summary@ element or @summary@ attribute
-summary_ :: Term arg result => arg -> result
+summary_ :: Term a => a
 summary_ = term "summary"
 
 -- | @sup@ element
-sup_ :: Term arg result => arg -> result
+sup_ :: Term a => a
 sup_ = term "sup"
 
 -- | @table@ element
-table_ :: Term arg result => arg -> result
+table_ :: Term a => a
 table_ = term "table"
 
 -- | @tbody@ element
-tbody_ :: Term arg result => arg -> result
+tbody_ :: Term a => a
 tbody_ = term "tbody"
 
 -- | @td@ element
-td_ :: Term arg result => arg -> result
+td_ :: Term a => a
 td_ = term "td"
 
 -- | @textarea@ element
-textarea_ :: Term arg result => arg -> result
+textarea_ :: Term a => a
 textarea_ = term "textarea"
 
 -- | @tfoot@ element
-tfoot_ :: Term arg result => arg -> result
+tfoot_ :: Term a => a
 tfoot_ = term "tfoot"
 
 -- | @th@ element
-th_ :: Term arg result => arg -> result
+th_ :: Term a => a
 th_ = term "th"
 
 -- | @template@ element
-template_ :: Term arg result => arg -> result
+template_ :: Term a => a
 template_ = term "template"
 
 -- | @thead@ element
-thead_ :: Term arg result => arg -> result
+thead_ :: Term a => a
 thead_ = term "thead"
 
 -- | @time@ element
-time_ :: Term arg result => arg -> result
+time_ :: Term a => a
 time_ = term "time"
 
 -- | @title@ element or @title@ attribute
-title_ :: Term arg result => arg -> result
+title_ :: Term a => a
 title_ = term "title"
 
 -- | @tr@ element
-tr_ :: Term arg result => arg -> result
+tr_ :: Term a => a
 tr_ = term "tr"
 
 -- | @track@ element
@@ -438,15 +441,15 @@ track_ :: Monad m => [Attribute] -> HtmlT m ()
 track_ = with (makeElementNoEnd "track")
 
 -- | @ul@ element
-ul_ :: Term arg result => arg -> result
+ul_ :: Term a => a
 ul_ = term "ul"
 
 -- | @var@ element
-var_ :: Term arg result => arg -> result
+var_ :: Term a => a
 var_ = term "var"
 
 -- | @video@ element
-video_ :: Term arg result => arg -> result
+video_ :: Term a => a
 video_ = term "video"
 
 -- | @wbr@ element

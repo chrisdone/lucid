@@ -164,31 +164,37 @@ instance ToHtml LT.Text where
 -- The instances look intimidating but actually the constraints make
 -- it very general so that type inference works well even in the
 -- presence of things like @OverloadedLists@ and such.
-class Term arg result | result -> arg where
+class Term a where
   -- | Used for constructing elements e.g. @term "p"@ yields 'Lucid.Html5.p_'.
   term :: Text   -- ^ Name of the element or attribute.
-       -> arg    -- ^ Either an attribute list or children.
-       -> result -- ^ Result: either an element or an attribute.
+       -> a
   term = flip termWith []
   -- | Use this if you want to make an element which inserts some
   -- pre-prepared attributes into the element.
   termWith :: Text          -- ^ Name.
            -> [Attribute]   -- ^ Attribute transformer.
-           -> arg           -- ^ Some argument.
-           -> result        -- ^ Result: either an element or an attribute.
+           -> a
 
 -- | Given attributes, expect more child input.
-instance (Monad m,f ~ HtmlT m a) => Term [Attribute] (f -> HtmlT m a) where
+instance (Monad m,f ~ HtmlT m a,t ~ Attribute) => Term ([t] -> f -> HtmlT m a) where
   termWith name f = with (makeElement name) . (<> f)
+
+-- | Given attributes, expect no more input. Self-closing tag.
+instance (Monad m,t ~ Attribute,a ~ ()) => Term ([t] -> HtmlT m a) where
+  termWith name f = with (makeElementNoEnd name) . (<> f)
 
 -- | Given children immediately, just use that and expect no
 -- attributes.
-instance (Monad m) => Term (HtmlT m a) (HtmlT m a) where
+instance (Monad m,mb ~ m,a0 ~ a) => Term (HtmlT mb a0 -> HtmlT m a) where
   termWith name f = with (makeElement name) f
+
+-- | Given no arguments, just a self-closing tag.
+instance (Monad m,a ~ ()) => Term (HtmlT m a) where
+  termWith name f = with (makeElementNoEnd name) f
 
 -- | Some terms (like 'Lucid.Html5.style_', 'Lucid.Html5.title_') can be used for
 -- attributes as well as elements.
-instance Term Text Attribute where
+instance Term (Text -> Attribute) where
   termWith key _ value = makeAttribute key value
 
 -- | Same as the 'Term' class, but will not HTML escape its
