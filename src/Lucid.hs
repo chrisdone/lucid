@@ -13,6 +13,7 @@ module Lucid
   ,renderBS
   ,renderTextT
   ,renderBST
+  ,renderToFile
    -- * Running
    -- $running
   ,execHtmlT
