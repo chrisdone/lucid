@@ -21,6 +21,7 @@ module Lucid
   ,runHtmlT
    -- * Types
   ,Html
+  ,HtmlT
   ,Attribute
    -- * Classes
    -- $overloaded
