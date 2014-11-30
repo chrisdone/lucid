@@ -245,31 +245,29 @@ insertArgs = flip (foldr (\(Attribute k v) -> M.insertWith mappend k v))
 
 -- | Render the HTML to a lazy 'ByteString'.
 --
--- This is a convenience function defined in terms of 'execHtmlT',
--- 'runIdentity' and 'Blaze.toLazyByteString'. Check the source if
--- you're interested in the lower-level behaviour.
+-- This is a convenience function defined in terms of 'renderBS',
+-- Check the source if you're interested in the lower-level behaviour.
 --
 renderToFile :: FilePath -> Html a -> IO ()
-renderToFile fp = L.writeFile fp . Blaze.toLazyByteString . runIdentity . execHtmlT
+renderToFile fp = L.writeFile fp . renderBS
 
 -- | Render the HTML to a lazy 'ByteString'.
 --
--- This is a convenience function defined in terms of 'execHtmlT',
--- 'runIdentity' and 'Blaze.toLazyByteString'. Check the source if
--- you're interested in the lower-level behaviour.
+-- This is a convenience function defined in terms of 'execHtml',
+-- and 'Blaze.toLazyByteString'. Check the source if you're
+-- interested in the lower-level behaviour.
 --
 renderBS :: Html a -> ByteString
-renderBS = Blaze.toLazyByteString . runIdentity . execHtmlT
+renderBS = Blaze.toLazyByteString . execHtml
 
 -- | Render the HTML to a lazy 'Text'.
 --
--- This is a convenience function defined in terms of 'execHtmlT',
--- 'runIdentity' and 'Blaze.toLazyByteString', and
--- 'LT.decodeUtf8'. Check the source if you're interested in the
+-- This is a convenience function defined in terms of 'renderBS',
+-- and 'LT.decodeUtf8'. Check the source if you're interested in the
 -- lower-level behaviour.
 --
 renderText :: Html a -> LT.Text
-renderText = LT.decodeUtf8 . Blaze.toLazyByteString . runIdentity . execHtmlT
+renderText = LT.decodeUtf8 . renderBS
 
 -- | Render the HTML to a lazy 'ByteString', but in a monad.
 --
