@@ -14,6 +14,7 @@ module Lucid.Base
   ,renderBST
   ,renderToFile
    -- * Running
+  ,execHtml
   ,execHtmlT
   ,evalHtmlT
   ,runHtmlT
@@ -292,6 +293,10 @@ renderTextT = liftM (LT.decodeUtf8 . Blaze.toLazyByteString) . execHtmlT
 -- Running, transformer versions
 
 -- | Build the HTML. Analogous to @execState@.
+execHtml :: Html a -> Builder
+execHtml m = let (f,_) = runIdentity (runHtmlT m) in f mempty
+
+-- | Build the HTML in a monad. Analogous to @execStateT@.
 --
 -- You might want to use this is if you want to do something with the
 -- raw 'Builder'. Otherwise for simple cases you can just use
@@ -303,7 +308,7 @@ execHtmlT m =
   do (f,_) <- runHtmlT m
      return (f mempty)
 
--- | Evaluate the HTML to its return value. Analogous to @evalState@.
+-- | Evaluate the HTML to its return value in a monad. Analogous to @evalStateT@.
 --
 -- Use this if you want to ignore the HTML output of an action
 -- completely and just get the result.
