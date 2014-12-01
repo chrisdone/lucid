@@ -184,7 +184,7 @@ testSpecials =
 testSelfClosing :: Spec
 testSelfClosing =
   do it "br" (renderText (br_ []) == "<br>")
-     it "hr" (renderText (hr_ []) == "<br>")
+     it "hr" (renderText (hr_ []) == "<hr>")
      it "input"
         (renderText (input_ []) ==
          "<input>")
