@@ -1,4 +1,4 @@
-lucid
+lucid [![Hackage](https://img.shields.io/hackage/v/lucid.svg?style=flat)](https://hackage.haskell.org/package/lucid)
 =====
 
 Clear to write, read and edit DSL for writing HTML
