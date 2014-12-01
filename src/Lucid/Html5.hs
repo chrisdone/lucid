@@ -611,7 +611,7 @@ hreflang_ = makeAttribute "hreflang"
 
 -- | The @httpEquiv@ attribute.
 httpEquiv_ :: Text -> Attribute
-httpEquiv_ = makeAttribute "httpEquiv"
+httpEquiv_ = makeAttribute "http-equiv"
 
 -- | The @icon@ attribute.
 icon_ :: Text -> Attribute
