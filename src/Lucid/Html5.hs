@@ -459,7 +459,7 @@ accept_ = makeAttribute "accept"
 
 -- | The @acceptCharset@ attribute.
 acceptCharset_ :: Text -> Attribute
-acceptCharset_ = makeAttribute "acceptCharset"
+acceptCharset_ = makeAttribute "accept-charset"
 
 -- | The @accesskey@ attribute.
 accesskey_ :: Text -> Attribute
