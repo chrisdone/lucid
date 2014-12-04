@@ -119,11 +119,10 @@ instance MonadTrans HtmlT where
 instance MonadIO m => MonadIO (HtmlT m) where
   liftIO = lift . liftIO
 
--- | We pack it via string. Could possibly encode straight into a
--- builder. That might be faster.
+-- | Overloaded string literals
+-- ie. "hello" :: Html ()
 instance (Monad m,a ~ ()) => IsString (HtmlT m a) where
-  fromString m' =
-    HtmlT (return (\_ _ -> encode (T.pack m'),()))
+  fromString = toHtml
 
 -- | Just calls 'renderText'.
 instance (m ~ Identity) => Show (HtmlT m a) where
@@ -135,16 +134,21 @@ class ToHtml a where
   toHtmlRaw :: Monad m => a -> HtmlT m ()
 
 instance ToHtml String where
-  toHtml = fromString
-  toHtmlRaw m = HtmlT (return ((\_ _ -> Blaze.fromString m),()))
+  toHtml    = build . Blaze.fromHtmlEscapedString
+  toHtmlRaw = build . Blaze.fromString
 
 instance ToHtml Text where
-  toHtml m = HtmlT (return ((\_ _ -> encode m),()))
-  toHtmlRaw m = HtmlT (return ((\_ _ -> Blaze.fromText m),()))
+  toHtml    = build . Blaze.fromHtmlEscapedText
+  toHtmlRaw = build . Blaze.fromText
 
 instance ToHtml LT.Text where
-  toHtml m = HtmlT (return ((\_ _ -> encodeLazy m),()))
-  toHtmlRaw m = HtmlT (return ((\_ _ -> Blaze.fromLazyText m),()))
+  toHtml    = build . Blaze.fromHtmlEscapedLazyText
+  toHtmlRaw = build . Blaze.fromLazyText
+
+-- | Create an 'HtmlT' directly from a 'Builder'.
+build :: Monad m => Builder -> HtmlT m ()
+build b = HtmlT (return (const (const b),()))
+{-# INLINE build #-}
 
 -- | Used to construct HTML terms.
 --
@@ -372,9 +376,9 @@ buildAttr :: Text -> Text -> Builder
 buildAttr key val =
   s " " <>
   Blaze.fromText key <>
-  if val == mempty
+  if T.null val
      then mempty
-     else s "=\"" <> encode val <> s "\""
+     else s "=\"" <> Blaze.fromHtmlEscapedText val <> s "\""
 
 -- | Folding and monoidally appending attributes.
 foldlMapWithKey :: Monoid m => (k -> v -> m) -> HashMap k v -> m
@@ -384,14 +388,3 @@ foldlMapWithKey f = M.foldlWithKey' (\m k v -> m <> f k v) mempty
 s :: String -> Builder
 s = Blaze.fromString
 {-# INLINE s #-}
-
---------------------------------------------------------------------------------
--- Encoding
-
--- | Encode the given strict plain text to an encoded HTML builder.
-encode :: Text -> Builder
-encode = Blaze.fromHtmlEscapedText
-
--- | Encode the given strict plain text to an encoded HTML builder.
-encodeLazy :: LT.Text -> Builder
-encodeLazy = Blaze.fromHtmlEscapedLazyText
