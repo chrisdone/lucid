@@ -56,9 +56,8 @@ import qualified Data.Text.Lazy.Encoding as LT
 --------------------------------------------------------------------------------
 -- Types
 
--- | A simple attribute.
-newtype Attribute = Attribute (Text,Text)
-  deriving (Show,Eq)
+-- | An attribute consisting of a key/value pair.
+data Attribute = Attribute !Text !Text
 
 -- | Simple HTML builder type. Defined in terms of 'HtmlT'. Check out
 -- that type for instance information.
@@ -156,13 +155,13 @@ build b = HtmlT (return (const (const b),()))
 --
 -- Very overloaded for three cases:
 --
--- * The first case is the basic @arg@ of @[(Text,Text)]@ which will
+-- * The first case is the basic @arg@ of @[Attribute]@ which will
 --   return a function that wants children.
 -- * The second is an @arg@ which is @HtmlT m ()@, in which case the
 --   term accepts no attributes and just the children are used for the
 --   element.
 -- * Finally, this is also used for overloaded attributes, like
---   `Lucid.Html5.style_` or `Lucid.Html5.title_`. If a return type of @(Text,Text)@ is inferred
+--   `Lucid.Html5.style_` or `Lucid.Html5.title_`. If a return type of @Attribute@ is inferred
 --   then an attribute will be made.
 --
 -- The instances look intimidating but actually the constraints make
@@ -235,28 +234,18 @@ class With a  where
        -> a
 
 -- | For the contentless elements: 'Lucid.Html5.br_'
-instance (Monad m) => With (HtmlT m a) where
-  with f =
-    \attr ->
-      HtmlT (do ~(f',a) <- runHtmlT f
-                return (\attr' m' ->
-                          f' (unionArgs (M.fromListWith (<>) (map toPair attr)) attr') m'
-                       ,a))
-    where toPair (Attribute x) = x
+instance Monad m => With (HtmlT m a) where
+  with m attrs =
+    HtmlT (do ~(f,a) <- runHtmlT m
+              return (f . insertAll attrs,a))
 
 -- | For the contentful elements: 'Lucid.Html5.div_'
-instance (Monad m) => With (HtmlT m a -> HtmlT m a) where
-  with f =
-    \attr inner ->
-      HtmlT (do ~(f',a) <- runHtmlT (f inner)
-                return ((\attr' m' ->
-                           f' (unionArgs (M.fromListWith (<>) (map toPair attr)) attr') m')
-                       ,a))
-    where toPair (Attribute x) = x
+instance Monad m => With (HtmlT m a -> HtmlT m a) where
+  with f attrs child = with (f child) attrs
 
--- | Union two sets of arguments and append duplicate keys.
-unionArgs :: HashMap Text Text -> HashMap Text Text -> HashMap Text Text
-unionArgs = M.unionWith (<>)
+-- | Insert a list of Attribute into a HashMap and append duplicate keys.
+insertAll :: [Attribute] -> HashMap Text Text -> HashMap Text Text
+insertAll = flip (foldr (\(Attribute k v) -> M.insertWith mappend k v))
 
 --------------------------------------------------------------------------------
 -- Running
@@ -346,7 +335,7 @@ evalHtmlT m =
 makeAttribute :: Text -- ^ Attribute name.
               -> Text -- ^ Attribute value.
               -> Attribute
-makeAttribute x y = Attribute (x,y)
+makeAttribute = Attribute
 
 -- | Make an HTML builder.
 makeElement :: Monad m
