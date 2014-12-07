@@ -150,7 +150,12 @@ instance Monad m => Monad (UrlGroundedT m) where
   return  = UrlGroundedT . return
   x >>= f = UrlGroundedT $
     runUrlGroundedT x >>= (runUrlGroundedT . f)
-    
+
+instance Functor f => Functor (UrlGroundedT f) where
+  fmap g x = UrlGroundedT $ fmap g $ runUrlGroundedT x
+
+instance Applicative f => Applicative (UrlGroundedT f) where
+  (<*>) gs x = UrlGroundedT $ (<*>) (runUrlGroundedT gs) $ runUrlGroundedT x
 
 instance MonadTrans UrlGroundedT where
   lift = UrlGroundedT
@@ -166,6 +171,14 @@ instance Monad m => Monad (UrlAbsoluteT m) where
   x >>= f = UrlAbsoluteT $ \z -> do
     a <- runUrlAbsoluteT x z
     runUrlAbsoluteT (f a) z
+
+instance Functor f => Functor (UrlAbsoluteT f) where
+  fmap g x = UrlAbsoluteT $ \z ->
+    fmap g $ runUrlAbsoluteT x z
+
+instance Applicative f => Applicative (UrlAbsoluteT f) where
+  (<*>) gs x = UrlAbsoluteT $ \z ->
+    (<*>) (runUrlAbsoluteT gs z) $ runUrlAbsoluteT x z
 
 instance MonadTrans UrlAbsoluteT where
   lift :: Monad m => m a -> UrlAbsoluteT m a
