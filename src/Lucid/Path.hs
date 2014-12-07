@@ -2,14 +2,21 @@
 {-# LANGUAGE MultiParamTypeClasses #-}
 {-# LANGUAGE FlexibleInstances #-}
 {-# LANGUAGE FlexibleContexts #-}
+{-# LANGUAGE GeneralizedNewtypeDeriving #-}
+{-# LANGUAGE KindSignatures #-}
+{-# LANGUAGE InstanceSigs #-}
+{-# LANGUAGE TypeFamilies #-}
+
 
 module Lucid.Path where
 
 import qualified Data.Text as T
 
+import Control.Monad.Trans
 import Control.Monad.Reader.Class
 
 import Data.Monoid ((<>))
+import Control.Applicative
 import Data.Functor.Identity
 
 -- | @Url@ takes an input type @a@, and returns a modality @f@ around @T.Text@.
@@ -115,3 +122,71 @@ instance Url (UrlString GroundedUrl) Identity where
 instance (MonadReader T.Text m) => Url (UrlString AbsoluteUrl) m where
   renderUrl = expandAbsolute
 
+-- | For coercing a global default (relative, in this case) throughout an @HtmlT@.
+newtype UrlRelativeT (m :: * -> *) a = UrlRelativeT { runUrlRelativeT :: m a }
+  deriving (Show, Eq)
+
+instance Functor f => Functor (UrlRelativeT f) where
+  fmap g x = UrlRelativeT $ fmap g $ runUrlRelativeT x
+
+instance Applicative f => Applicative (UrlRelativeT f) where
+  (<*>) gs x = UrlRelativeT $ (<*>) (runUrlRelativeT gs) $ runUrlRelativeT x
+
+instance Monad m => Monad (UrlRelativeT m) where
+  return  = UrlRelativeT . return
+  x >>= f = UrlRelativeT $
+    runUrlRelativeT x >>= (runUrlRelativeT . f)
+
+instance MonadTrans UrlRelativeT where
+  lift = UrlRelativeT
+
+instance Monad m => Url (UrlString RelativeUrl) (UrlRelativeT m) where
+  renderUrl = UrlRelativeT . return . expandRelative
+
+-- | For coercing a global default (grounded, in this case) throughout an 
+-- @HtmlT@.
+newtype UrlGroundedT (m :: * -> *) a = UrlGroundedT { runUrlGroundedT :: m a }
+instance Monad m => Monad (UrlGroundedT m) where
+  return  = UrlGroundedT . return
+  x >>= f = UrlGroundedT $
+    runUrlGroundedT x >>= (runUrlGroundedT . f)
+    
+
+instance MonadTrans UrlGroundedT where
+  lift = UrlGroundedT
+
+instance Monad m => Url (UrlString GroundedUrl) (UrlGroundedT m) where
+  renderUrl = UrlGroundedT . return . expandGrounded
+
+-- | For coercing a global default (absolute, in this case) throughout an 
+-- @HtmlT@.
+newtype UrlAbsoluteT (m :: * -> *) a = UrlAbsoluteT { runUrlAbsoluteT :: T.Text -> m a }
+instance Monad m => Monad (UrlAbsoluteT m) where
+  return  = lift . return
+  x >>= f = UrlAbsoluteT $ \z -> do
+    a <- runUrlAbsoluteT x z
+    runUrlAbsoluteT (f a) z
+
+instance MonadTrans UrlAbsoluteT where
+  lift :: Monad m => m a -> UrlAbsoluteT m a
+  lift m = UrlAbsoluteT (const m)
+
+instance Monad m => MonadReader T.Text (UrlAbsoluteT m) where
+--  ask :: Monad m => UrlAbsoluteT m T.Text
+  ask = UrlAbsoluteT return
+
+instance (Monad m, a ~ AbsoluteUrl) => Url (UrlString a) (UrlAbsoluteT m) where
+  renderUrl = expandAbsolute
+
+{-
+src_u :: Url a m => a -> m Attribute
+src_u x = do
+  url <- renderUrl x
+
+  return $ makeAttribute "src" url
+-}
+-- * Example
+--
+-- > script_ [src_u $ "foo.php" <?> ("key","bar")] ""
+-- >
+-- >

@@ -211,11 +211,13 @@ class TermRaw arg result | result -> arg where
 instance (Monad m,ToHtml f, a ~ ()) => TermRaw [Attribute] (f -> HtmlT m a) where
   termRawWith name f attrs = with (makeElement name) (attrs <> f) . toHtmlRaw
 
+{-
 -- | Given attributes in some monad, sequence them and expect more child input.
 instance (Monad m,ToHtml f, a ~ ()) => TermRaw [m Attribute] (f -> HtmlT m a) where
   termRawWith name mf attrs x = do
     fs <- lift $ sequence mf
     with (makeElement name) (attrs <> fs) . toHtmlRaw x
+-}
 
 -- | Given children immediately, just use that and expect no
 -- attributes.
