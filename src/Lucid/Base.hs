@@ -197,19 +197,27 @@ instance Term Text Attribute where
 class TermRaw arg result | result -> arg where
   -- | Used for constructing elements e.g. @termRaw "p"@ yields 'Lucid.Html5.p_'.
   termRaw :: Text   -- ^ Name of the element or attribute.
-       -> arg    -- ^ Either an attribute list or children.
-       -> result -- ^ Result: either an element or an attribute.
+          -> arg    -- ^ Either an attribute list or children.
+          -> result -- ^ Result: either an element or an attribute.
   termRaw = flip termRawWith []
   -- | Use this if you want to make an element which inserts some
   -- pre-prepared attributes into the element.
   termRawWith :: Text          -- ^ Name.
-           -> [Attribute]   -- ^ Attribute transformer.
-           -> arg           -- ^ Some argument.
-           -> result        -- ^ Result: either an element or an attribute.
+              -> [Attribute]   -- ^ Attribute transformer.
+              -> arg           -- ^ Some argument.
+              -> result        -- ^ Result: either an element or an attribute.
 
 -- | Given attributes, expect more child input.
 instance (Monad m,ToHtml f, a ~ ()) => TermRaw [Attribute] (f -> HtmlT m a) where
   termRawWith name f attrs = with (makeElement name) (attrs <> f) . toHtmlRaw
+
+{-
+-- | Given attributes in some monad, sequence them and expect more child input.
+instance (Monad m,ToHtml f, a ~ ()) => TermRaw [m Attribute] (f -> HtmlT m a) where
+  termRawWith name mf attrs x = do
+    fs <- lift $ sequence mf
+    with (makeElement name) (attrs <> fs) . toHtmlRaw x
+-}
 
 -- | Given children immediately, just use that and expect no
 -- attributes.
@@ -224,7 +232,7 @@ instance TermRaw Text Attribute where
 -- | With an element use these attributes. An overloaded way of adding
 -- attributes either to an element accepting attributes-and-children
 -- or one that just accepts attributes. See the two instances.
-class With a  where
+class With a where
   -- | With the given element(s), use the given attributes.
   with :: a -- ^ Some element, either @Html a@ or @Html a -> Html a@.
        -> [Attribute]
