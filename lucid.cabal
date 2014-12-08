@@ -1,5 +1,5 @@
 name:                lucid
-version:             2.5
+version:             3.0
 synopsis:            Clear to write, read and edit DSL for HTML
 description:         Clear to write, read and edit DSL for HTML. See the 'Lucid' module
                      for description and documentation.
@@ -16,6 +16,7 @@ extra-source-files:  README.md, CHANGELOG.md
 
 library
   hs-source-dirs:    src/
+                     examples/
   ghc-options:       -Wall -O2
   exposed-modules:   Lucid
                      Lucid.Base
