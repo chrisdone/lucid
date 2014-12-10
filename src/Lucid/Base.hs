@@ -69,10 +69,10 @@ type Html = HtmlT Identity
 -- | A monad transformer that generates HTML. Use the simpler 'Html'
 -- type if you don't want to transform over some other monad.
 newtype HtmlT m a =
-  HtmlT {runHtmlT :: m (HashMap Text Text -> Builder -> Builder,a)
+  HtmlT {runHtmlT :: m (HashMap Text Text -> Builder,a)
          -- ^ This is the low-level way to run the HTML transformer,
          -- finally returning an element builder and a value. You can
-         -- pass 'mempty' for both arguments for a top-level call. See
+         -- pass 'mempty' as an argument for a top-level call. See
          -- 'evalHtmlT' and 'execHtmlT' for easier to use functions.
          }
 
@@ -134,7 +134,7 @@ instance ToHtml LT.Text where
 
 -- | Create an 'HtmlT' directly from a 'Builder'.
 build :: Monad m => Builder -> HtmlT m ()
-build b = HtmlT (return (const (const b),()))
+build b = HtmlT (return (const b,()))
 {-# INLINE build #-}
 
 -- | Used to construct HTML terms.
@@ -297,7 +297,7 @@ execHtmlT :: Monad m
           -> m Builder  -- ^ The @a@ is discarded.
 execHtmlT m =
   do (f,_) <- runHtmlT m
-     return (f mempty mempty)
+     return (f mempty)
 
 -- | Evaluate the HTML to its return value. Analogous to @evalState@.
 --
@@ -333,9 +333,9 @@ makeElement :: Monad m
 makeElement name =
   \m' ->
     HtmlT (do ~(f,a) <- runHtmlT m'
-              return (\attr m -> s "<" <> Blaze.fromText name
+              return (\attr -> s "<" <> Blaze.fromText name
                               <> foldlMapWithKey buildAttr attr <> s ">"
-                              <> m <> f mempty mempty
+                              <> f mempty
                               <> s "</" <> Blaze.fromText name <> s ">",
                       a))
 
@@ -344,7 +344,7 @@ makeElementNoEnd :: Monad m
                  => Text       -- ^ Name.
                  -> HtmlT m () -- ^ A parent element.
 makeElementNoEnd name =
-  HtmlT (return (\attr _ -> s "<" <> Blaze.fromText name
+  HtmlT (return (\attr -> s "<" <> Blaze.fromText name
                             <> foldlMapWithKey buildAttr attr <> s ">",
                  ()))
 
