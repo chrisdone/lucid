@@ -1,11 +1,7 @@
-{-# LANGUAGE FunctionalDependencies #-}
-{-# LANGUAGE ExtendedDefaultRules #-}
-{-# LANGUAGE TypeFamilies #-}
-{-# LANGUAGE KindSignatures #-}
-{-# LANGUAGE OverloadedStrings #-}
-{-# LANGUAGE GADTs #-}
-{-# LANGUAGE MultiParamTypeClasses #-}
 {-# LANGUAGE FlexibleInstances #-}
+{-# LANGUAGE FunctionalDependencies #-}
+{-# LANGUAGE MultiParamTypeClasses #-}
+{-# LANGUAGE TypeFamilies #-}
 
 -- | Base types and combinators.
 
@@ -40,7 +36,7 @@ import qualified Blaze.ByteString.Builder as Blaze
 import qualified Blaze.ByteString.Builder.Html.Utf8 as Blaze
 import           Control.Applicative
 import           Control.Monad
-import           Control.Monad.Reader
+import           Control.Monad.Trans
 import           Data.ByteString.Lazy (ByteString)
 import qualified Data.ByteString.Lazy as L
 import           Data.Functor.Identity
@@ -215,7 +211,7 @@ instance TermRaw Text Attribute where
 -- | With an element use these attributes. An overloaded way of adding
 -- attributes either to an element accepting attributes-and-children
 -- or one that just accepts attributes. See the two instances.
-class With a  where
+class With a where
   -- | With the given element(s), use the given attributes.
   with :: a -- ^ Some element, either @Html a@ or @Html a -> Html a@.
        -> [Attribute]
@@ -353,9 +349,9 @@ buildAttr :: Text -> Text -> Builder
 buildAttr key val =
   s " " <>
   Blaze.fromText key <>
-  if val == mempty
+  if T.null val
      then mempty
-     else s "=\"" <> encode val <> s "\""
+     else s "=\"" <> Blaze.fromHtmlEscapedText val <> s "\""
 
 -- | Folding and monoidally appending attributes.
 foldlMapWithKey :: Monoid m => (k -> v -> m) -> HashMap k v -> m
@@ -365,14 +361,3 @@ foldlMapWithKey f = M.foldlWithKey' (\m k v -> m <> f k v) mempty
 s :: String -> Builder
 s = Blaze.fromString
 {-# INLINE s #-}
-
---------------------------------------------------------------------------------
--- Encoding
-
--- | Encode the given strict plain text to an encoded HTML builder.
-encode :: Text -> Builder
-encode = Blaze.fromHtmlEscapedText
-
--- | Encode the given strict plain text to an encoded HTML builder.
-encodeLazy :: LT.Text -> Builder
-encodeLazy = Blaze.fromHtmlEscapedLazyText
