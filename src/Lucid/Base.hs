@@ -107,11 +107,10 @@ instance MonadTrans HtmlT where
 instance MonadIO m => MonadIO (HtmlT m) where
   liftIO = lift . liftIO
 
--- | We pack it via string. Could possibly encode straight into a
--- builder. That might be faster.
+-- | Overloaded string literals
+-- ie. "hello" :: Html ()
 instance (Monad m,a ~ ()) => IsString (HtmlT m a) where
-  fromString m' =
-    HtmlT (return (\_ _ -> encode (T.pack m'),()))
+  fromString = toHtml
 
 -- | Just calls 'renderText'.
 instance Show (Html a) where
@@ -123,16 +122,21 @@ class ToHtml a where
   toHtmlRaw :: Monad m => a -> HtmlT m ()
 
 instance ToHtml String where
-  toHtml = fromString
-  toHtmlRaw m = HtmlT (return ((\_ _ -> Blaze.fromString m),()))
+  toHtml    = build . Blaze.fromHtmlEscapedString
+  toHtmlRaw = build . Blaze.fromString
 
 instance ToHtml Text where
-  toHtml m = HtmlT (return ((\_ _ -> encode m),()))
-  toHtmlRaw m = HtmlT (return ((\_ _ -> Blaze.fromText m),()))
+  toHtml    = build . Blaze.fromHtmlEscapedText
+  toHtmlRaw = build . Blaze.fromText
 
 instance ToHtml LT.Text where
-  toHtml m = HtmlT (return ((\_ _ -> encodeLazy m),()))
-  toHtmlRaw m = HtmlT (return ((\_ _ -> Blaze.fromLazyText m),()))
+  toHtml    = build . Blaze.fromHtmlEscapedLazyText
+  toHtmlRaw = build . Blaze.fromLazyText
+
+-- | Create an 'HtmlT' directly from a 'Builder'.
+build :: Monad m => Builder -> HtmlT m ()
+build b = HtmlT (return (const (const b),()))
+{-# INLINE build #-}
 
 -- | Used to construct HTML terms.
 --
@@ -140,13 +144,13 @@ instance ToHtml LT.Text where
 --
 -- Very overloaded for three cases:
 --
--- * The first case is the basic @arg@ of @[(Text,Text)]@ which will
+-- * The first case is the basic @arg@ of @[Attribute]@ which will
 --   return a function that wants children.
 -- * The second is an @arg@ which is @HtmlT m ()@, in which case the
 --   term accepts no attributes and just the children are used for the
 --   element.
 -- * Finally, this is also used for overloaded attributes, like
---   `Lucid.Html5.style_` or `Lucid.Html5.title_`. If a return type of @(Text,Text)@ is inferred
+--   `Lucid.Html5.style_` or `Lucid.Html5.title_`. If a return type of @Attribute@ is inferred
 --   then an attribute will be made.
 --
 -- The instances look intimidating but actually the constraints make
