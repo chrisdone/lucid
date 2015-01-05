@@ -1,3 +1,8 @@
+## 2.6
+
+* Restrict monoid instance's a to ~ () (means you can use mempty
+  without inference errors)
+
 ## 2.2
 
 * Export renderToFile from top-level Lucid module.
