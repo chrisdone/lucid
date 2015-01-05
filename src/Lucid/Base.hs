@@ -78,7 +78,7 @@ newtype HtmlT m a =
          }
 
 -- | Monoid is right-associative, a la the 'Builder' in it.
-instance (Monoid a,Monad m) => Monoid (HtmlT m a) where
+instance (a ~ (),Monad m) => Monoid (HtmlT m a) where
   mempty = HtmlT (return (\_ _ -> mempty,mempty))
   mappend (HtmlT get_f_a) (HtmlT get_g_b) =
     HtmlT (do ~(f,a) <- get_f_a
