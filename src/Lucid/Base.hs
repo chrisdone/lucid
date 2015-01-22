@@ -23,6 +23,7 @@ module Lucid.Base
   -- * Combinators
   ,makeElement
   ,makeElementNoEnd
+  ,makeXmlElementNoEnd
   ,makeAttribute
    -- * Types
   ,Html
@@ -365,6 +366,15 @@ makeElementNoEnd :: Monad m
 makeElementNoEnd name =
   HtmlT (return (\attr _ -> s "<" <> Blaze.fromText name
                             <> foldlMapWithKey buildAttr attr <> s ">",
+                 ()))
+
+-- | Make an XHTML builder for elements which have no ending tag.
+makeXmlElementNoEnd :: Monad m
+                    => Text       -- ^ Name.
+                    -> HtmlT m () -- ^ A parent element.
+makeXmlElementNoEnd name =
+  HtmlT (return (\attr _ -> s "<" <> Blaze.fromText name
+                            <> foldlMapWithKey buildAttr attr <> s "/>",
                  ()))
 
 -- | Build and encode an attribute.
