@@ -28,7 +28,7 @@ module Lucid.Base
    -- * Types
   ,Html
   ,HtmlT
-  ,Attribute
+  ,Attribute(..)
    -- * Classes
   ,Term(..)
   ,TermRaw(..)
