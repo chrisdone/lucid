@@ -2,8 +2,6 @@
 -- renderers available.
 --
 
-import qualified Blaze.ByteString.Builder as Blaze
-import qualified Blaze.ByteString.Builder.Char.Utf8 as Blaze
 import           Criterion.Main
 import qualified Data.ByteString.Lazy as LB
 import qualified Data.Text.Lazy as LT

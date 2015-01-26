@@ -43,7 +43,7 @@ import           Data.ByteString.Builder
 import           Data.ByteString.Builder.Prim as BP
 import           Data.ByteString.Lazy         (ByteString)
 import qualified Data.ByteString.Lazy         as L
-import           Data.Char                    (chr,ord)
+import           Data.Char                    (ord)
 import           Data.Functor.Identity
 import           Data.HashMap.Strict          (HashMap)
 import qualified Data.HashMap.Strict          as M
@@ -427,4 +427,3 @@ charUtf8HtmlEscaped =
       BP.char7 >*< BP.char7 >*< BP.char7 >*< BP.char7 >*< BP.char7
 
     c2w = fromIntegral . ord
-
