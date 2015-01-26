@@ -1,11 +1,11 @@
+{-# LANGUAGE ExtendedDefaultRules   #-}
+{-# LANGUAGE FlexibleInstances      #-}
 {-# LANGUAGE FunctionalDependencies #-}
-{-# LANGUAGE ExtendedDefaultRules #-}
-{-# LANGUAGE TypeFamilies #-}
-{-# LANGUAGE KindSignatures #-}
-{-# LANGUAGE OverloadedStrings #-}
-{-# LANGUAGE GADTs #-}
-{-# LANGUAGE MultiParamTypeClasses #-}
-{-# LANGUAGE FlexibleInstances #-}
+{-# LANGUAGE GADTs                  #-}
+{-# LANGUAGE KindSignatures         #-}
+{-# LANGUAGE MultiParamTypeClasses  #-}
+{-# LANGUAGE OverloadedStrings      #-}
+{-# LANGUAGE TypeFamilies           #-}
 
 -- | Base types and combinators.
 
@@ -36,23 +36,25 @@ module Lucid.Base
   ,With(..))
   where
 
-import           Blaze.ByteString.Builder (Builder)
-import qualified Blaze.ByteString.Builder as Blaze
-import qualified Blaze.ByteString.Builder.Html.Utf8 as Blaze
 import           Control.Applicative
 import           Control.Monad
 import           Control.Monad.Reader
-import           Data.ByteString.Lazy (ByteString)
-import qualified Data.ByteString.Lazy as L
+import           Data.ByteString.Builder
+import           Data.ByteString.Builder.Prim as BP
+import           Data.ByteString.Lazy         (ByteString)
+import qualified Data.ByteString.Lazy         as L
+import           Data.Char                    (chr,ord)
 import           Data.Functor.Identity
-import           Data.HashMap.Strict (HashMap)
-import qualified Data.HashMap.Strict as M
+import           Data.HashMap.Strict          (HashMap)
+import qualified Data.HashMap.Strict          as M
 import           Data.Monoid
 import           Data.String
-import           Data.Text (Text)
-import qualified Data.Text as T
-import qualified Data.Text.Lazy as LT
-import qualified Data.Text.Lazy.Encoding as LT
+import           Data.Text                    (Text)
+import qualified Data.Text                    as T
+import qualified Data.Text.Encoding           as T
+import qualified Data.Text.Lazy               as LT
+import qualified Data.Text.Lazy.Encoding      as LT
+import           Data.Word                    (Word8)
 
 --------------------------------------------------------------------------------
 -- Types
@@ -137,15 +139,15 @@ class ToHtml a where
 
 instance ToHtml String where
   toHtml = fromString
-  toHtmlRaw m = HtmlT (return ((\_ _ -> Blaze.fromString m),()))
+  toHtmlRaw m = HtmlT (return ((\_ _ -> fromString m),()))
 
 instance ToHtml Text where
   toHtml m = HtmlT (return ((\_ _ -> encode m),()))
-  toHtmlRaw m = HtmlT (return ((\_ _ -> Blaze.fromText m),()))
+  toHtmlRaw m = HtmlT (return ((\_ _ -> T.encodeUtf8Builder m),()))
 
 instance ToHtml LT.Text where
   toHtml m = HtmlT (return ((\_ _ -> encodeLazy m),()))
-  toHtmlRaw m = HtmlT (return ((\_ _ -> Blaze.fromLazyText m),()))
+  toHtmlRaw m = HtmlT (return ((\_ _ -> LT.encodeUtf8Builder m),()))
 
 -- | Used to construct HTML terms.
 --
@@ -261,48 +263,48 @@ unionArgs = M.unionWith (<>)
 -- | Render the HTML to a lazy 'ByteString'.
 --
 -- This is a convenience function defined in terms of 'execHtmlT',
--- 'runIdentity' and 'Blaze.toLazyByteString'. Check the source if
+-- 'runIdentity' and 'toLazyByteString'. Check the source if
 -- you're interested in the lower-level behaviour.
 --
 renderToFile :: FilePath -> Html a -> IO ()
-renderToFile fp = L.writeFile fp . Blaze.toLazyByteString . runIdentity . execHtmlT
+renderToFile fp = L.writeFile fp . toLazyByteString . runIdentity . execHtmlT
 
 -- | Render the HTML to a lazy 'ByteString'.
 --
 -- This is a convenience function defined in terms of 'execHtmlT',
--- 'runIdentity' and 'Blaze.toLazyByteString'. Check the source if
+-- 'runIdentity' and 'toLazyByteString'. Check the source if
 -- you're interested in the lower-level behaviour.
 --
 renderBS :: Html a -> ByteString
-renderBS = Blaze.toLazyByteString . runIdentity . execHtmlT
+renderBS = toLazyByteString . runIdentity . execHtmlT
 
 -- | Render the HTML to a lazy 'Text'.
 --
 -- This is a convenience function defined in terms of 'execHtmlT',
--- 'runIdentity' and 'Blaze.toLazyByteString', and
+-- 'runIdentity' and 'toLazyByteString', and
 -- 'LT.decodeUtf8'. Check the source if you're interested in the
 -- lower-level behaviour.
 --
 renderText :: Html a -> LT.Text
-renderText = LT.decodeUtf8 . Blaze.toLazyByteString . runIdentity . execHtmlT
+renderText = LT.decodeUtf8 . toLazyByteString . runIdentity . execHtmlT
 
 -- | Render the HTML to a lazy 'ByteString', but in a monad.
 --
 -- This is a convenience function defined in terms of 'execHtmlT' and
--- 'Blaze.toLazyByteString'. Check the source if you're interested in
+-- 'toLazyByteString'. Check the source if you're interested in
 -- the lower-level behaviour.
 --
 renderBST :: Monad m => HtmlT m a -> m ByteString
-renderBST = liftM Blaze.toLazyByteString . execHtmlT
+renderBST = liftM toLazyByteString . execHtmlT
 
 -- | Render the HTML to a lazy 'Text', but in a monad.
 --
 -- This is a convenience function defined in terms of 'execHtmlT' and
--- 'Blaze.toLazyByteString', and 'LT.decodeUtf8'. Check the source if
+-- 'toLazyByteString', and 'LT.decodeUtf8'. Check the source if
 -- you're interested in the lower-level behaviour.
 --
 renderTextT :: Monad m => HtmlT m a -> m LT.Text
-renderTextT = liftM (LT.decodeUtf8 . Blaze.toLazyByteString) . execHtmlT
+renderTextT = liftM (LT.decodeUtf8 . toLazyByteString) . execHtmlT
 
 --------------------------------------------------------------------------------
 -- Running, transformer versions
@@ -353,10 +355,10 @@ makeElement :: Monad m
 makeElement name =
   \m' ->
     HtmlT (do ~(f,a) <- runHtmlT m'
-              return (\attr m -> s "<" <> Blaze.fromText name
+              return (\attr m -> s "<" <> T.encodeUtf8Builder name
                               <> foldlMapWithKey buildAttr attr <> s ">"
                               <> m <> f mempty mempty
-                              <> s "</" <> Blaze.fromText name <> s ">",
+                              <> s "</" <> T.encodeUtf8Builder name <> s ">",
                       a))
 
 -- | Make an HTML builder for elements which have no ending tag.
@@ -364,7 +366,7 @@ makeElementNoEnd :: Monad m
                  => Text       -- ^ Name.
                  -> HtmlT m () -- ^ A parent element.
 makeElementNoEnd name =
-  HtmlT (return (\attr _ -> s "<" <> Blaze.fromText name
+  HtmlT (return (\attr _ -> s "<" <> T.encodeUtf8Builder name
                             <> foldlMapWithKey buildAttr attr <> s ">",
                  ()))
 
@@ -373,7 +375,7 @@ makeXmlElementNoEnd :: Monad m
                     => Text       -- ^ Name.
                     -> HtmlT m () -- ^ A parent element.
 makeXmlElementNoEnd name =
-  HtmlT (return (\attr _ -> s "<" <> Blaze.fromText name
+  HtmlT (return (\attr _ -> s "<" <> T.encodeUtf8Builder name
                             <> foldlMapWithKey buildAttr attr <> s "/>",
                  ()))
 
@@ -381,7 +383,7 @@ makeXmlElementNoEnd name =
 buildAttr :: Text -> Text -> Builder
 buildAttr key val =
   s " " <>
-  Blaze.fromText key <>
+  T.encodeUtf8Builder key <>
   if val == mempty
      then mempty
      else s "=\"" <> encode val <> s "\""
@@ -392,7 +394,7 @@ foldlMapWithKey f = M.foldlWithKey' (\m k v -> m <> f k v) mempty
 
 -- | Convenience function for constructing builders.
 s :: String -> Builder
-s = Blaze.fromString
+s = fromString
 {-# INLINE s #-}
 
 --------------------------------------------------------------------------------
@@ -400,8 +402,29 @@ s = Blaze.fromString
 
 -- | Encode the given strict plain text to an encoded HTML builder.
 encode :: Text -> Builder
-encode = Blaze.fromHtmlEscapedText
+encode = T.encodeUtf8BuilderEscaped charUtf8HtmlEscaped
 
 -- | Encode the given strict plain text to an encoded HTML builder.
 encodeLazy :: LT.Text -> Builder
-encodeLazy = Blaze.fromHtmlEscapedLazyText
+encodeLazy = LT.encodeUtf8BuilderEscaped charUtf8HtmlEscaped
+
+{-# INLINE charUtf8HtmlEscaped #-}
+charUtf8HtmlEscaped :: BP.BoundedPrim Word8
+charUtf8HtmlEscaped =
+    condB (== c2w '<' ) (fixed4 ('&',('l',('t',';')))) $        -- &lt;
+    condB (== c2w '>' ) (fixed4 ('&',('g',('t',';')))) $        -- &gt;
+    condB (== c2w '&' ) (fixed5 ('&',('a',('m',('p',';'))))) $  -- &amp;
+    condB (== c2w '"' ) (fixed5 ('&',('#',('3',('4',';'))))) $  -- &#34;
+    condB (== c2w '\'') (fixed5 ('&',('#',('3',('9',';'))))) $  -- &#39;
+    (liftFixedToBounded BP.word8)  -- fallback for Chars smaller than '>'
+  where
+    {-# INLINE fixed4 #-}
+    fixed4 x = liftFixedToBounded $ const x >$<
+      BP.char7 >*< BP.char7 >*< BP.char7 >*< BP.char7
+
+    {-# INLINE fixed5 #-}
+    fixed5 x = liftFixedToBounded $ const x >$<
+      BP.char7 >*< BP.char7 >*< BP.char7 >*< BP.char7 >*< BP.char7
+
+    c2w = fromIntegral . ord
+

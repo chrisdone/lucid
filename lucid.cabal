@@ -22,7 +22,6 @@ library
                      Lucid.Html5
                      Lucid.Bootstrap
   build-depends:     base >= 4 && <5
-                   , blaze-builder
                    , bytestring
                    , containers
                    , mtl
@@ -51,7 +50,6 @@ benchmark bench
   build-depends:    base,
                     deepseq,
                     criterion,
-                    blaze-builder,
                     text,
                     bytestring,
                     lucid
