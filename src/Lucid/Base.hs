@@ -28,7 +28,7 @@ module Lucid.Base
    -- * Types
   ,Html
   ,HtmlT
-  ,Attribute
+  ,Attribute(..)
    -- * Classes
   ,Term(..)
   ,TermRaw(..)
@@ -57,7 +57,7 @@ import qualified Data.Text.Lazy.Encoding as LT
 --------------------------------------------------------------------------------
 -- Types
 
--- | A simple attribute.
+-- | A simple attribute. Don't use the constructor, use 'makeAttribute'.
 newtype Attribute = Attribute (Text,Text)
   deriving (Show,Eq)
 
