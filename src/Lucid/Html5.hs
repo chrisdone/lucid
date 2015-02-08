@@ -317,6 +317,10 @@ p_ = term "p"
 param_ :: Monad m => [Attribute] -> HtmlT m ()
 param_ = with (makeElementNoEnd "param")
 
+-- | The @svg@ attribute.
+svg_ :: Term arg result => arg -> result
+svg_ = term "svg"
+
 -- | @pre@ element
 pre_ :: Term arg result => arg -> result
 pre_ = term "pre"
@@ -1008,10 +1012,6 @@ sandbox_ = makeAttribute "sandbox"
 -- | The @scope@ attribute.
 scope_ :: Text -> Attribute
 scope_ = makeAttribute "scope"
-
--- | The @svg@ attribute.
-svg_ :: Text -> Attribute
-svg_ = makeAttribute "svg"
 
 -- | The @scoped@ attribute.
 scoped_ :: Text -> Attribute
