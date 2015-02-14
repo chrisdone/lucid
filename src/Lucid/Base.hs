@@ -126,16 +126,21 @@ class ToHtml a where
   toHtmlRaw :: Monad m => a -> HtmlT m ()
 
 instance ToHtml String where
-  toHtml = fromString
-  toHtmlRaw m = HtmlT (return ((\_ -> Blaze.fromString m),()))
+  toHtml    = build . Blaze.fromHtmlEscapedString
+  toHtmlRaw = build . Blaze.fromString
 
 instance ToHtml Text where
-  toHtml m = HtmlT (return ((\_ -> encode m),()))
-  toHtmlRaw m = HtmlT (return ((\_ -> Blaze.fromText m),()))
+  toHtml    = build . Blaze.fromHtmlEscapedText
+  toHtmlRaw = build . Blaze.fromText
 
 instance ToHtml LT.Text where
-  toHtml m = HtmlT (return ((\_ -> encodeLazy m),()))
-  toHtmlRaw m = HtmlT (return ((\_ -> Blaze.fromLazyText m),()))
+  toHtml    = build . Blaze.fromHtmlEscapedLazyText
+  toHtmlRaw = build . Blaze.fromLazyText
+
+-- | Create an 'HtmlT' directly from a 'Builder'.
+build :: Monad m => Builder -> HtmlT m ()
+build b = HtmlT (return (const b,()))
+{-# INLINE build #-}
 
 -- | Used to construct HTML terms.
 --
@@ -391,7 +396,3 @@ s = Blaze.fromString
 -- | Encode the given strict plain text to an encoded HTML builder.
 encode :: Text -> Builder
 encode = Blaze.fromHtmlEscapedText
-
--- | Encode the given strict plain text to an encoded HTML builder.
-encodeLazy :: LT.Text -> Builder
-encodeLazy = Blaze.fromHtmlEscapedLazyText
