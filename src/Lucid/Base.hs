@@ -50,7 +50,6 @@ import qualified Data.HashMap.Strict as M
 import           Data.Monoid
 import           Data.String
 import           Data.Text (Text)
-import qualified Data.Text as T
 import qualified Data.Text.Lazy as LT
 import qualified Data.Text.Lazy.Encoding as LT
 
@@ -113,8 +112,7 @@ instance MonadIO m => MonadIO (HtmlT m) where
 -- | We pack it via string. Could possibly encode straight into a
 -- builder. That might be faster.
 instance (Monad m,a ~ ()) => IsString (HtmlT m a) where
-  fromString m' =
-    HtmlT (return (\_ -> encode (T.pack m'),()))
+  fromString = toHtml
 
 -- | Just calls 'renderText'.
 instance (m ~ Identity) => Show (HtmlT m a) where
@@ -379,7 +377,7 @@ buildAttr key val =
   Blaze.fromText key <>
   if val == mempty
      then mempty
-     else s "=\"" <> encode val <> s "\""
+     else s "=\"" <> Blaze.fromHtmlEscapedText val <> s "\""
 
 -- | Folding and monoidally appending attributes.
 foldlMapWithKey :: Monoid m => (k -> v -> m) -> HashMap k v -> m
@@ -389,10 +387,3 @@ foldlMapWithKey f = M.foldlWithKey' (\m k v -> m <> f k v) mempty
 s :: String -> Builder
 s = Blaze.fromString
 {-# INLINE s #-}
-
---------------------------------------------------------------------------------
--- Encoding
-
--- | Encode the given strict plain text to an encoded HTML builder.
-encode :: Text -> Builder
-encode = Blaze.fromHtmlEscapedText
