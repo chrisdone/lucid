@@ -80,14 +80,8 @@ newtype HtmlT m a =
 
 -- | Monoid is right-associative, a la the 'Builder' in it.
 instance (a ~ (),Monad m) => Monoid (HtmlT m a) where
-  mempty = HtmlT (return (\_ -> mempty,mempty))
-  mappend (HtmlT get_f_a) (HtmlT get_g_b) =
-    HtmlT (do ~(f,a) <- get_f_a
-              ~(g,b) <- get_g_b
-              return (\attr ->
-                        f attr  <>
-                        g attr
-                     ,a <> b))
+  mempty  = return mempty
+  mappend = liftM2 mappend
 
 -- | Based on the monad instance.
 instance Monad m => Applicative (HtmlT m) where
@@ -100,15 +94,11 @@ instance Monad m => Functor (HtmlT m) where
 
 -- | Basically acts like Writer.
 instance Monad m => Monad (HtmlT m) where
-  return a = HtmlT (return (\_ -> mempty,a))
-  HtmlT get_g_a >>= f =
-    HtmlT (do ~(g,a) <- get_g_a
-              let HtmlT get_f'_b = f a
-              ~(f',b) <- get_f'_b
-              return (\attr  ->
-                        g attr  <>
-                        f' attr
-                     ,b))
+  return a = HtmlT (return (mempty,a))
+  m >>= f =
+    HtmlT (do ~(g,a) <- runHtmlT m
+              ~(h,b) <- runHtmlT (f a)
+              return (g <> h,b))
 
 -- | Used for 'lift'.
 instance MonadTrans HtmlT where
