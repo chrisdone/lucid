@@ -1,3 +1,8 @@
+## 2.9.1
+
+* Small performance tweaks.
+* Make svg_ an element.
+
 ## 2.6
 
 * Restrict monoid instance's a to ~ () (means you can use mempty
