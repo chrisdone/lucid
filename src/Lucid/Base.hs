@@ -58,7 +58,7 @@ import qualified Data.Text.Lazy.Encoding as LT
 -- Types
 
 -- | A simple attribute. Don't use the constructor, use 'makeAttribute'.
-newtype Attribute = Attribute (Text,Text)
+data Attribute = Attribute !Text !Text
   deriving (Show,Eq)
 
 -- | Simple HTML builder type. Defined in terms of 'HtmlT'. Check out
@@ -239,7 +239,7 @@ instance (Monad m) => With (HtmlT m a) where
                 return (\attr' ->
                           f' (unionArgs (M.fromListWith (<>) (map toPair attr)) attr')
                        ,a))
-    where toPair (Attribute x) = x
+    where toPair (Attribute x y) = (x,y)
 
 -- | For the contentful elements: 'Lucid.Html5.div_'
 instance (Monad m) => With (HtmlT m a -> HtmlT m a) where
@@ -249,7 +249,7 @@ instance (Monad m) => With (HtmlT m a -> HtmlT m a) where
                 return ((\attr'  ->
                            f' (unionArgs (M.fromListWith (<>) (map toPair attr)) attr') )
                        ,a))
-    where toPair (Attribute x) = x
+    where toPair (Attribute x y) = (x,y)
 
 -- | Union two sets of arguments and append duplicate keys.
 unionArgs :: HashMap Text Text -> HashMap Text Text -> HashMap Text Text
@@ -343,7 +343,7 @@ evalHtmlT m =
 makeAttribute :: Text -- ^ Attribute name.
               -> Text -- ^ Attribute value.
               -> Attribute
-makeAttribute x y = Attribute (x,y)
+makeAttribute x y = Attribute x y
 
 -- | Make an HTML builder.
 makeElement :: Monad m
