@@ -25,6 +25,7 @@ library
                    , blaze-builder
                    , bytestring
                    , containers
+                   , hashable
                    , mtl
                    , text
                    , transformers

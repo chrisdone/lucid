@@ -41,6 +41,7 @@ import           Control.Monad.Reader
 import           Data.ByteString.Lazy (ByteString)
 import qualified Data.ByteString.Lazy as L
 import           Data.Functor.Identity
+import           Data.Hashable (Hashable(..))
 import           Data.HashMap.Strict (HashMap)
 import qualified Data.HashMap.Strict as M
 import           Data.Monoid
@@ -55,6 +56,9 @@ import qualified Data.Text.Lazy.Encoding as LT
 -- | A simple attribute. Don't use the constructor, use 'makeAttribute'.
 data Attribute = Attribute !Text !Text
   deriving (Show,Eq)
+
+instance Hashable Attribute where
+  hashWithSalt salt (Attribute a b) = salt `hashWithSalt` a `hashWithSalt` b
 
 -- | Simple HTML builder type. Defined in terms of 'HtmlT'. Check out
 -- that type for instance information.
