@@ -1,3 +1,4 @@
+{-# LANGUAGE UndecidableInstances #-}
 {-# LANGUAGE FunctionalDependencies #-}
 {-# LANGUAGE FlexibleInstances #-}
 {-# LANGUAGE MultiParamTypeClasses #-}
@@ -172,7 +173,7 @@ class Term arg result | result -> arg where
            -> result        -- ^ Result: either an element or an attribute.
 
 -- | Given attributes, expect more child input.
-instance (Monad m,f ~ HtmlT m a) => Term [Attribute] (f -> HtmlT m a) where
+instance (Monad m,f ~ HtmlT m a, f ~ r) => Term [Attribute] (f -> r) where
   termWith name f = with (makeElement name) . (<> f)
 
 -- | Given children immediately, just use that and expect no
