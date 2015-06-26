@@ -77,10 +77,10 @@ table_ [rows_ "2"]
 ``` html
 <table rows="2">
   <tr>
-     <td class="top" colspan="2">
-       <p>Hello, attributes!</p>
-     </td>
-     <td>yay!</td>
+    <td style="color:red" colspan="2" class="top">
+      <p>Hello, attributes!</p>
+    </td>
+    <td>yay!</td>
   </tr>
 </table>
 ```
