@@ -557,6 +557,10 @@ dir_ = makeAttribute "dir"
 disabled_ :: Text -> Attribute
 disabled_ = makeAttribute "disabled"
 
+-- | The @download@ attribute.
+download_ :: Text -> Attribute
+download_ = makeAttribute "download"
+
 -- | The @draggable@ attribute.
 draggable_ :: Text -> Attribute
 draggable_ = makeAttribute "draggable"
