@@ -1001,6 +1001,10 @@ required_ = makeAttribute "required"
 reversed_ :: Text -> Attribute
 reversed_ = makeAttribute "reversed"
 
+-- | The @role@ attribute.
+role_ :: Text -> Attribute
+role_ = makeAttribute "role"
+
 -- | The @rows@ attribute.
 rows_ :: Text -> Attribute
 rows_ = makeAttribute "rows"
