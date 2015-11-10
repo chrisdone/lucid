@@ -23,7 +23,7 @@ module Lucid.Base
   ,makeAttribute
    -- * Types
   ,Html
-  ,HtmlT
+  ,HtmlT(..)
   ,Attribute(..)
    -- * Classes
   ,Term(..)
