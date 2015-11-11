@@ -38,6 +38,7 @@ import qualified Blaze.ByteString.Builder.Html.Utf8 as Blaze
 import           Control.Applicative
 import           Control.Monad
 import           Control.Monad.Reader
+import           Control.Monad.Morph
 import           Data.ByteString.Lazy (ByteString)
 import qualified Data.ByteString.Lazy as L
 import           Data.Functor.Identity
@@ -76,6 +77,9 @@ newtype HtmlT m a =
          -- pass 'mempty' for this argument for a top-level call. See
          -- 'evalHtmlT' and 'execHtmlT' for easier to use functions.
          }
+
+instance MFunctor HtmlT where
+  hoist f (HtmlT xs) = HtmlT (f xs)
 
 -- | Monoid is right-associative, a la the 'Builder' in it.
 instance (a ~ (),Monad m) => Monoid (HtmlT m a) where
