@@ -325,7 +325,10 @@ execHtmlT m =
 relaxHtmlT :: Monad m
           => HtmlT Identity a  -- ^ The HTML generated purely.
           -> HtmlT m a         -- ^ Same HTML accessible in a polymorphic context.
-relaxHtmlT = HtmlT . return . runIdentity . runHtmlT
+relaxHtmlT = hoist go
+  where
+    go :: Monad m => Identity a -> m a
+    go = return . runIdentity
 
 -- | Evaluate the HTML to its return value. Analogous to @evalState@.
 --
