@@ -1,7 +1,9 @@
+{-# LANGUAGE CPP #-}
 {-# LANGUAGE FunctionalDependencies #-}
 {-# LANGUAGE FlexibleInstances #-}
 {-# LANGUAGE MultiParamTypeClasses #-}
 {-# LANGUAGE GADTs #-}
+{-# LANGUAGE DeriveDataTypeable #-}
 
 -- | Base types and combinators.
 
@@ -50,13 +52,14 @@ import           Data.String
 import           Data.Text (Text)
 import qualified Data.Text.Lazy as LT
 import qualified Data.Text.Lazy.Encoding as LT
+import           Data.Typeable (Typeable)
 
 --------------------------------------------------------------------------------
 -- Types
 
 -- | A simple attribute. Don't use the constructor, use 'makeAttribute'.
 data Attribute = Attribute !Text !Text
-  deriving (Show,Eq)
+  deriving (Show,Eq,Typeable)
 
 instance Hashable Attribute where
   hashWithSalt salt (Attribute a b) = salt `hashWithSalt` a `hashWithSalt` b
@@ -77,6 +80,14 @@ newtype HtmlT m a =
          -- pass 'mempty' for this argument for a top-level call. See
          -- 'evalHtmlT' and 'execHtmlT' for easier to use functions.
          }
+-- GHC 7.4 errors with
+--  Can't make a derived instance of `Typeable (HtmlT m a)':
+--    `HtmlT' must only have arguments of kind `*'
+-- GHC 7.6 errors with
+--    `HtmlT' must only have arguments of kind `*'
+#if  __GLASGOW_HASKELL__ >= 707
+  deriving (Typeable)
+#endif
 
 instance MFunctor HtmlT where
   hoist f (HtmlT xs) = HtmlT (f xs)
