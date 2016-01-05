@@ -39,20 +39,21 @@ import qualified Blaze.ByteString.Builder as Blaze
 import qualified Blaze.ByteString.Builder.Html.Utf8 as Blaze
 import           Control.Applicative
 import           Control.Monad
-import           Control.Monad.Reader
 import           Control.Monad.Morph
+import           Control.Monad.Reader
 import           Data.ByteString.Lazy (ByteString)
 import qualified Data.ByteString.Lazy as L
 import           Data.Functor.Identity
-import           Data.Hashable (Hashable(..))
 import           Data.HashMap.Strict (HashMap)
 import qualified Data.HashMap.Strict as M
+import           Data.Hashable (Hashable(..))
 import           Data.Monoid
 import           Data.String
 import           Data.Text (Text)
 import qualified Data.Text.Lazy as LT
 import qualified Data.Text.Lazy.Encoding as LT
 import           Data.Typeable (Typeable)
+import           Prelude
 
 --------------------------------------------------------------------------------
 -- Types
