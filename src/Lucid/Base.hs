@@ -43,6 +43,7 @@ import           Control.Monad.Morph
 import           Control.Monad.Reader
 import           Data.ByteString.Lazy (ByteString)
 import qualified Data.ByteString.Lazy as L
+import qualified Data.ByteString as S
 import           Data.Functor.Identity
 import           Data.HashMap.Strict (HashMap)
 import qualified Data.HashMap.Strict as M
@@ -52,6 +53,7 @@ import           Data.String
 import           Data.Text (Text)
 import qualified Data.Text.Lazy as LT
 import qualified Data.Text.Lazy.Encoding as LT
+import qualified Data.Text.Encoding as T
 import           Data.Typeable (Typeable)
 import           Prelude
 
@@ -150,6 +152,20 @@ instance ToHtml Text where
 instance ToHtml LT.Text where
   toHtml    = build . Blaze.fromHtmlEscapedLazyText
   toHtmlRaw = build . Blaze.fromLazyText
+
+-- | This instance requires the ByteString to contain UTF-8 encoded
+-- text, for the 'toHtml' method. The 'toHtmlRaw' method doesn't care,
+-- but the overall HTML rendering methods in this module assume UTF-8.
+instance ToHtml S.ByteString where
+  toHtml    = build . Blaze.fromHtmlEscapedText . T.decodeUtf8
+  toHtmlRaw = build . Blaze.fromByteString
+
+-- | This instance requires the ByteString to contain UTF-8 encoded
+-- text, for the 'toHtml' method. The 'toHtmlRaw' method doesn't care,
+-- but the overall HTML rendering methods in this module assume UTF-8.
+instance ToHtml L.ByteString where
+  toHtml    = build . Blaze.fromHtmlEscapedLazyText . LT.decodeUtf8
+  toHtmlRaw = build . Blaze.fromLazyByteString
 
 -- | Create an 'HtmlT' directly from a 'Builder'.
 build :: Monad m => Builder -> HtmlT m ()
