@@ -1,3 +1,7 @@
+## 2.9.5
+
+* Add ToHtml instance for ByteString (both)
+
 ## 2.9.1
 
 * Small performance tweaks.
