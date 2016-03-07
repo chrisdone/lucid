@@ -18,6 +18,7 @@ module Lucid.Base
   ,execHtmlT
   ,evalHtmlT
   ,runHtmlT
+  ,relaxHtmlT
   -- * Combinators
   ,makeElement
   ,makeElementNoEnd
@@ -343,6 +344,19 @@ execHtmlT :: Monad m
 execHtmlT m =
   do (f,_) <- runHtmlT m
      return (f mempty)
+
+-- | Generalize the underlying monad.
+--
+-- Some builders are happy to deliver results in a pure underlying
+-- monad, here 'Identity', but have trouble maintaining the polymorphic
+-- type. This utility generalizes from 'Identity'.
+relaxHtmlT :: Monad m
+          => HtmlT Identity a  -- ^ The HTML generated purely.
+          -> HtmlT m a         -- ^ Same HTML accessible in a polymorphic context.
+relaxHtmlT = hoist go
+  where
+    go :: Monad m => Identity a -> m a
+    go = return . runIdentity
 
 -- | Evaluate the HTML to its return value. Analogous to @evalState@.
 --
