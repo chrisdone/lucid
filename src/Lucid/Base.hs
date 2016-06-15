@@ -5,6 +5,9 @@
 {-# LANGUAGE GADTs #-}
 {-# LANGUAGE DeriveDataTypeable #-}
 
+-- Search for UndecidableInstances to see why this is needed
+{-# LANGUAGE UndecidableInstances #-}
+
 -- | Base types and combinators.
 
 module Lucid.Base
@@ -42,6 +45,7 @@ import           Control.Applicative
 import           Control.Monad
 import           Control.Monad.Morph
 import           Control.Monad.Reader
+import           Control.Monad.State.Class (MonadState(..))
 import           Data.ByteString.Lazy (ByteString)
 import qualified Data.ByteString.Lazy as L
 import qualified Data.ByteString as S
@@ -123,6 +127,18 @@ instance MonadTrans HtmlT where
   lift m =
     HtmlT (do a <- m
               return (\_ -> mempty,a))
+
+-- MonadReader / MonadState instances need UndecidableInstances,
+-- because they do not satisfy the coverage condition.
+
+instance MonadReader r m => MonadReader r (HtmlT m) where
+  ask = lift ask
+  local f (HtmlT a) = HtmlT (local f a)
+
+instance MonadState s m => MonadState s (HtmlT m) where
+  get = lift get
+  put = lift . put
+  state = lift . state
 
 -- | If you want to use IO in your HTML generation.
 instance MonadIO m => MonadIO (HtmlT m) where
