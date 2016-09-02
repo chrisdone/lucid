@@ -1,3 +1,9 @@
+## 2.9.6
+
+* Fix compilation of benchmarks
+* Add @athanclark's version of relaxHtmlT
+* Add a utility to generalize the underlying monad from Identity
+
 ## 2.9.5
 
 * Add ToHtml instance for ByteString (both)
