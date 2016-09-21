@@ -49,7 +49,8 @@ import           Data.Functor.Identity
 import           Data.HashMap.Strict (HashMap)
 import qualified Data.HashMap.Strict as M
 import           Data.Hashable (Hashable(..))
-import           Data.Monoid
+import           Data.Semigroup (Semigroup (..))
+import           Data.Monoid (Monoid (..))
 import           Data.String
 import           Data.Text (Text)
 import qualified Data.Text.Lazy as LT
@@ -95,6 +96,9 @@ newtype HtmlT m a =
 
 instance MFunctor HtmlT where
   hoist f (HtmlT xs) = HtmlT (f xs)
+
+instance (a ~ (),Monad m) => Semigroup (HtmlT m a) where
+  (<>) = liftM2 mappend
 
 -- | Monoid is right-associative, a la the 'Builder' in it.
 instance (a ~ (),Monad m) => Monoid (HtmlT m a) where
@@ -427,7 +431,7 @@ buildAttr key val =
 
 -- | Folding and monoidally appending attributes.
 foldlMapWithKey :: Monoid m => (k -> v -> m) -> HashMap k v -> m
-foldlMapWithKey f = M.foldlWithKey' (\m k v -> m <> f k v) mempty
+foldlMapWithKey f = M.foldlWithKey' (\m k v -> m `mappend` f k v) mempty
 
 -- | Convenience function for constructing builders.
 s :: String -> Builder
