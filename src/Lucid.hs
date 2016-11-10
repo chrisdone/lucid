@@ -46,8 +46,16 @@ import Lucid.Html5
 -- indicate that you want HTML. In normal code your top-level
 -- declaration signatures handle that.
 --
--- Plain text is written using the @OverloadedStrings@ and
--- @ExtendedDefaultRules@ extensions, and is automatically escaped:
+-- For GHCi:
+--
+-- @
+-- :set -XOverloadedStrings -XExtendedDefaultRules@
+-- import Lucid
+-- @
+--
+-- In a module: @{-\# LANGUAGE OverloadedStrings, ExtendedDefaultRules \#-}@
+--
+-- Plain text is written like this, and is automatically escaped:
 --
 -- >>> "123 < 456" :: Html ()
 -- 123 &lt; 456
@@ -62,7 +70,7 @@ import Lucid.Html5
 -- >>> table_ (tr_ (td_ (p_ "Hello, World!"))) :: Html ()
 -- <table><tr><td><p>Hello, World!</p></td></tr></table>
 --
--- Elements are juxtaposed via monoidal append:
+-- Elements are juxtaposed via monoidal append (remember to import "Data.Monoid"):
 --
 -- >>> p_ "hello" <> p_ "sup" :: Html ()
 -- <p>hello</p><p>sup</p>
