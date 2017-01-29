@@ -114,13 +114,24 @@ instance Monad m => Applicative (HtmlT m) where
   pure = return
   (<*>) = ap
 
+  a1 *> a2 = (id <$ a1) <*> a2
+  {-# INLINE (*>) #-}
+
+  (<*) = liftA2 const
+  {-# INLINE (<*) #-}
+
 -- | Just re-uses Monad.
 instance Monad m => Functor (HtmlT m) where
   fmap = liftM
 
+  (<$) = fmap . const
+  {-# INLINE (<$) #-}
+
 -- | Basically acts like Writer.
 instance Monad m => Monad (HtmlT m) where
   return a = HtmlT (return (mempty,a))
+
+  {-# INLINE (>>=) #-}
   m >>= f =
     HtmlT (do ~(g,a) <- runHtmlT m
               ~(h,b) <- runHtmlT (f a)
@@ -221,6 +232,8 @@ class Term arg result | result -> arg where
        -> arg    -- ^ Either an attribute list or children.
        -> result -- ^ Result: either an element or an attribute.
   term = flip termWith []
+  {-# INLINE term #-}
+
   -- | Use this if you want to make an element which inserts some
   -- pre-prepared attributes into the element.
   termWith :: Text          -- ^ Name.
@@ -236,6 +249,7 @@ instance (Monad m,f ~ HtmlT m a) => Term [Attribute] (f -> HtmlT m a) where
 -- attributes.
 instance (Monad m) => Term (HtmlT m a) (HtmlT m a) where
   termWith name f = with (makeElement name) f
+  {-# INLINE termWith #-}
 
 -- | Some terms (like 'Lucid.Html5.style_', 'Lucid.Html5.title_') can be used for
 -- attributes as well as elements.
@@ -413,6 +427,7 @@ makeElement :: Monad m
             => Text       -- ^ Name.
             -> HtmlT m a  -- ^ Children HTML.
             -> HtmlT m a -- ^ A parent element.
+{-# INLINE[1] makeElement #-}
 makeElement name =
   \m' ->
     HtmlT (do ~(f,a) <- runHtmlT m'
