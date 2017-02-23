@@ -1053,6 +1053,18 @@ spellcheck_ = makeAttribute "spellcheck"
 src_ :: Text -> Attribute
 src_ = makeAttribute "src"
 
+-- | The @integrity@ attribute.
+integrity_ :: Text -> Attribute
+integrity_ = makeAttribute "integrity"
+
+-- | The @integrity@ attribute.
+defer_ :: Text -> Attribute
+defer_ = makeAttribute "defer"
+
+-- | The @integrity@ attribute.
+crossorigin_ :: Text -> Attribute
+crossorigin_ = makeAttribute "crossorigin"
+
 -- | The @srcdoc@ attribute.
 srcdoc_ :: Text -> Attribute
 srcdoc_ = makeAttribute "srcdoc"
