@@ -1,5 +1,6 @@
 {-# LANGUAGE OverloadedStrings #-}
 {-# LANGUAGE NoMonomorphismRestriction #-}
+{-# LANGUAGE DeriveDataTypeable #-}
 {-# OPTIONS -fno-warn-type-defaults #-}
 
 -- | Html5 terms.
@@ -10,6 +11,7 @@ import           Lucid.Base
 
 import           Data.Monoid
 import           Data.Text (Text)
+import           Data.Typeable (Typeable)
 
 -- | @DOCTYPE@ element
 doctype_ :: Monad m => HtmlT m ()
@@ -536,6 +538,15 @@ controls_ = makeAttribute "controls"
 -- | The @coords@ attribute.
 coords_ :: Text -> Attribute
 coords_ = makeAttribute "coords"
+
+-- | A CORS setting attributes data type.
+data CORSAttribute = CORSAnonymous | CORSUseCredentials
+  deriving (Show, Eq, Typeable)
+
+-- | The @crossorigin@ attribute.
+crossorigin_ :: CORSAttribute -> Attribute
+crossorigin_ CORSAnonymous      = makeAttribute "crossorigin" "anonymous"
+crossorigin_ CORSUseCredentials = makeAttribute "crossorigin" "use-credentials"
 
 -- | The @data@ attribute.
 data_ :: Text -> Text -> Attribute

@@ -18,9 +18,10 @@ demo =
                   link_ [href_ "//fonts.googleapis.com/css?family=Open+Sans"
                         ,rel_ "stylesheet"
                         ,type_ "text/css"]
-                  link_ [href_ "//cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.1.0/css/bootstrap.min.css"
+                  link_ [href_ "https//cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.1.0/css/bootstrap.min.css"
                         ,rel_ "stylesheet"
-                        ,type_ "text/css"]
+                        ,type_ "text/css"
+                        ,crossorigin_ CORSAnonymous]
                   title_ "YSU Closing Status")
         body_ (div_ [class_ "container"]
                     (do h1_ "YSU Closing Status"
