@@ -1057,11 +1057,11 @@ src_ = makeAttribute "src"
 integrity_ :: Text -> Attribute
 integrity_ = makeAttribute "integrity"
 
--- | The @integrity@ attribute.
+-- | The @defer@ attribute.
 defer_ :: Text -> Attribute
 defer_ = makeAttribute "defer"
 
--- | The @integrity@ attribute.
+-- | The @crossorigin@ attribute.
 crossorigin_ :: Text -> Attribute
 crossorigin_ = makeAttribute "crossorigin"
 
