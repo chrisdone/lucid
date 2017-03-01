@@ -162,6 +162,10 @@ class ToHtml a where
   toHtml :: Monad m => a -> HtmlT m ()
   toHtmlRaw :: Monad m => a -> HtmlT m ()
 
+instance (a ~ (), m ~ Identity) => ToHtml (HtmlT m a) where
+  toHtml = relaxHtmlT
+  toHtmlRaw = relaxHtmlT
+
 instance ToHtml String where
   toHtml    = build . Blaze.fromHtmlEscapedString
   toHtmlRaw = build . Blaze.fromString

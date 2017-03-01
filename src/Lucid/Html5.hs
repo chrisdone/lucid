@@ -9,7 +9,10 @@ module Lucid.Html5 where
 import           Lucid.Base
 
 import           Data.Monoid
-import           Data.Text (Text)
+import           Data.Text (Text, unwords)
+
+-------------------------------------------------------------------------------
+-- Elements
 
 -- | @DOCTYPE@ element
 doctype_ :: Monad m => HtmlT m ()
@@ -457,6 +460,9 @@ video_ = term "video"
 wbr_ :: Monad m => [Attribute] -> HtmlT m ()
 wbr_ = with (makeElementNoEnd "wbr")
 
+-------------------------------------------------------------------------------
+-- Attributes
+
 -- | The @accept@ attribute.
 accept_ :: Text -> Attribute
 accept_ = makeAttribute "accept"
@@ -509,6 +515,9 @@ checked_ = makeAttribute "checked" mempty
 class_ :: Text -> Attribute
 class_ = makeAttribute "class"
 
+classes_ :: [Text] -> Attribute
+classes_ = makeAttribute "class" . Data.Text.unwords
+
 -- | The @cols@ attribute.
 cols_ :: Text -> Attribute
 cols_ = makeAttribute "cols"
@@ -536,6 +545,10 @@ controls_ = makeAttribute "controls"
 -- | The @coords@ attribute.
 coords_ :: Text -> Attribute
 coords_ = makeAttribute "coords"
+
+-- | The @crossorigin@ attribute.
+crossorigin_ :: Text -> Attribute
+crossorigin_ = makeAttribute "crossorigin"
 
 -- | The @data@ attribute.
 data_ :: Text -> Text -> Attribute
@@ -628,6 +641,10 @@ icon_ = makeAttribute "icon"
 -- | The @id@ attribute.
 id_ :: Text -> Attribute
 id_ = makeAttribute "id"
+
+-- | The @integrity@ attribute.
+integrity_ :: Text -> Attribute
+integrity_ = makeAttribute "integrity"
 
 -- | The @ismap@ attribute.
 ismap_ :: Text -> Attribute
@@ -1052,18 +1069,6 @@ spellcheck_ = makeAttribute "spellcheck"
 -- | The @src@ attribute.
 src_ :: Text -> Attribute
 src_ = makeAttribute "src"
-
--- | The @integrity@ attribute.
-integrity_ :: Text -> Attribute
-integrity_ = makeAttribute "integrity"
-
--- | The @defer@ attribute.
-defer_ :: Text -> Attribute
-defer_ = makeAttribute "defer"
-
--- | The @crossorigin@ attribute.
-crossorigin_ :: Text -> Attribute
-crossorigin_ = makeAttribute "crossorigin"
 
 -- | The @srcdoc@ attribute.
 srcdoc_ :: Text -> Attribute
