@@ -9,7 +9,7 @@ module Lucid.Html5 where
 import           Lucid.Base
 
 import           Data.Monoid
-import           Data.Text (Text)
+import           Data.Text (Text, unwords)
 
 -------------------------------------------------------------------------------
 -- Elements
@@ -514,6 +514,9 @@ checked_ = makeAttribute "checked" mempty
 -- | The @class@ attribute.
 class_ :: Text -> Attribute
 class_ = makeAttribute "class"
+
+classes_ :: [Text] -> Attribute
+classes_ = makeAttribute "class" . Data.Text.unwords
 
 -- | The @cols@ attribute.
 cols_ :: Text -> Attribute
