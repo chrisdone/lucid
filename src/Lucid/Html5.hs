@@ -11,6 +11,9 @@ import           Lucid.Base
 import           Data.Monoid
 import           Data.Text (Text)
 
+-------------------------------------------------------------------------------
+-- Elements
+
 -- | @DOCTYPE@ element
 doctype_ :: Monad m => HtmlT m ()
 doctype_ = makeElementNoEnd "!DOCTYPE HTML"
@@ -457,6 +460,9 @@ video_ = term "video"
 wbr_ :: Monad m => [Attribute] -> HtmlT m ()
 wbr_ = with (makeElementNoEnd "wbr")
 
+-------------------------------------------------------------------------------
+-- Attributes
+
 -- | The @accept@ attribute.
 accept_ :: Text -> Attribute
 accept_ = makeAttribute "accept"
@@ -536,6 +542,10 @@ controls_ = makeAttribute "controls"
 -- | The @coords@ attribute.
 coords_ :: Text -> Attribute
 coords_ = makeAttribute "coords"
+
+-- | The @crossorigin@ attribute.
+crossorigin_ :: Text -> Attribute
+crossorigin_ = makeAttribute "crossorigin"
 
 -- | The @data@ attribute.
 data_ :: Text -> Text -> Attribute
@@ -628,6 +638,10 @@ icon_ = makeAttribute "icon"
 -- | The @id@ attribute.
 id_ :: Text -> Attribute
 id_ = makeAttribute "id"
+
+-- | The @integrity@ attribute.
+integrity_ :: Text -> Attribute
+integrity_ = makeAttribute "integrity"
 
 -- | The @ismap@ attribute.
 ismap_ :: Text -> Attribute
@@ -1052,18 +1066,6 @@ spellcheck_ = makeAttribute "spellcheck"
 -- | The @src@ attribute.
 src_ :: Text -> Attribute
 src_ = makeAttribute "src"
-
--- | The @integrity@ attribute.
-integrity_ :: Text -> Attribute
-integrity_ = makeAttribute "integrity"
-
--- | The @defer@ attribute.
-defer_ :: Text -> Attribute
-defer_ = makeAttribute "defer"
-
--- | The @crossorigin@ attribute.
-crossorigin_ :: Text -> Attribute
-crossorigin_ = makeAttribute "crossorigin"
 
 -- | The @srcdoc@ attribute.
 srcdoc_ :: Text -> Attribute
