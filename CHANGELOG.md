@@ -1,3 +1,9 @@
+## 2.9.8
+
+* Add `integrity_`, `crossorigin_` attributes
+* Add `classes_` smart attribute constructor
+* Add `ToHtml (HtmlT m a)` instance
+
 ## 2.9.6
 
 * Fix compilation of benchmarks
