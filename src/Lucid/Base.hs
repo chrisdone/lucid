@@ -34,6 +34,7 @@ module Lucid.Base
    -- * Classes
   ,Term(..)
   ,TermRaw(..)
+  ,Raw(..)
   ,ToHtml(..)
   ,With(..))
   where
@@ -301,6 +302,21 @@ instance (Monad m,a ~ ()) => TermRaw Text (HtmlT m a) where
 -- attributes as well as elements.
 instance TermRaw Text Attribute where
   termRawWith key _ value = makeAttribute key value
+
+-- | Raw text will not HTML escape its children.
+-- Useful for writing templates.
+class Raw arg result | result -> arg where
+  raw :: arg    -- ^ Either an attribute list or children.
+      -> result -- ^ Result: either an element or an attribute.
+  raw = rawWith []
+  rawWith :: [Attribute]  -- ^ Attribute transformer.
+          -> arg          -- ^ Either an attribute list or children.
+          -> result       -- ^ Result: either an element or an attribute.
+
+instance (Monad m, a ~ ()) => Raw Text (HtmlT m a) where
+  rawWith f = with x f . toHtmlRaw
+    where x = \m' -> HtmlT (do ~(f,a) <- runHtmlT m'
+                               return (\attr -> f mempty, a))
 
 -- | With an element use these attributes. An overloaded way of adding
 -- attributes either to an element accepting attributes-and-children
