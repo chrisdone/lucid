@@ -1,3 +1,7 @@
+## 2.9.8.1
+
+* Improve performance by adding `INLINE` pragmas to `Monad` etc. combinators.
+
 ## 2.9.8
 
 * Add `integrity_`, `crossorigin_` attributes
