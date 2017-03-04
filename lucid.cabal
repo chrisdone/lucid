@@ -62,3 +62,14 @@ benchmark bench
                     bytestring,
                     lucid
   ghc-options:      -O2
+
+benchmark bench-io
+  type:             exitcode-stdio-1.0
+  hs-source-dirs:   benchmarks
+  main-is:          IO.hs
+  build-depends:    base,
+                    criterion,
+                    transformers,
+                    text,
+                    lucid
+  ghc-options:      -O2

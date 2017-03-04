@@ -111,20 +111,47 @@ instance (a ~ (),Monad m) => Monoid (HtmlT m a) where
 
 -- | Based on the monad instance.
 instance Monad m => Applicative (HtmlT m) where
-  pure = return
-  (<*>) = ap
+  pure a = HtmlT (return (mempty,a))
+  {-# INLINE pure #-}
+
+  f <*> x = HtmlT $ do
+    ~(g, f') <- runHtmlT f
+    ~(h, x') <- runHtmlT x
+    return (g <> h, f' x')
+  {-# INLINE (<*>) #-}
+
+  m *> n = HtmlT $ do
+    ~(g, _) <- runHtmlT m
+    ~(h, b) <- runHtmlT n
+    return (g <> h, b)
+  {-# INLINE (*>) #-}
+
+  m <* n = HtmlT $ do
+    ~(g, a) <- runHtmlT m
+    ~(h, _) <- runHtmlT n
+    return (g <> h, a)
+  {-# INLINE (<*) #-}
 
 -- | Just re-uses Monad.
 instance Monad m => Functor (HtmlT m) where
   fmap = liftM
 
+  (<$) = fmap . const
+  {-# INLINE (<$) #-}
+
 -- | Basically acts like Writer.
 instance Monad m => Monad (HtmlT m) where
-  return a = HtmlT (return (mempty,a))
-  m >>= f =
-    HtmlT (do ~(g,a) <- runHtmlT m
-              ~(h,b) <- runHtmlT (f a)
-              return (g <> h,b))
+  return = pure
+  {-# INLINE return #-}
+
+  m >>= f = HtmlT $ do
+    ~(g,a) <- runHtmlT m
+    ~(h,b) <- runHtmlT (f a)
+    return (g <> h,b)
+  {-# INLINE (>>=) #-}
+
+  (>>) = (*>)
+  {-# INLINE (>>) #-}
 
 -- | Used for 'lift'.
 instance MonadTrans HtmlT where
@@ -221,6 +248,8 @@ class Term arg result | result -> arg where
        -> arg    -- ^ Either an attribute list or children.
        -> result -- ^ Result: either an element or an attribute.
   term = flip termWith []
+  {-# INLINE term #-}
+
   -- | Use this if you want to make an element which inserts some
   -- pre-prepared attributes into the element.
   termWith :: Text          -- ^ Name.
@@ -236,6 +265,7 @@ instance (Monad m,f ~ HtmlT m a) => Term [Attribute] (f -> HtmlT m a) where
 -- attributes.
 instance (Monad m) => Term (HtmlT m a) (HtmlT m a) where
   termWith name f = with (makeElement name) f
+  {-# INLINE termWith #-}
 
 -- | Some terms (like 'Lucid.Html5.style_', 'Lucid.Html5.title_') can be used for
 -- attributes as well as elements.
@@ -413,6 +443,7 @@ makeElement :: Monad m
             => Text       -- ^ Name.
             -> HtmlT m a  -- ^ Children HTML.
             -> HtmlT m a -- ^ A parent element.
+{-# INLINE[1] makeElement #-}
 makeElement name =
   \m' ->
     HtmlT (do ~(f,a) <- runHtmlT m'
