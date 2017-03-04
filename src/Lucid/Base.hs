@@ -111,13 +111,25 @@ instance (a ~ (),Monad m) => Monoid (HtmlT m a) where
 
 -- | Based on the monad instance.
 instance Monad m => Applicative (HtmlT m) where
-  pure = return
-  (<*>) = ap
+  pure a = HtmlT (return (mempty,a))
+  {-# INLINE pure #-}
 
-  a1 *> a2 = (id <$ a1) <*> a2
+  f <*> x = HtmlT $ do
+    ~(g, f') <- runHtmlT f
+    ~(h, x') <- runHtmlT x
+    return (g <> h, f' x')
+  {-# INLINE (<*>) #-}
+
+  m *> n = HtmlT $ do
+    ~(g, _) <- runHtmlT m
+    ~(h, b) <- runHtmlT n
+    return (g <> h, b)
   {-# INLINE (*>) #-}
 
-  (<*) = liftA2 const
+  m <* n = HtmlT $ do
+    ~(g, a) <- runHtmlT m
+    ~(h, _) <- runHtmlT n
+    return (g <> h, a)
   {-# INLINE (<*) #-}
 
 -- | Just re-uses Monad.
@@ -129,13 +141,17 @@ instance Monad m => Functor (HtmlT m) where
 
 -- | Basically acts like Writer.
 instance Monad m => Monad (HtmlT m) where
-  return a = HtmlT (return (mempty,a))
+  return = pure
+  {-# INLINE return #-}
 
+  m >>= f = HtmlT $ do
+    ~(g,a) <- runHtmlT m
+    ~(h,b) <- runHtmlT (f a)
+    return (g <> h,b)
   {-# INLINE (>>=) #-}
-  m >>= f =
-    HtmlT (do ~(g,a) <- runHtmlT m
-              ~(h,b) <- runHtmlT (f a)
-              return (g <> h,b))
+
+  (>>) = (*>)
+  {-# INLINE (>>) #-}
 
 -- | Used for 'lift'.
 instance MonadTrans HtmlT where
