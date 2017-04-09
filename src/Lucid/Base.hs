@@ -186,7 +186,9 @@ instance (m ~ Identity) => Show (HtmlT m a) where
 
 -- | Can be converted to HTML.
 class ToHtml a where
+  -- | Convert to HTML, doing HTML escaping.
   toHtml :: Monad m => a -> HtmlT m ()
+  -- | Convert to HTML without any escaping.
   toHtmlRaw :: Monad m => a -> HtmlT m ()
 
 instance (a ~ (), m ~ Identity) => ToHtml (HtmlT m a) where
