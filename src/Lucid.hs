@@ -5,6 +5,10 @@
 --
 -- See "Lucid.Base" for lower level functions like
 -- `makeElement`, `makeAttribute`, 'termRaw', etc.
+--
+-- To convert html to the lucid DSL, use the (experimental) program
+-- <https://github.com/dbaynard/lucid-from-html lucid-from-html>
+-- which may eventually be integrated into lucid itself.
 
 module Lucid
   (-- * Intro
