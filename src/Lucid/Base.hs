@@ -185,39 +185,39 @@ instance (m ~ Identity) => Show (HtmlT m a) where
   show = LT.unpack . renderText
 
 -- | Can be converted to HTML.
-class ToHtml a where
+class ToHtml m a where
   -- | Convert to HTML, doing HTML escaping.
-  toHtml :: Monad m => a -> HtmlT m ()
+  toHtml :: a -> HtmlT m ()
   -- | Convert to HTML without any escaping.
-  toHtmlRaw :: Monad m => a -> HtmlT m ()
+  toHtmlRaw :: a -> HtmlT m ()
 
-instance (a ~ (), m ~ Identity) => ToHtml (HtmlT m a) where
+instance (Monad m) => ToHtml m (HtmlT Identity ()) where
   toHtml = relaxHtmlT
   toHtmlRaw = relaxHtmlT
 
-instance ToHtml String where
+instance Monad m => ToHtml m String where
   toHtml    = build . Blaze.fromHtmlEscapedString
   toHtmlRaw = build . Blaze.fromString
 
-instance ToHtml Text where
+instance Monad m => ToHtml m Text where
   toHtml    = build . Blaze.fromHtmlEscapedText
   toHtmlRaw = build . Blaze.fromText
 
-instance ToHtml LT.Text where
+instance Monad m => ToHtml m LT.Text where
   toHtml    = build . Blaze.fromHtmlEscapedLazyText
   toHtmlRaw = build . Blaze.fromLazyText
 
 -- | This instance requires the ByteString to contain UTF-8 encoded
 -- text, for the 'toHtml' method. The 'toHtmlRaw' method doesn't care,
 -- but the overall HTML rendering methods in this module assume UTF-8.
-instance ToHtml S.ByteString where
+instance Monad m => ToHtml m S.ByteString where
   toHtml    = build . Blaze.fromHtmlEscapedText . T.decodeUtf8
   toHtmlRaw = build . Blaze.fromByteString
 
 -- | This instance requires the ByteString to contain UTF-8 encoded
 -- text, for the 'toHtml' method. The 'toHtmlRaw' method doesn't care,
 -- but the overall HTML rendering methods in this module assume UTF-8.
-instance ToHtml L.ByteString where
+instance Monad m => ToHtml m L.ByteString where
   toHtml    = build . Blaze.fromHtmlEscapedLazyText . LT.decodeUtf8
   toHtmlRaw = build . Blaze.fromLazyByteString
 
@@ -291,7 +291,7 @@ class TermRaw arg result | result -> arg where
            -> result        -- ^ Result: either an element or an attribute.
 
 -- | Given attributes, expect more child input.
-instance (Monad m,ToHtml f, a ~ ()) => TermRaw [Attribute] (f -> HtmlT m a) where
+instance (Monad m,ToHtml m f, a ~ ()) => TermRaw [Attribute] (f -> HtmlT m a) where
   termRawWith name f attrs = with (makeElement name) (attrs <> f) . toHtmlRaw
 
 -- | Given children immediately, just use that and expect no
