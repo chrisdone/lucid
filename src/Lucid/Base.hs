@@ -221,6 +221,10 @@ instance Monad m => ToHtml m L.ByteString where
   toHtml    = build . Blaze.fromHtmlEscapedLazyText . LT.decodeUtf8
   toHtmlRaw = build . Blaze.fromLazyByteString
 
+instance Monad m => ToHtml m Int where
+  toHtml    = toHtml . show
+  toHtmlRaw = toHtmlRaw . show
+
 -- | Create an 'HtmlT' directly from a 'Builder'.
 build :: Monad m => Builder -> HtmlT m ()
 build b = HtmlT (return (const b,()))
