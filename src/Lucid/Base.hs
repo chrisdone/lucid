@@ -35,6 +35,7 @@ module Lucid.Base
   ,Term(..)
   ,TermRaw(..)
   ,ToHtml(..)
+  ,toHtmlShow
   ,With(..))
   where
 
@@ -222,8 +223,43 @@ instance Monad m => ToHtml m L.ByteString where
   toHtmlRaw = build . Blaze.fromLazyByteString
 
 instance Monad m => ToHtml m Int where
-  toHtml    = toHtml . show
+  toHtml    = toHtmlShow
   toHtmlRaw = toHtmlRaw . show
+
+instance Monad m => ToHtml m Integer where
+  toHtml    = toHtmlShow
+  toHtmlRaw = toHtmlRaw . show
+
+instance Monad m => ToHtml m Bool where
+  toHtml    = toHtmlShow
+  toHtmlRaw = toHtmlRaw . show
+
+instance Monad m => ToHtml m Float where
+  toHtml    = toHtmlShow
+  toHtmlRaw = toHtmlRaw . show
+
+instance Monad m => ToHtml m Double where
+  toHtml    = toHtmlShow
+  toHtmlRaw = toHtmlRaw . show
+
+instance (Monad m, ToHtml m a) => ToHtml m (Maybe a) where
+  toHtml Nothing = mempty
+  toHtml (Just x) = toHtml x
+  toHtmlRaw Nothing = mempty
+  toHtmlRaw (Just x) = toHtmlRaw x
+
+instance (Monad m, ToHtml m l, ToHtml m r) => ToHtml m (Either l r) where
+  toHtml (Left l) = toHtml l
+  toHtml (Right r) = toHtml r
+  toHtmlRaw (Left l) = toHtmlRaw l
+  toHtmlRaw (Right r) = toHtmlRaw r
+
+instance (Monad m, ToHtml m a, ToHtml m b) => ToHtml m (a, b) where
+  toHtml (a,b) = toHtml a >> toHtml b
+  toHtmlRaw (a,b) = toHtmlRaw a >> toHtmlRaw b
+
+toHtmlShow :: (Show a, Monad m) => a -> HtmlT m ()
+toHtmlShow = toHtml . show
 
 -- | Create an 'HtmlT' directly from a 'Builder'.
 build :: Monad m => Builder -> HtmlT m ()
