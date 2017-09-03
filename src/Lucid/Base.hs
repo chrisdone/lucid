@@ -196,7 +196,11 @@ instance (Monad m) => ToHtml m (HtmlT Identity ()) where
   toHtml = relaxHtmlT
   toHtmlRaw = relaxHtmlT
 
-instance Monad m => ToHtml m String where
+instance Monad m => ToHtml m Char where
+  toHtml = toHtml . show
+  toHtmlRaw = toHtmlRaw . show
+
+instance {-# OVERLAPPING #-} Monad m => ToHtml m String where
   toHtml    = build . Blaze.fromHtmlEscapedString
   toHtmlRaw = build . Blaze.fromString
 
@@ -257,6 +261,10 @@ instance (Monad m, ToHtml m l, ToHtml m r) => ToHtml m (Either l r) where
 instance (Monad m, ToHtml m a, ToHtml m b) => ToHtml m (a, b) where
   toHtml (a,b) = toHtml a >> toHtml b
   toHtmlRaw (a,b) = toHtmlRaw a >> toHtmlRaw b
+
+instance (Monad m, ToHtml m a) => ToHtml m [a] where
+  toHtml = mapM_ toHtml
+  toHtmlRaw = mapM_ toHtmlRaw
 
 toHtmlShow :: (Show a, Monad m) => a -> HtmlT m ()
 toHtmlShow = toHtml . show
