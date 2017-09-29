@@ -515,6 +515,9 @@ checked_ = makeAttribute "checked" mempty
 class_ :: Text -> Attribute
 class_ = makeAttribute "class"
 
+-- | Smart constructor for @class@ attribute.
+--
+-- @since 2.9.8
 classes_ :: [Text] -> Attribute
 classes_ = makeAttribute "class" . Data.Text.unwords
 
@@ -547,6 +550,8 @@ coords_ :: Text -> Attribute
 coords_ = makeAttribute "coords"
 
 -- | The @crossorigin@ attribute.
+--
+-- @since 2.9.8
 crossorigin_ :: Text -> Attribute
 crossorigin_ = makeAttribute "crossorigin"
 
@@ -643,6 +648,8 @@ id_ :: Text -> Attribute
 id_ = makeAttribute "id"
 
 -- | The @integrity@ attribute.
+--
+-- @since 2.9.8
 integrity_ :: Text -> Attribute
 integrity_ = makeAttribute "integrity"
 

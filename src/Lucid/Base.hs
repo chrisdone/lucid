@@ -191,6 +191,7 @@ class ToHtml a where
   -- | Convert to HTML without any escaping.
   toHtmlRaw :: Monad m => a -> HtmlT m ()
 
+-- | @since 2.9.8
 instance (a ~ (), m ~ Identity) => ToHtml (HtmlT m a) where
   toHtml = relaxHtmlT
   toHtmlRaw = relaxHtmlT
@@ -210,6 +211,8 @@ instance ToHtml LT.Text where
 -- | This instance requires the ByteString to contain UTF-8 encoded
 -- text, for the 'toHtml' method. The 'toHtmlRaw' method doesn't care,
 -- but the overall HTML rendering methods in this module assume UTF-8.
+--
+-- @since 2.9.5
 instance ToHtml S.ByteString where
   toHtml    = build . Blaze.fromHtmlEscapedText . T.decodeUtf8
   toHtmlRaw = build . Blaze.fromByteString
@@ -217,6 +220,8 @@ instance ToHtml S.ByteString where
 -- | This instance requires the ByteString to contain UTF-8 encoded
 -- text, for the 'toHtml' method. The 'toHtmlRaw' method doesn't care,
 -- but the overall HTML rendering methods in this module assume UTF-8.
+--
+-- @since 2.9.5
 instance ToHtml L.ByteString where
   toHtml    = build . Blaze.fromHtmlEscapedLazyText . LT.decodeUtf8
   toHtmlRaw = build . Blaze.fromLazyByteString
@@ -406,9 +411,11 @@ execHtmlT m =
 -- Some builders are happy to deliver results in a pure underlying
 -- monad, here 'Identity', but have trouble maintaining the polymorphic
 -- type. This utility generalizes from 'Identity'.
+--
+-- @since 2.9.6
 relaxHtmlT :: Monad m
-          => HtmlT Identity a  -- ^ The HTML generated purely.
-          -> HtmlT m a         -- ^ Same HTML accessible in a polymorphic context.
+           => HtmlT Identity a  -- ^ The HTML generated purely.
+           -> HtmlT m a         -- ^ Same HTML accessible in a polymorphic context.
 relaxHtmlT = hoist go
   where
     go :: Monad m => Identity a -> m a
