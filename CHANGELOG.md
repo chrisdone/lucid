@@ -1,3 +1,7 @@
+## 2.9.9
+
+* Add `commuteHtmlT` to commute `HtmlT m a` into `m (HtmlT n a)`.
+
 ## 2.9.8.1
 
 * Improve performance by adding `INLINE` pragmas to `Monad` etc. combinators.

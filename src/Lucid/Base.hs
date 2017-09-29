@@ -22,6 +22,7 @@ module Lucid.Base
   ,evalHtmlT
   ,runHtmlT
   ,relaxHtmlT
+  ,commuteHtmlT
   -- * Combinators
   ,makeElement
   ,makeElementNoEnd
@@ -420,6 +421,28 @@ relaxHtmlT = hoist go
   where
     go :: Monad m => Identity a -> m a
     go = return . runIdentity
+
+-- | Commute inner @m@ to the front.
+--
+-- This is useful when you have impure HTML generation, e.g. using `StateT`.
+-- Recall, there is `MonadState s HtmlT` instance.
+--
+-- @
+-- exampleHtml :: MonadState Int m => HtmlT m ()
+-- exampleHtml = ul_ $ replicateM_ 5 $ do
+--   x <- get
+--   put (x + 1)
+--   li_ $ toHtml $ show x
+--
+-- exampleHtml' :: Monad m => HtmlT m ()
+-- exampleHtml' = evalState (commuteHtmlT exampleHtml) 1
+-- @
+--
+-- @since 2.9.9
+commuteHtmlT :: (Functor m, Monad n)
+             => HtmlT m a      -- ^ unpurely generated HTML
+             -> m (HtmlT n a)  -- ^ Commuted monads. /Note:/ @n@ can be 'Identity'
+commuteHtmlT (HtmlT xs) = fmap (HtmlT . return) xs
 
 -- | Evaluate the HTML to its return value. Analogous to @evalState@.
 --

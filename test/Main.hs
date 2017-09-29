@@ -10,6 +10,8 @@ import Lucid
 import Lucid.Base
 import Lucid.Bootstrap
 
+import Control.Monad.State.Strict
+
 import Example1
 
 import Test.HUnit
@@ -29,6 +31,7 @@ spec = do
   describe "extension" testExtension
   describe "special-elements" testSpecials
   describe "self-closing" testSelfClosing
+  describe "commuteHtmlT" testCommuteHtmlT
 
 -- | Test text/unicode.
 testText :: Spec
@@ -195,3 +198,23 @@ testSelfClosing =
      it "input"
         (renderText (input_ [type_ "text"]) ==
          "<input type=\"text\">")
+
+testCommuteHtmlT :: Spec
+testCommuteHtmlT =
+  do it "makes using inner monads easy"
+        (example == renderText expected)
+  where
+    example = renderText $ evalState (commuteHtmlT exampleHtml) 1
+
+    exampleHtml :: MonadState Int m => HtmlT m ()
+    exampleHtml = ul_ $ replicateM_ 5 $ do
+      x <- get
+      put (x + 1)
+      li_ $ toHtml $ show x
+
+    expected = ul_ $ do
+      li_ "1"
+      li_ "2"
+      li_ "3"
+      li_ "4"
+      li_ "5"
