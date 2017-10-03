@@ -4,6 +4,7 @@
 {-# LANGUAGE MultiParamTypeClasses #-}
 {-# LANGUAGE GADTs #-}
 {-# LANGUAGE DeriveDataTypeable #-}
+{-# LANGUAGE OverloadedStrings #-}
 
 -- Search for UndecidableInstances to see why this is needed
 {-# LANGUAGE UndecidableInstances #-}
@@ -195,6 +196,10 @@ class ToHtml m a where
 instance (Monad m) => ToHtml m (HtmlT Identity ()) where
   toHtml = relaxHtmlT
   toHtmlRaw = relaxHtmlT
+
+instance Monad m => ToHtml m () where
+  toHtml _ = toHtml ("" :: Text)
+  toHtmlRaw _ = toHtmlRaw ("" :: Text)
 
 instance Monad m => ToHtml m Char where
   toHtml = toHtml . show
