@@ -1,6 +1,8 @@
 ## 2.9.9
 
 * Add `commuteHtmlT` to commute `HtmlT m a` into `m (HtmlT n a)`.
+* Add `MonadError e m => MonadError e (HtmlT m)` and
+  `MonadWriter w m => MonadWriter w (HtmlT m)` instances
 
 ## 2.9.8.1
 
@@ -12,15 +14,21 @@
 * Add `classes_` smart attribute constructor
 * Add `ToHtml (HtmlT m a)` instance
 
+## 2.9.7
+
+* Add `Semigroup (HtmlT m a)` instance
+* Add `MonadState` and `MonadReader` instances
+
 ## 2.9.6
 
 * Fix compilation of benchmarks
-* Add @athanclark's version of relaxHtmlT
-* Add a utility to generalize the underlying monad from Identity
+* Add @athanclark's version of `relaxHtmlT`
+* Add a utility to generalize the underlying monad from Identity: `relaxHtmlT`
 
 ## 2.9.5
 
 * Add ToHtml instance for ByteString (both)
+* Add `MFunctor HtmlT` instance, i.e. `hoist` from @mmorph@.
 
 ## 2.9.1
 
