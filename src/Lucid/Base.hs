@@ -46,7 +46,9 @@ import           Control.Applicative
 import           Control.Monad
 import           Control.Monad.Morph
 import           Control.Monad.Reader
+import           Control.Monad.Error.Class (MonadError(..))
 import           Control.Monad.State.Class (MonadState(..))
+import           Control.Monad.Writer.Class (MonadWriter(..))
 import           Data.ByteString.Lazy (ByteString)
 import qualified Data.ByteString.Lazy as L
 import qualified Data.ByteString as S
@@ -99,9 +101,11 @@ newtype HtmlT m a =
   deriving (Typeable)
 #endif
 
+-- | @since 2.9.5
 instance MFunctor HtmlT where
   hoist f (HtmlT xs) = HtmlT (f xs)
 
+-- | @since 2.9.7
 instance (a ~ (),Monad m) => Semigroup (HtmlT m a) where
   (<>) = liftM2 mappend
 
@@ -160,17 +164,32 @@ instance MonadTrans HtmlT where
     HtmlT (do a <- m
               return (\_ -> mempty,a))
 
--- MonadReader / MonadState instances need UndecidableInstances,
+-- MonadReader, MonadState etc instances need UndecidableInstances,
 -- because they do not satisfy the coverage condition.
 
+-- | @since 2.9.7
 instance MonadReader r m => MonadReader r (HtmlT m) where
   ask = lift ask
   local f (HtmlT a) = HtmlT (local f a)
 
+-- | @since 2.9.7
 instance MonadState s m => MonadState s (HtmlT m) where
   get = lift get
   put = lift . put
   state = lift . state
+
+-- | @since 2.9.9
+instance MonadError e m => MonadError e (HtmlT m) where
+    throwError = lift . throwError
+    catchError (HtmlT m) h = HtmlT $ catchError m (runHtmlT . h)
+
+-- | @since 2.9.9
+instance MonadWriter w m => MonadWriter w (HtmlT m) where
+    tell             = lift . tell
+    listen (HtmlT x) = HtmlT $ liftM reassoc $ listen x
+      where reassoc ((a, b), c) = (a, (b, c))
+    pass (HtmlT p)   = HtmlT $ pass $ liftM assoc p
+      where assoc (a, (b, c)) = ((a, b), c)
 
 -- | If you want to use IO in your HTML generation.
 instance MonadIO m => MonadIO (HtmlT m) where
