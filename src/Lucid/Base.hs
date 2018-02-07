@@ -106,40 +106,34 @@ instance MFunctor HtmlT where
   hoist f (HtmlT xs) = HtmlT (f xs)
 
 -- | @since 2.9.7
-instance (a ~ (),Monad m) => Semigroup (HtmlT m a) where
-  (<>) = liftM2 mappend
+instance (Semigroup a,Applicative m) => Semigroup (HtmlT m a) where
+  (<>) = liftA2 (<>)
 
 -- | Monoid is right-associative, a la the 'Builder' in it.
-instance (a ~ (),Monad m) => Monoid (HtmlT m a) where
-  mempty  = return mempty
-  mappend = liftM2 mappend
+instance (Monoid a,Applicative m) => Monoid (HtmlT m a) where
+  mempty  = pure mempty
+  mappend = liftA2 mappend
 
 -- | Based on the monad instance.
-instance Monad m => Applicative (HtmlT m) where
-  pure a = HtmlT (return (mempty,a))
+instance Applicative m => Applicative (HtmlT m) where
+  pure a = HtmlT (pure (mempty,a))
   {-# INLINE pure #-}
 
-  f <*> x = HtmlT $ do
-    ~(g, f') <- runHtmlT f
-    ~(h, x') <- runHtmlT x
-    return (g <> h, f' x')
+  f <*> x = HtmlT $ mk <$> runHtmlT f <*> runHtmlT x
+    where mk (g, f') (h, x') = (g <> h, f' x')
   {-# INLINE (<*>) #-}
 
-  m *> n = HtmlT $ do
-    ~(g, _) <- runHtmlT m
-    ~(h, b) <- runHtmlT n
-    return (g <> h, b)
+  m *> n = HtmlT $ mk <$> runHtmlT m <*> runHtmlT n
+    where mk (g, _) (h, b) = (g <> h, b)
   {-# INLINE (*>) #-}
 
-  m <* n = HtmlT $ do
-    ~(g, a) <- runHtmlT m
-    ~(h, _) <- runHtmlT n
-    return (g <> h, a)
+  m <* n = HtmlT $ mk <$> runHtmlT m <*> runHtmlT n
+    where mk (g, a) (h, _) = (g <> h, a)
   {-# INLINE (<*) #-}
 
 -- | Just re-uses Monad.
-instance Monad m => Functor (HtmlT m) where
-  fmap = liftM
+instance Functor m => Functor (HtmlT m) where
+  fmap f = HtmlT . fmap (fmap f) . runHtmlT
 
   (<$) = fmap . const
   {-# INLINE (<$) #-}
