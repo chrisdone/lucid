@@ -8,6 +8,7 @@ module Lucid.Html5 where
 
 import           Lucid.Base
 
+import           Control.Applicative
 import           Data.Monoid
 import           Data.Text (Text, unwords)
 

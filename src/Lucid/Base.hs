@@ -140,7 +140,7 @@ instance Functor m => Functor (HtmlT m) where
 
 -- | Basically acts like Writer.
 instance Monad m => Monad (HtmlT m) where
-  return = pure
+  return a = HtmlT (return (mempty,a))
   {-# INLINE return #-}
 
   m >>= f = HtmlT $ do
@@ -149,7 +149,10 @@ instance Monad m => Monad (HtmlT m) where
     return (g <> h,b)
   {-# INLINE (>>=) #-}
 
-  (>>) = (*>)
+  m >> n = HtmlT $ do
+    ~(g, _) <- runHtmlT m
+    ~(h, b) <- runHtmlT n
+    return (g <> h, b)
   {-# INLINE (>>) #-}
 
 -- | Used for 'lift'.
@@ -310,12 +313,12 @@ class TermRaw arg result | result -> arg where
            -> result        -- ^ Result: either an element or an attribute.
 
 -- | Given attributes, expect more child input.
-instance (Monad m,ToHtml f, a ~ ()) => TermRaw [Attribute] (f -> HtmlT m a) where
+instance (Functor m, Monad m,ToHtml f, a ~ ()) => TermRaw [Attribute] (f -> HtmlT m a) where
   termRawWith name f attrs = with (makeElement name) (attrs <> f) . toHtmlRaw
 
 -- | Given children immediately, just use that and expect no
 -- attributes.
-instance (Monad m,a ~ ()) => TermRaw Text (HtmlT m a) where
+instance (Functor m, Monad m,a ~ ()) => TermRaw Text (HtmlT m a) where
   termRawWith name f = with (makeElement name) f . toHtmlRaw
 
 -- | Some termRaws (like 'Lucid.Html5.style_', 'Lucid.Html5.title_') can be used for
