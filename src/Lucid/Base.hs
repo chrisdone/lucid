@@ -120,15 +120,15 @@ instance Applicative m => Applicative (HtmlT m) where
   {-# INLINE pure #-}
 
   f <*> x = HtmlT $ mk <$> runHtmlT f <*> runHtmlT x
-    where mk (g, f') (h, x') = (g <> h, f' x')
+    where mk ~(g, f') ~(h, x') = (g <> h, f' x')
   {-# INLINE (<*>) #-}
 
   m *> n = HtmlT $ mk <$> runHtmlT m <*> runHtmlT n
-    where mk (g, _) (h, b) = (g <> h, b)
+    where mk ~(g, _) ~(h, b) = (g <> h, b)
   {-# INLINE (*>) #-}
 
   m <* n = HtmlT $ mk <$> runHtmlT m <*> runHtmlT n
-    where mk (g, a) (h, _) = (g <> h, a)
+    where mk ~(g, a) ~(h, _) = (g <> h, a)
   {-# INLINE (<*) #-}
 
 -- | Just re-uses Monad.
