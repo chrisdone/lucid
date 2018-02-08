@@ -279,12 +279,12 @@ class Term arg result | result -> arg where
            -> result        -- ^ Result: either an element or an attribute.
 
 -- | Given attributes, expect more child input.
-instance (Monad m,f ~ HtmlT m a) => Term [Attribute] (f -> HtmlT m a) where
+instance (Applicative m,f ~ HtmlT m a) => Term [Attribute] (f -> HtmlT m a) where
   termWith name f = with (makeElement name) . (<> f)
 
 -- | Given children immediately, just use that and expect no
 -- attributes.
-instance (Monad m) => Term (HtmlT m a) (HtmlT m a) where
+instance (Applicative m) => Term (HtmlT m a) (HtmlT m a) where
   termWith name f = with (makeElement name) f
   {-# INLINE termWith #-}
 
@@ -333,24 +333,20 @@ class With a  where
        -> a
 
 -- | For the contentless elements: 'Lucid.Html5.br_'
-instance (Monad m) => With (HtmlT m a) where
-  with f =
-    \attr ->
-      HtmlT (do ~(f',a) <- runHtmlT f
-                return (\attr' ->
-                          f' (unionArgs (M.fromListWith (<>) (map toPair attr)) attr')
-                       ,a))
-    where toPair (Attribute x y) = (x,y)
+instance (Functor m) => With (HtmlT m a) where
+  with f = \attr -> HtmlT (mk attr <$> runHtmlT f)
+    where 
+      mk attr ~(f',a) = (\attr' -> f' (unionArgs (M.fromListWith (<>) (map toPair attr)) attr')
+                        ,a)
+      toPair (Attribute x y) = (x,y)
 
 -- | For the contentful elements: 'Lucid.Html5.div_'
-instance (Monad m) => With (HtmlT m a -> HtmlT m a) where
-  with f =
-    \attr inner ->
-      HtmlT (do ~(f',a) <- runHtmlT (f inner)
-                return ((\attr'  ->
-                           f' (unionArgs (M.fromListWith (<>) (map toPair attr)) attr') )
-                       ,a))
-    where toPair (Attribute x y) = (x,y)
+instance (Functor m) => With (HtmlT m a -> HtmlT m a) where
+  with f = \attr inner -> HtmlT (mk attr <$> runHtmlT (f inner))
+    where
+      mk attr ~(f',a) = (\attr' -> f' (unionArgs (M.fromListWith (<>) (map toPair attr)) attr')
+                        ,a)
+      toPair (Attribute x y) = (x,y)
 
 -- | Union two sets of arguments and append duplicate keys.
 unionArgs :: HashMap Text Text -> HashMap Text Text -> HashMap Text Text
@@ -484,36 +480,37 @@ makeAttribute :: Text -- ^ Attribute name.
 makeAttribute x y = Attribute x y
 
 -- | Make an HTML builder.
-makeElement :: Monad m
+makeElement :: Functor m
             => Text       -- ^ Name.
             -> HtmlT m a  -- ^ Children HTML.
             -> HtmlT m a -- ^ A parent element.
 {-# INLINE[1] makeElement #-}
-makeElement name =
-  \m' ->
-    HtmlT (do ~(f,a) <- runHtmlT m'
-              return (\attr  -> s "<" <> Blaze.fromText name
-                              <> foldlMapWithKey buildAttr attr <> s ">"
-                              <> f mempty
-                              <> s "</" <> Blaze.fromText name <> s ">",
-                      a))
+makeElement name = \m' -> HtmlT (mk <$> runHtmlT m')
+  where
+    mk ~(f,a) =
+      (\attr ->
+        s "<" <> Blaze.fromText name
+        <> foldlMapWithKey buildAttr attr <> s ">"
+        <> f mempty
+        <> s "</" <> Blaze.fromText name <> s ">"
+      ,a)
 
 -- | Make an HTML builder for elements which have no ending tag.
-makeElementNoEnd :: Monad m
+makeElementNoEnd :: Applicative m
                  => Text       -- ^ Name.
                  -> HtmlT m () -- ^ A parent element.
 makeElementNoEnd name =
-  HtmlT (return (\attr -> s "<" <> Blaze.fromText name
-                          <> foldlMapWithKey buildAttr attr <> s ">",
+  HtmlT (pure (\attr -> s "<" <> Blaze.fromText name
+                        <> foldlMapWithKey buildAttr attr <> s ">",
                  ()))
 
 -- | Make an XML builder for elements which have no ending tag.
-makeXmlElementNoEnd :: Monad m
+makeXmlElementNoEnd :: Applicative m
                     => Text       -- ^ Name.
                     -> HtmlT m () -- ^ A parent element.
 makeXmlElementNoEnd name =
-  HtmlT (return (\attr -> s "<" <> Blaze.fromText name
-                          <> foldlMapWithKey buildAttr attr <> s "/>",
+  HtmlT (pure (\attr -> s "<" <> Blaze.fromText name
+                        <> foldlMapWithKey buildAttr attr <> s "/>",
                  ()))
 
 -- | Build and encode an attribute.
