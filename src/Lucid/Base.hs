@@ -106,11 +106,11 @@ instance MFunctor HtmlT where
   hoist f (HtmlT xs) = HtmlT (f xs)
 
 -- | @since 2.9.7
-instance (Semigroup a,Applicative m) => Semigroup (HtmlT m a) where
+instance (a ~ (),Applicative m) => Semigroup (HtmlT m a) where
   (<>) = liftA2 (<>)
 
 -- | Monoid is right-associative, a la the 'Builder' in it.
-instance (Monoid a,Applicative m) => Monoid (HtmlT m a) where
+instance (a ~ (),Applicative m) => Monoid (HtmlT m a) where
   mempty  = pure mempty
   mappend = liftA2 mappend
 
