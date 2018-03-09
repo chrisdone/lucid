@@ -8,6 +8,7 @@ module Lucid.Html5 where
 
 import           Lucid.Base
 
+import           Control.Applicative
 import           Data.Monoid
 import           Data.Text (Text, unwords)
 
@@ -15,14 +16,12 @@ import           Data.Text (Text, unwords)
 -- Elements
 
 -- | @DOCTYPE@ element
-doctype_ :: Monad m => HtmlT m ()
+doctype_ :: Applicative m => HtmlT m ()
 doctype_ = makeElementNoEnd "!DOCTYPE HTML"
 
 -- | @DOCTYPE@ element + @html@ element
-doctypehtml_ :: Monad m => HtmlT m a -> HtmlT m a
-doctypehtml_ m =
-  do doctype_
-     html_ m
+doctypehtml_ :: Applicative m => HtmlT m a -> HtmlT m a
+doctypehtml_ m = doctype_ *> html_ m
 
 -- | @a@ element
 a_ :: Term arg result => arg -> result
@@ -37,7 +36,7 @@ address_ :: Term arg result => arg -> result
 address_ = term "address"
 
 -- | @area@ element
-area_ :: Monad m => [Attribute] -> HtmlT m ()
+area_ :: Applicative m => [Attribute] -> HtmlT m ()
 area_ = with (makeElementNoEnd "area")
 
 -- | @article@ element
@@ -57,7 +56,7 @@ b_ :: Term arg result => arg -> result
 b_ = term "b"
 
 -- | @base@ element
-base_ :: Monad m => [Attribute] -> HtmlT m ()
+base_ :: Applicative m => [Attribute] -> HtmlT m ()
 base_ = with (makeElementNoEnd "base")
 
 -- | @bdo@ element
@@ -73,7 +72,7 @@ body_ :: Term arg result => arg -> result
 body_ = term "body"
 
 -- | @br@ element
-br_ :: Monad m => [Attribute] -> HtmlT m ()
+br_ :: Applicative m => [Attribute] -> HtmlT m ()
 br_ = with (makeElementNoEnd "br")
 
 -- | @button@ element
@@ -97,7 +96,7 @@ code_ :: Term arg result => arg -> result
 code_ = term "code"
 
 -- | @col@ element
-col_ :: Monad m => [Attribute] -> HtmlT m ()
+col_ :: Applicative m => [Attribute] -> HtmlT m ()
 col_ = with (makeElementNoEnd "col")
 
 -- | @colgroup@ element
@@ -145,7 +144,7 @@ em_ :: Term arg result => arg -> result
 em_ = term "em"
 
 -- | @embed@ element
-embed_ :: Monad m => [Attribute] -> HtmlT m ()
+embed_ :: Applicative m => [Attribute] -> HtmlT m ()
 embed_ = with (makeElementNoEnd "embed")
 
 -- | @fieldset@ element
@@ -205,7 +204,7 @@ hgroup_ :: Term arg result => arg -> result
 hgroup_ = term "hgroup"
 
 -- | @hr@ element
-hr_ :: Monad m => [Attribute] -> HtmlT m ()
+hr_ :: Applicative m => [Attribute] -> HtmlT m ()
 hr_ = with (makeElementNoEnd "hr")
 
 -- | @html@ element
@@ -221,11 +220,11 @@ iframe_ :: Term arg result => arg -> result
 iframe_ = term "iframe"
 
 -- | @img@ element
-img_ :: Monad m => [Attribute] -> HtmlT m ()
+img_ :: Applicative m => [Attribute] -> HtmlT m ()
 img_ = with (makeElementNoEnd "img")
 
 -- | @input@ element
-input_ :: Monad m => [Attribute] -> HtmlT m ()
+input_ :: Applicative m => [Attribute] -> HtmlT m ()
 input_ = with (makeElementNoEnd "input")
 
 -- | @ins@ element
@@ -237,7 +236,7 @@ kbd_ :: Term arg result => arg -> result
 kbd_ = term "kbd"
 
 -- | @keygen@ element
-keygen_ :: Monad m => [Attribute] -> HtmlT m ()
+keygen_ :: Applicative m => [Attribute] -> HtmlT m ()
 keygen_ = with (makeElementNoEnd "keygen")
 
 -- | @label@ element or @label@ attribute
@@ -253,7 +252,7 @@ li_ :: Term arg result => arg -> result
 li_ = term "li"
 
 -- | @link@ element
-link_ :: Monad m => [Attribute] -> HtmlT m ()
+link_ :: Applicative m => [Attribute] -> HtmlT m ()
 link_ = with (makeElementNoEnd "link")
 
 -- | @map@ element
@@ -273,11 +272,11 @@ menu_ :: Term arg result => arg -> result
 menu_ = term "menu"
 
 -- | @menuitem@ element
-menuitem_ :: Monad m => [Attribute] -> HtmlT m ()
+menuitem_ :: Applicative m => [Attribute] -> HtmlT m ()
 menuitem_ = with (makeElementNoEnd "menuitem")
 
 -- | @meta@ element
-meta_ :: Monad m => [Attribute] -> HtmlT m ()
+meta_ :: Applicative m => [Attribute] -> HtmlT m ()
 meta_ = with (makeElementNoEnd "meta")
 
 -- | @meter@ element
@@ -317,7 +316,7 @@ p_ :: Term arg result => arg -> result
 p_ = term "p"
 
 -- | @param@ element
-param_ :: Monad m => [Attribute] -> HtmlT m ()
+param_ :: Applicative m => [Attribute] -> HtmlT m ()
 param_ = with (makeElementNoEnd "param")
 
 -- | The @svg@ attribute.
@@ -369,7 +368,7 @@ small_ :: Term arg result => arg -> result
 small_ = term "small"
 
 -- | @source@ element
-source_ :: Monad m => [Attribute] -> HtmlT m ()
+source_ :: Applicative m => [Attribute] -> HtmlT m ()
 source_ = with (makeElementNoEnd "source")
 
 -- | @span@ element or @span@ attribute
@@ -441,7 +440,7 @@ tr_ :: Term arg result => arg -> result
 tr_ = term "tr"
 
 -- | @track@ element
-track_ :: Monad m => [Attribute] -> HtmlT m ()
+track_ :: Applicative m => [Attribute] -> HtmlT m ()
 track_ = with (makeElementNoEnd "track")
 
 -- | @ul@ element
@@ -457,7 +456,7 @@ video_ :: Term arg result => arg -> result
 video_ = term "video"
 
 -- | @wbr@ element
-wbr_ :: Monad m => [Attribute] -> HtmlT m ()
+wbr_ :: Applicative m => [Attribute] -> HtmlT m ()
 wbr_ = with (makeElementNoEnd "wbr")
 
 -------------------------------------------------------------------------------

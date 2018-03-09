@@ -3,12 +3,13 @@ module Main where
 
 import Lucid
 import Criterion.Main
+import Control.Applicative (Applicative)
 import Control.Monad (replicateM_)
 import qualified Data.Text.Lazy as LT
 import Control.Monad.Trans.Reader (runReader)
 import Data.Functor.Identity (runIdentity)
 
-lotsOfDivs :: Monad m => Int -> HtmlT m ()
+lotsOfDivs :: (Applicative m, Monad m) => Int -> HtmlT m ()
 lotsOfDivs n = body_
   $ replicateM_ n
   $ div_ "hello world!"

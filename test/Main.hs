@@ -10,6 +10,7 @@ import Lucid
 import Lucid.Base
 import Lucid.Bootstrap
 
+import Control.Applicative
 import Control.Monad.State.Strict
 
 import Example1
@@ -206,7 +207,7 @@ testCommuteHtmlT =
   where
     example = renderText $ evalState (commuteHtmlT exampleHtml) 1
 
-    exampleHtml :: MonadState Int m => HtmlT m ()
+    exampleHtml :: (Applicative m, MonadState Int m) => HtmlT m ()
     exampleHtml = ul_ $ replicateM_ 5 $ do
       x <- get
       put (x + 1)

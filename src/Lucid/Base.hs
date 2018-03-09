@@ -106,47 +106,41 @@ instance MFunctor HtmlT where
   hoist f (HtmlT xs) = HtmlT (f xs)
 
 -- | @since 2.9.7
-instance (a ~ (),Monad m) => Semigroup (HtmlT m a) where
-  (<>) = liftM2 mappend
+instance (a ~ (),Applicative m) => Semigroup (HtmlT m a) where
+  (<>) = liftA2 (<>)
 
 -- | Monoid is right-associative, a la the 'Builder' in it.
-instance (a ~ (),Monad m) => Monoid (HtmlT m a) where
-  mempty  = return mempty
-  mappend = liftM2 mappend
+instance (a ~ (),Applicative m) => Monoid (HtmlT m a) where
+  mempty  = pure mempty
+  mappend = liftA2 mappend
 
 -- | Based on the monad instance.
-instance Monad m => Applicative (HtmlT m) where
-  pure a = HtmlT (return (mempty,a))
+instance Applicative m => Applicative (HtmlT m) where
+  pure a = HtmlT (pure (mempty,a))
   {-# INLINE pure #-}
 
-  f <*> x = HtmlT $ do
-    ~(g, f') <- runHtmlT f
-    ~(h, x') <- runHtmlT x
-    return (g <> h, f' x')
+  f <*> x = HtmlT $ mk <$> runHtmlT f <*> runHtmlT x
+    where mk ~(g, f') ~(h, x') = (g <> h, f' x')
   {-# INLINE (<*>) #-}
 
-  m *> n = HtmlT $ do
-    ~(g, _) <- runHtmlT m
-    ~(h, b) <- runHtmlT n
-    return (g <> h, b)
+  m *> n = HtmlT $ mk <$> runHtmlT m <*> runHtmlT n
+    where mk ~(g, _) ~(h, b) = (g <> h, b)
   {-# INLINE (*>) #-}
 
-  m <* n = HtmlT $ do
-    ~(g, a) <- runHtmlT m
-    ~(h, _) <- runHtmlT n
-    return (g <> h, a)
+  m <* n = HtmlT $ mk <$> runHtmlT m <*> runHtmlT n
+    where mk ~(g, a) ~(h, _) = (g <> h, a)
   {-# INLINE (<*) #-}
 
 -- | Just re-uses Monad.
-instance Monad m => Functor (HtmlT m) where
-  fmap = liftM
+instance Functor m => Functor (HtmlT m) where
+  fmap f = HtmlT . fmap (fmap f) . runHtmlT
 
   (<$) = fmap . const
   {-# INLINE (<$) #-}
 
 -- | Basically acts like Writer.
 instance Monad m => Monad (HtmlT m) where
-  return = pure
+  return a = HtmlT (return (mempty,a))
   {-# INLINE return #-}
 
   m >>= f = HtmlT $ do
@@ -155,7 +149,10 @@ instance Monad m => Monad (HtmlT m) where
     return (g <> h,b)
   {-# INLINE (>>=) #-}
 
-  (>>) = (*>)
+  m >> n = HtmlT $ do
+    ~(g, _) <- runHtmlT m
+    ~(h, b) <- runHtmlT n
+    return (g <> h, b)
   {-# INLINE (>>) #-}
 
 -- | Used for 'lift'.
@@ -285,12 +282,12 @@ class Term arg result | result -> arg where
            -> result        -- ^ Result: either an element or an attribute.
 
 -- | Given attributes, expect more child input.
-instance (Monad m,f ~ HtmlT m a) => Term [Attribute] (f -> HtmlT m a) where
+instance (Applicative m,f ~ HtmlT m a) => Term [Attribute] (f -> HtmlT m a) where
   termWith name f = with (makeElement name) . (<> f)
 
 -- | Given children immediately, just use that and expect no
 -- attributes.
-instance (Monad m) => Term (HtmlT m a) (HtmlT m a) where
+instance (Applicative m) => Term (HtmlT m a) (HtmlT m a) where
   termWith name f = with (makeElement name) f
   {-# INLINE termWith #-}
 
@@ -316,12 +313,12 @@ class TermRaw arg result | result -> arg where
            -> result        -- ^ Result: either an element or an attribute.
 
 -- | Given attributes, expect more child input.
-instance (Monad m,ToHtml f, a ~ ()) => TermRaw [Attribute] (f -> HtmlT m a) where
+instance (Functor m, Monad m,ToHtml f, a ~ ()) => TermRaw [Attribute] (f -> HtmlT m a) where
   termRawWith name f attrs = with (makeElement name) (attrs <> f) . toHtmlRaw
 
 -- | Given children immediately, just use that and expect no
 -- attributes.
-instance (Monad m,a ~ ()) => TermRaw Text (HtmlT m a) where
+instance (Functor m, Monad m,a ~ ()) => TermRaw Text (HtmlT m a) where
   termRawWith name f = with (makeElement name) f . toHtmlRaw
 
 -- | Some termRaws (like 'Lucid.Html5.style_', 'Lucid.Html5.title_') can be used for
@@ -339,24 +336,20 @@ class With a  where
        -> a
 
 -- | For the contentless elements: 'Lucid.Html5.br_'
-instance (Monad m) => With (HtmlT m a) where
-  with f =
-    \attr ->
-      HtmlT (do ~(f',a) <- runHtmlT f
-                return (\attr' ->
-                          f' (unionArgs (M.fromListWith (<>) (map toPair attr)) attr')
-                       ,a))
-    where toPair (Attribute x y) = (x,y)
+instance (Functor m) => With (HtmlT m a) where
+  with f = \attr -> HtmlT (mk attr <$> runHtmlT f)
+    where 
+      mk attr ~(f',a) = (\attr' -> f' (unionArgs (M.fromListWith (<>) (map toPair attr)) attr')
+                        ,a)
+      toPair (Attribute x y) = (x,y)
 
 -- | For the contentful elements: 'Lucid.Html5.div_'
-instance (Monad m) => With (HtmlT m a -> HtmlT m a) where
-  with f =
-    \attr inner ->
-      HtmlT (do ~(f',a) <- runHtmlT (f inner)
-                return ((\attr'  ->
-                           f' (unionArgs (M.fromListWith (<>) (map toPair attr)) attr') )
-                       ,a))
-    where toPair (Attribute x y) = (x,y)
+instance (Functor m) => With (HtmlT m a -> HtmlT m a) where
+  with f = \attr inner -> HtmlT (mk attr <$> runHtmlT (f inner))
+    where
+      mk attr ~(f',a) = (\attr' -> f' (unionArgs (M.fromListWith (<>) (map toPair attr)) attr')
+                        ,a)
+      toPair (Attribute x y) = (x,y)
 
 -- | Union two sets of arguments and append duplicate keys.
 unionArgs :: HashMap Text Text -> HashMap Text Text -> HashMap Text Text
@@ -490,36 +483,37 @@ makeAttribute :: Text -- ^ Attribute name.
 makeAttribute x y = Attribute x y
 
 -- | Make an HTML builder.
-makeElement :: Monad m
+makeElement :: Functor m
             => Text       -- ^ Name.
             -> HtmlT m a  -- ^ Children HTML.
             -> HtmlT m a -- ^ A parent element.
 {-# INLINE[1] makeElement #-}
-makeElement name =
-  \m' ->
-    HtmlT (do ~(f,a) <- runHtmlT m'
-              return (\attr  -> s "<" <> Blaze.fromText name
-                              <> foldlMapWithKey buildAttr attr <> s ">"
-                              <> f mempty
-                              <> s "</" <> Blaze.fromText name <> s ">",
-                      a))
+makeElement name = \m' -> HtmlT (mk <$> runHtmlT m')
+  where
+    mk ~(f,a) =
+      (\attr ->
+        s "<" <> Blaze.fromText name
+        <> foldlMapWithKey buildAttr attr <> s ">"
+        <> f mempty
+        <> s "</" <> Blaze.fromText name <> s ">"
+      ,a)
 
 -- | Make an HTML builder for elements which have no ending tag.
-makeElementNoEnd :: Monad m
+makeElementNoEnd :: Applicative m
                  => Text       -- ^ Name.
                  -> HtmlT m () -- ^ A parent element.
 makeElementNoEnd name =
-  HtmlT (return (\attr -> s "<" <> Blaze.fromText name
-                          <> foldlMapWithKey buildAttr attr <> s ">",
+  HtmlT (pure (\attr -> s "<" <> Blaze.fromText name
+                        <> foldlMapWithKey buildAttr attr <> s ">",
                  ()))
 
 -- | Make an XML builder for elements which have no ending tag.
-makeXmlElementNoEnd :: Monad m
+makeXmlElementNoEnd :: Applicative m
                     => Text       -- ^ Name.
                     -> HtmlT m () -- ^ A parent element.
 makeXmlElementNoEnd name =
-  HtmlT (return (\attr -> s "<" <> Blaze.fromText name
-                          <> foldlMapWithKey buildAttr attr <> s "/>",
+  HtmlT (pure (\attr -> s "<" <> Blaze.fromText name
+                        <> foldlMapWithKey buildAttr attr <> s "/>",
                  ()))
 
 -- | Build and encode an attribute.
