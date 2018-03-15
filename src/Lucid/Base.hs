@@ -183,9 +183,9 @@ instance MonadError e m => MonadError e (HtmlT m) where
 -- | @since 2.9.9
 instance MonadWriter w m => MonadWriter w (HtmlT m) where
     tell             = lift . tell
-    listen (HtmlT x) = HtmlT $ liftM reassoc $ listen x
+    listen (HtmlT x) = HtmlT $ fmap reassoc $ listen x
       where reassoc ((a, b), c) = (a, (b, c))
-    pass (HtmlT p)   = HtmlT $ pass $ liftM assoc p
+    pass (HtmlT p)   = HtmlT $ pass $ fmap assoc p
       where assoc (a, (b, c)) = ((a, b), c)
 
 -- | If you want to use IO in your HTML generation.
@@ -313,12 +313,12 @@ class TermRaw arg result | result -> arg where
            -> result        -- ^ Result: either an element or an attribute.
 
 -- | Given attributes, expect more child input.
-instance (Functor m, Monad m,ToHtml f, a ~ ()) => TermRaw [Attribute] (f -> HtmlT m a) where
+instance (Monad m,ToHtml f, a ~ ()) => TermRaw [Attribute] (f -> HtmlT m a) where
   termRawWith name f attrs = with (makeElement name) (attrs <> f) . toHtmlRaw
 
 -- | Given children immediately, just use that and expect no
 -- attributes.
-instance (Functor m, Monad m,a ~ ()) => TermRaw Text (HtmlT m a) where
+instance (Monad m,a ~ ()) => TermRaw Text (HtmlT m a) where
   termRawWith name f = with (makeElement name) f . toHtmlRaw
 
 -- | Some termRaws (like 'Lucid.Html5.style_', 'Lucid.Html5.title_') can be used for
@@ -393,7 +393,7 @@ renderText = LT.decodeUtf8 . Blaze.toLazyByteString . runIdentity . execHtmlT
 -- the lower-level behaviour.
 --
 renderBST :: Monad m => HtmlT m a -> m ByteString
-renderBST = liftM Blaze.toLazyByteString . execHtmlT
+renderBST = fmap Blaze.toLazyByteString . execHtmlT
 
 -- | Render the HTML to a lazy 'Text', but in a monad.
 --
@@ -402,7 +402,7 @@ renderBST = liftM Blaze.toLazyByteString . execHtmlT
 -- you're interested in the lower-level behaviour.
 --
 renderTextT :: Monad m => HtmlT m a -> m LT.Text
-renderTextT = liftM (LT.decodeUtf8 . Blaze.toLazyByteString) . execHtmlT
+renderTextT = fmap (LT.decodeUtf8 . Blaze.toLazyByteString) . execHtmlT
 
 --------------------------------------------------------------------------------
 -- Running, transformer versions
