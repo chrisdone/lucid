@@ -1,3 +1,9 @@
+## 2.9.10
+
+* Drop GHC-7.8 and older (pre-AMP) support
+* Generalise type-signatures to require only `Applicative` or `Functor`,
+  when that's enough
+
 ## 2.9.9
 
 * Add `commuteHtmlT` to commute `HtmlT m a` into `m (HtmlT n a)`.
