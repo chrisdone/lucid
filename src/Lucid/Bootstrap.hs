@@ -40,7 +40,7 @@ container_ =
 -- | A fluid grid container.
 containerFluid_ :: Term arg result => arg -> result
 containerFluid_ =
-  termWith "div" [class_ " containerFluid "]
+  termWith "div" [class_ " container-fluid "]
 
 -- | A grid row.
 row_ :: Term arg result => arg -> result
@@ -48,7 +48,7 @@ row_ = termWith "div" [class_ " row "]
 
 -- | A fluid grid row.
 rowFluid_ :: Term arg result => arg -> result
-rowFluid_ = termWith "div" [class_ " rowFluid "]
+rowFluid_ = termWith "div" [class_ " row-fluid "]
 
 -- | A span of 1 column.
 span1_ :: Term arg result => arg -> result
