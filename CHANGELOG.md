@@ -1,3 +1,8 @@
+## 2.9.11
+
+* Add GHC-8.6 support
+* row-fluid and container-fluid instead of camelCase
+
 ## 2.9.10
 
 * Drop GHC-7.8 and older (pre-AMP) support
