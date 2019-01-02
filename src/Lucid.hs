@@ -141,7 +141,7 @@ import Lucid.Html5
 -- input_ :: Monad m => [Attribute] -> HtmlT m ()
 -- @
 --
--- And some attributes share the same name as attributes, so you can
+-- And some elements share the same name as attributes, so you can
 -- also overload them as attributes:
 --
 -- @

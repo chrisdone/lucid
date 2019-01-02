@@ -23,6 +23,7 @@ module Lucid.Base
   ,evalHtmlT
   ,runHtmlT
   ,relaxHtmlT
+  ,commuteHtmlT
   -- * Combinators
   ,makeElement
   ,makeElementNoEnd
@@ -47,7 +48,9 @@ import           Control.Applicative
 import           Control.Monad
 import           Control.Monad.Morph
 import           Control.Monad.Reader
+import           Control.Monad.Error.Class (MonadError(..))
 import           Control.Monad.State.Class (MonadState(..))
+import           Control.Monad.Writer.Class (MonadWriter(..))
 import           Data.ByteString.Lazy (ByteString)
 import qualified Data.ByteString.Lazy as L
 import qualified Data.ByteString as S
@@ -100,50 +103,46 @@ newtype HtmlT m a =
   deriving (Typeable)
 #endif
 
+-- | @since 2.9.5
 instance MFunctor HtmlT where
   hoist f (HtmlT xs) = HtmlT (f xs)
 
-instance (a ~ (),Monad m) => Semigroup (HtmlT m a) where
-  (<>) = liftM2 mappend
+-- | @since 2.9.7
+instance (a ~ (),Applicative m) => Semigroup (HtmlT m a) where
+  (<>) = liftA2 (<>)
 
 -- | Monoid is right-associative, a la the 'Builder' in it.
-instance (a ~ (),Monad m) => Monoid (HtmlT m a) where
-  mempty  = return mempty
-  mappend = liftM2 mappend
+instance (a ~ (),Applicative m) => Monoid (HtmlT m a) where
+  mempty  = pure mempty
+  mappend = liftA2 mappend
 
 -- | Based on the monad instance.
-instance Monad m => Applicative (HtmlT m) where
-  pure a = HtmlT (return (mempty,a))
+instance Applicative m => Applicative (HtmlT m) where
+  pure a = HtmlT (pure (mempty,a))
   {-# INLINE pure #-}
 
-  f <*> x = HtmlT $ do
-    ~(g, f') <- runHtmlT f
-    ~(h, x') <- runHtmlT x
-    return (g <> h, f' x')
+  f <*> x = HtmlT $ mk <$> runHtmlT f <*> runHtmlT x
+    where mk ~(g, f') ~(h, x') = (g <> h, f' x')
   {-# INLINE (<*>) #-}
 
-  m *> n = HtmlT $ do
-    ~(g, _) <- runHtmlT m
-    ~(h, b) <- runHtmlT n
-    return (g <> h, b)
+  m *> n = HtmlT $ mk <$> runHtmlT m <*> runHtmlT n
+    where mk ~(g, _) ~(h, b) = (g <> h, b)
   {-# INLINE (*>) #-}
 
-  m <* n = HtmlT $ do
-    ~(g, a) <- runHtmlT m
-    ~(h, _) <- runHtmlT n
-    return (g <> h, a)
+  m <* n = HtmlT $ mk <$> runHtmlT m <*> runHtmlT n
+    where mk ~(g, a) ~(h, _) = (g <> h, a)
   {-# INLINE (<*) #-}
 
 -- | Just re-uses Monad.
-instance Monad m => Functor (HtmlT m) where
-  fmap = liftM
+instance Functor m => Functor (HtmlT m) where
+  fmap f = HtmlT . fmap (fmap f) . runHtmlT
 
   (<$) = fmap . const
   {-# INLINE (<$) #-}
 
 -- | Basically acts like Writer.
 instance Monad m => Monad (HtmlT m) where
-  return = pure
+  return a = HtmlT (return (mempty,a))
   {-# INLINE return #-}
 
   m >>= f = HtmlT $ do
@@ -152,7 +151,10 @@ instance Monad m => Monad (HtmlT m) where
     return (g <> h,b)
   {-# INLINE (>>=) #-}
 
-  (>>) = (*>)
+  m >> n = HtmlT $ do
+    ~(g, _) <- runHtmlT m
+    ~(h, b) <- runHtmlT n
+    return (g <> h, b)
   {-# INLINE (>>) #-}
 
 -- | Used for 'lift'.
@@ -161,17 +163,32 @@ instance MonadTrans HtmlT where
     HtmlT (do a <- m
               return (\_ -> mempty,a))
 
--- MonadReader / MonadState instances need UndecidableInstances,
+-- MonadReader, MonadState etc instances need UndecidableInstances,
 -- because they do not satisfy the coverage condition.
 
+-- | @since 2.9.7
 instance MonadReader r m => MonadReader r (HtmlT m) where
   ask = lift ask
   local f (HtmlT a) = HtmlT (local f a)
 
+-- | @since 2.9.7
 instance MonadState s m => MonadState s (HtmlT m) where
   get = lift get
   put = lift . put
   state = lift . state
+
+-- | @since 2.9.9
+instance MonadError e m => MonadError e (HtmlT m) where
+    throwError = lift . throwError
+    catchError (HtmlT m) h = HtmlT $ catchError m (runHtmlT . h)
+
+-- | @since 2.9.9
+instance MonadWriter w m => MonadWriter w (HtmlT m) where
+    tell             = lift . tell
+    listen (HtmlT x) = HtmlT $ fmap reassoc $ listen x
+      where reassoc ((a, b), c) = (a, (b, c))
+    pass (HtmlT p)   = HtmlT $ pass $ fmap assoc p
+      where assoc (a, (b, c)) = ((a, b), c)
 
 -- | If you want to use IO in your HTML generation.
 instance MonadIO m => MonadIO (HtmlT m) where
@@ -193,9 +210,9 @@ class ToHtml m a where
   -- | Convert to HTML without any escaping.
   toHtmlRaw :: a -> HtmlT m ()
 
-instance (Monad m) => ToHtml m (HtmlT Identity ()) where
-  toHtml = relaxHtmlT
-  toHtmlRaw = relaxHtmlT
+instance Monad m => ToHtml m (HtmlT m ()) where
+  toHtml = id
+  toHtmlRaw = id
 
 instance Monad m => ToHtml m () where
   toHtml _ = toHtml ("" :: Text)
@@ -313,12 +330,12 @@ class Term arg result | result -> arg where
            -> result        -- ^ Result: either an element or an attribute.
 
 -- | Given attributes, expect more child input.
-instance (Monad m,f ~ HtmlT m a) => Term [Attribute] (f -> HtmlT m a) where
+instance (Applicative m,f ~ HtmlT m a) => Term [Attribute] (f -> HtmlT m a) where
   termWith name f = with (makeElement name) . (<> f)
 
 -- | Given children immediately, just use that and expect no
 -- attributes.
-instance (Monad m) => Term (HtmlT m a) (HtmlT m a) where
+instance (Applicative m) => Term (HtmlT m a) (HtmlT m a) where
   termWith name f = with (makeElement name) f
   {-# INLINE termWith #-}
 
@@ -367,24 +384,20 @@ class With a  where
        -> a
 
 -- | For the contentless elements: 'Lucid.Html5.br_'
-instance (Monad m) => With (HtmlT m a) where
-  with f =
-    \attr ->
-      HtmlT (do ~(f',a) <- runHtmlT f
-                return (\attr' ->
-                          f' (unionArgs (M.fromListWith (<>) (map toPair attr)) attr')
-                       ,a))
-    where toPair (Attribute x y) = (x,y)
+instance (Functor m) => With (HtmlT m a) where
+  with f = \attr -> HtmlT (mk attr <$> runHtmlT f)
+    where 
+      mk attr ~(f',a) = (\attr' -> f' (unionArgs (M.fromListWith (<>) (map toPair attr)) attr')
+                        ,a)
+      toPair (Attribute x y) = (x,y)
 
 -- | For the contentful elements: 'Lucid.Html5.div_'
-instance (Monad m) => With (HtmlT m a -> HtmlT m a) where
-  with f =
-    \attr inner ->
-      HtmlT (do ~(f',a) <- runHtmlT (f inner)
-                return ((\attr'  ->
-                           f' (unionArgs (M.fromListWith (<>) (map toPair attr)) attr') )
-                       ,a))
-    where toPair (Attribute x y) = (x,y)
+instance (Functor m) => With (HtmlT m a -> HtmlT m a) where
+  with f = \attr inner -> HtmlT (mk attr <$> runHtmlT (f inner))
+    where
+      mk attr ~(f',a) = (\attr' -> f' (unionArgs (M.fromListWith (<>) (map toPair attr)) attr')
+                        ,a)
+      toPair (Attribute x y) = (x,y)
 
 -- | Union two sets of arguments and append duplicate keys.
 unionArgs :: HashMap Text Text -> HashMap Text Text -> HashMap Text Text
@@ -428,7 +441,7 @@ renderText = LT.decodeUtf8 . Blaze.toLazyByteString . runIdentity . execHtmlT
 -- the lower-level behaviour.
 --
 renderBST :: Monad m => HtmlT m a -> m ByteString
-renderBST = liftM Blaze.toLazyByteString . execHtmlT
+renderBST = fmap Blaze.toLazyByteString . execHtmlT
 
 -- | Render the HTML to a lazy 'Text', but in a monad.
 --
@@ -437,7 +450,7 @@ renderBST = liftM Blaze.toLazyByteString . execHtmlT
 -- you're interested in the lower-level behaviour.
 --
 renderTextT :: Monad m => HtmlT m a -> m LT.Text
-renderTextT = liftM (LT.decodeUtf8 . Blaze.toLazyByteString) . execHtmlT
+renderTextT = fmap (LT.decodeUtf8 . Blaze.toLazyByteString) . execHtmlT
 
 --------------------------------------------------------------------------------
 -- Running, transformer versions
@@ -459,13 +472,37 @@ execHtmlT m =
 -- Some builders are happy to deliver results in a pure underlying
 -- monad, here 'Identity', but have trouble maintaining the polymorphic
 -- type. This utility generalizes from 'Identity'.
+--
+-- @since 2.9.6
 relaxHtmlT :: Monad m
-          => HtmlT Identity a  -- ^ The HTML generated purely.
-          -> HtmlT m a         -- ^ Same HTML accessible in a polymorphic context.
+           => HtmlT Identity a  -- ^ The HTML generated purely.
+           -> HtmlT m a         -- ^ Same HTML accessible in a polymorphic context.
 relaxHtmlT = hoist go
   where
     go :: Monad m => Identity a -> m a
     go = return . runIdentity
+
+-- | Commute inner @m@ to the front.
+--
+-- This is useful when you have impure HTML generation, e.g. using `StateT`.
+-- Recall, there is `MonadState s HtmlT` instance.
+--
+-- @
+-- exampleHtml :: MonadState Int m => HtmlT m ()
+-- exampleHtml = ul_ $ replicateM_ 5 $ do
+--   x <- get
+--   put (x + 1)
+--   li_ $ toHtml $ show x
+--
+-- exampleHtml' :: Monad m => HtmlT m ()
+-- exampleHtml' = evalState (commuteHtmlT exampleHtml) 1
+-- @
+--
+-- @since 2.9.9
+commuteHtmlT :: (Functor m, Monad n)
+             => HtmlT m a      -- ^ unpurely generated HTML
+             -> m (HtmlT n a)  -- ^ Commuted monads. /Note:/ @n@ can be 'Identity'
+commuteHtmlT (HtmlT xs) = fmap (HtmlT . return) xs
 
 -- | Evaluate the HTML to its return value. Analogous to @evalState@.
 --
@@ -494,36 +531,37 @@ makeAttribute :: Text -- ^ Attribute name.
 makeAttribute x y = Attribute x y
 
 -- | Make an HTML builder.
-makeElement :: Monad m
+makeElement :: Functor m
             => Text       -- ^ Name.
             -> HtmlT m a  -- ^ Children HTML.
             -> HtmlT m a -- ^ A parent element.
 {-# INLINE[1] makeElement #-}
-makeElement name =
-  \m' ->
-    HtmlT (do ~(f,a) <- runHtmlT m'
-              return (\attr  -> s "<" <> Blaze.fromText name
-                              <> foldlMapWithKey buildAttr attr <> s ">"
-                              <> f mempty
-                              <> s "</" <> Blaze.fromText name <> s ">",
-                      a))
+makeElement name = \m' -> HtmlT (mk <$> runHtmlT m')
+  where
+    mk ~(f,a) =
+      (\attr ->
+        s "<" <> Blaze.fromText name
+        <> foldlMapWithKey buildAttr attr <> s ">"
+        <> f mempty
+        <> s "</" <> Blaze.fromText name <> s ">"
+      ,a)
 
 -- | Make an HTML builder for elements which have no ending tag.
-makeElementNoEnd :: Monad m
+makeElementNoEnd :: Applicative m
                  => Text       -- ^ Name.
                  -> HtmlT m () -- ^ A parent element.
 makeElementNoEnd name =
-  HtmlT (return (\attr -> s "<" <> Blaze.fromText name
-                          <> foldlMapWithKey buildAttr attr <> s ">",
+  HtmlT (pure (\attr -> s "<" <> Blaze.fromText name
+                        <> foldlMapWithKey buildAttr attr <> s ">",
                  ()))
 
 -- | Make an XML builder for elements which have no ending tag.
-makeXmlElementNoEnd :: Monad m
+makeXmlElementNoEnd :: Applicative m
                     => Text       -- ^ Name.
                     -> HtmlT m () -- ^ A parent element.
 makeXmlElementNoEnd name =
-  HtmlT (return (\attr -> s "<" <> Blaze.fromText name
-                          <> foldlMapWithKey buildAttr attr <> s "/>",
+  HtmlT (pure (\attr -> s "<" <> Blaze.fromText name
+                        <> foldlMapWithKey buildAttr attr <> s "/>",
                  ()))
 
 -- | Build and encode an attribute.
