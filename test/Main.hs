@@ -1,5 +1,6 @@
 {-# LANGUAGE FlexibleContexts #-}
 {-# LANGUAGE OverloadedStrings #-}
+{-# LANGUAGE RecursiveDo #-}
 {-# LANGUAGE ExtendedDefaultRules #-}
 
 -- | Test suite for Lucid.
@@ -12,6 +13,8 @@ import Lucid.Bootstrap
 
 import Control.Applicative
 import Control.Monad.State.Strict
+
+import qualified Data.Text as T
 
 import Example1
 
@@ -33,6 +36,7 @@ spec = do
   describe "special-elements" testSpecials
   describe "self-closing" testSelfClosing
   describe "commuteHtmlT" testCommuteHtmlT
+  describe "monadFix" testMonadFix
 
 -- | Test text/unicode.
 testText :: Spec
@@ -219,3 +223,27 @@ testCommuteHtmlT =
       li_ "3"
       li_ "4"
       li_ "5"
+
+testMonadFix :: Spec
+testMonadFix =
+  do it "mdo" (renderText example == renderText expected)
+  where
+   toSectionId i = T.pack $ "section_" ++ show i
+
+   toSectionTitle i = T.pack $ "Section " ++ show i
+
+   example = mdo
+     forM_ sections $ \(sectionName, sectionId) ->
+       a_ [href_ sectionId] $ toHtml sectionName
+     sections <- forM [1 .. 2] $ \sectionNum -> do
+       let sectionId = toSectionId sectionNum
+           sectionTitle = toSectionTitle sectionNum
+       h1_ [id_ sectionId] $ toHtml sectionTitle
+       return (sectionTitle, sectionId)
+     return ()
+
+   expected = do
+     forM_ [1 .. 2] $ \sectionNum ->
+       a_ [href_ $ toSectionId sectionNum] $ toHtml $ toSectionTitle sectionNum
+     forM_ [1 .. 2] $ \sectionNum ->
+       h1_ [id_ $ toSectionId sectionNum] $ toHtml $ toSectionTitle sectionNum

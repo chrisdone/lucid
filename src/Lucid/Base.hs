@@ -161,6 +161,9 @@ instance MonadTrans HtmlT where
     HtmlT (do a <- m
               return (\_ -> mempty,a))
 
+instance MonadFix m => MonadFix (HtmlT m) where
+  mfix m = HtmlT $ mfix $ \ ~(_, a) -> runHtmlT $ m a
+
 -- MonadReader, MonadState etc instances need UndecidableInstances,
 -- because they do not satisfy the coverage condition.
 
@@ -338,7 +341,7 @@ class With a  where
 -- | For the contentless elements: 'Lucid.Html5.br_'
 instance (Functor m) => With (HtmlT m a) where
   with f = \attr -> HtmlT (mk attr <$> runHtmlT f)
-    where 
+    where
       mk attr ~(f',a) = (\attr' -> f' (unionArgs (M.fromListWith (<>) (map toPair attr)) attr')
                         ,a)
       toPair (Attribute x y) = (x,y)
