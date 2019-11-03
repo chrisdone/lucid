@@ -1,3 +1,7 @@
+## 2.9.12
+
+* Add MonadFix instance
+
 ## 2.9.11
 
 * Add GHC-8.6 support
