@@ -1,5 +1,6 @@
 name:                lucid
 version:             2.9.12
+x-revision:          1
 synopsis:            Clear to write, read and edit DSL for HTML
 description:
   Clear to write, read and edit DSL for HTML.
