@@ -1,3 +1,7 @@
+## 2.9.12.1
+
+* Allow different orderings of attributes in test-suite 
+
 ## 2.9.12
 
 * Add MonadFix instance
