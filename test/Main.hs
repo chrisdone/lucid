@@ -38,6 +38,10 @@ spec = do
   describe "commuteHtmlT" testCommuteHtmlT
   describe "monadFix" testMonadFix
 
+(==?*) :: (Eq a, Show a) => a -> [a] -> Assertion
+x ==?* xs | x `elem` xs = return ()
+          | otherwise   = assertFailure $ show x ++ " is not equal to any of " ++ show xs
+
 -- | Test text/unicode.
 testText :: Spec
 testText =
@@ -103,18 +107,22 @@ testAttributes =
            (p_ [class_ "foo"]
                (p_ "")) ==
          "<p class=\"foo\"><p></p></p>")
-     it "mixed"
-        (renderText
+     it "mixed" $
+        renderText
            (p_ [class_ "foo",style_ "attrib"]
                (do style_ ""
-                   style_ "")) ==
-         "<p style=\"attrib\" class=\"foo\"><style></style><style></style></p>")
+                   style_ "")) ==?*
+        [ "<p style=\"attrib\" class=\"foo\"><style></style><style></style></p>"
+        , "<p class=\"foo\" style=\"attrib\"><style></style><style></style></p>"
+        ]
      it "no closing"
         (renderText (p_ [class_ "foo"] (input_ [])) ==
          "<p class=\"foo\"><input></p>")
-     it "multiple"
-        (renderText (p_ [class_ "foo",id_ "zot"] "foo") ==
-         "<p id=\"zot\" class=\"foo\">foo</p>")
+     it "multiple" $
+        renderText (p_ [class_ "foo",id_ "zot"] "foo") ==?*
+        [ "<p id=\"zot\" class=\"foo\">foo</p>"
+        , "<p class=\"foo\" id=\"zot\">foo</p>"
+        ]
      it "encoded"
         (renderText (p_ [class_ "foo<>"] "foo") ==
          "<p class=\"foo&lt;&gt;\">foo</p>")
@@ -152,24 +160,30 @@ testAttributesWith =
                  [class_ "foo"]
                  (p_ "")) ==
          "<p class=\"foo\"><p></p></p>")
-     it "mixed"
-        (renderText
+     it "mixed" $
+        renderText
            (with p_
                  [class_ "foo",style_ "attrib"]
-                 (style_ "")) ==
-         "<p style=\"attrib\" class=\"foo\"><style></style></p>")
-     it "no closing"
-        (renderText (with p_ [class_ "foo"] (with (input_ [type_ "text"]) [class_ "zot"])) ==
-         "<p class=\"foo\"><input type=\"text\" class=\"zot\"></p>")
-     it "multiple"
-        (renderText (with p_ [class_ "foo",id_ "zot"] "foo") ==
-         "<p id=\"zot\" class=\"foo\">foo</p>")
+                 (style_ "")) ==?*
+        [ "<p style=\"attrib\" class=\"foo\"><style></style></p>"
+        , "<pclass=\"foo\" style=\"attrib\"><style></style></p>"
+        ]
+     it "no closing" $
+        renderText (with p_ [class_ "foo"] (with (input_ [type_ "text"]) [class_ "zot"])) ==?*
+        [ "<p class=\"foo\"><input type=\"text\" class=\"zot\"></p>"
+        , "<p class=\"foo\"><input class=\"zot\" type=\"text\"></p>"
+        ]
+     it "multiple" $
+        renderText (with p_ [class_ "foo",id_ "zot"] "foo") ==?*
+        [ "<p id=\"zot\" class=\"foo\">foo</p>"
+        , "<p class=\"foo\" id=\"zot\">foo</p>"
+        ]
      it "encoded"
         (renderText (with p_ [class_ "foo<>"] "foo") ==
          "<p class=\"foo&lt;&gt;\">foo</p>")
      it "nesting attributes"
         (renderText (with (with p_ [class_ "foo"]) [class_ "bar"] "foo") ==
-         "<p class=\"foobar\">foo</p>")
+        "<p class=\"foobar\">foo</p>")
 
 -- | Test that one can use elements with extensible attributes.
 testExtension :: Spec
@@ -177,9 +191,11 @@ testExtension =
   do it "bootstrap"
         (renderText (container_ "Foo!") ==
          "<div class=\" container \">Foo!</div>")
-     it "bootstrap-attributes-extended"
-        (renderText (container_ [class_ "bar",id_ "zot"] "Foo!") ==
-         "<div id=\"zot\" class=\" container bar\">Foo!</div>")
+     it "bootstrap-attributes-extended" $
+        renderText (container_ [class_ "bar",id_ "zot"] "Foo!") ==?*
+        [ "<div id=\"zot\" class=\" container bar\">Foo!</div>"
+        , "<div class=\" container bar\" id=\"zot\">Foo!</div>"
+        ]
 
 -- | Test special elements that do something different to normal
 -- elements.
