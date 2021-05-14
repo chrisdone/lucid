@@ -166,7 +166,7 @@ testAttributesWith =
                  [class_ "foo",style_ "attrib"]
                  (style_ "")) ==?*
         [ "<p style=\"attrib\" class=\"foo\"><style></style></p>"
-        , "<pclass=\"foo\" style=\"attrib\"><style></style></p>"
+        , "<p class=\"foo\" style=\"attrib\"><style></style></p>"
         ]
      it "no closing" $
         renderText (with p_ [class_ "foo"] (with (input_ [type_ "text"]) [class_ "zot"])) ==?*
