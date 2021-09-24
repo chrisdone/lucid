@@ -40,7 +40,7 @@ benchmarks =
     , HtmlBenchmark "wideTree" wideTree wideTreeData $
         "A very wide tree (" >> toHtml (show (length wideTreeData)) >> " elements)"
     , HtmlBenchmark "wideTreeEscaping" wideTree wideTreeEscapingData $ do
-        "A very wide tree (" >> toHtml (show (length wideTreeData)) >> " elements)"
+        "A very wide tree (" >> toHtml (show (length wideTreeEscapingData)) >> " elements)"
         " with lots of escaping"
     , HtmlBenchmark "deepTree" deepTree deepTreeData $ do
         "A really deep tree (" >> toHtml (show deepTreeData) >> " nested templates)"
