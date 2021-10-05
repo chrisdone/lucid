@@ -7,12 +7,12 @@
 module HtmlBenchmarks where
 
 import           Data.Monoid (Monoid,mappend,mempty)
+import           Data.Text (Text)
 import qualified Data.Text as T
 -- import qualified Data.Text.Lazy.Builder as B
 
 import qualified Prelude as P
 import           Prelude hiding (div, id)
-import           Data.String
 
 -- import BenchmarkUtils
 import           Lucid
@@ -22,10 +22,10 @@ import           Lucid.Base
 -- | Description of an HTML benchmark
 --
 data HtmlBenchmark = forall a. HtmlBenchmark
-    String       -- ^ Name.
+    String          -- ^ Name.
     (a -> Html ())  -- ^ Rendering function.
-    a            -- ^ Data.
-    (Html ())         -- ^ Longer description.
+    a               -- ^ Data.
+    (Html ())       -- ^ Longer description.
 
 -- | List containing all benchmarks.
 --
@@ -46,9 +46,13 @@ benchmarks =
         "A really deep tree (" >> toHtml (show deepTreeData) >> " nested templates)"
     , HtmlBenchmark "manyAttributes" manyAttributes manyAttributesData $ do
         "A single element with " >> toHtml (show (length manyAttributesData))
-        " attributes."
+        "  distinct attributes."
+    , HtmlBenchmark "duplicateAttributes" duplicateAttributes duplicateAttributesData $ do
+        "A single element with a single attribute and " >> toHtml (show (length duplicateAttributesData))
+        " values."
     , HtmlBenchmark "customAttribute" customAttributes customAttributesData $
-        "Creating custom attributes"
+        "Creating custom attributes (middle ground between manyAttributes and duplicateAttributes)"
+
     ]
 
 rows :: Int
@@ -58,20 +62,20 @@ bigTableData :: [[Int]]
 bigTableData = replicate rows [1..10]
 {-# NOINLINE bigTableData #-}
 
-basicData :: (String, String, [String])
+basicData :: (Text, Text, [Text])
 basicData = ("Just a test", "joe", items)
 {-# NOINLINE basicData #-}
 
-items :: [String]
-items = map (("Number " `mappend`) . show) [1 :: Int .. 14]
+items :: [Text]
+items = map (("Number " `mappend`) . T.pack . show) [1 :: Int .. 14]
 {-# NOINLINE items #-}
 
-wideTreeData :: [String]
+wideTreeData :: [Text]
 wideTreeData = take 5000 $
     cycle ["λf.(λx.fxx)(λx.fxx)", "These old days", "Foobar", "lol", "x ∈ A"]
 {-# NOINLINE wideTreeData #-}
 
-wideTreeEscapingData :: [String]
+wideTreeEscapingData :: [Text]
 wideTreeEscapingData = take 1000 $
     cycle ["<><>", "\"lol\"", "<&>", "'>>'"]
 {-# NOINLINE wideTreeEscapingData #-}
@@ -80,10 +84,15 @@ deepTreeData :: Int
 deepTreeData = 1000
 {-# NOINLINE deepTreeData #-}
 
-manyAttributesData :: [String]
-manyAttributesData = wideTreeData
+manyAttributesData :: [(T.Text, T.Text)]
+manyAttributesData = zipWith mk [0 ..] wideTreeData where
+    mk :: Int -> T.Text -> (T.Text, T.Text)
+    mk i val = (T.pack ("attr" ++ show i), val)
 
-customAttributesData :: [(String, String)]
+duplicateAttributesData :: [Text]
+duplicateAttributesData = wideTreeData
+
+customAttributesData :: [(Text, Text)]
 customAttributesData = zip wideTreeData wideTreeData
 
 -- | Render the argument matrix as an HTML table.
@@ -97,7 +106,7 @@ row r = tr_ (mapM_ (td_ . toHtml . show) r)
 
 -- | Render a simple HTML page with some data.
 --
-basic :: (String, String, [String])  -- ^ (Title, User, Items)
+basic :: (Text, Text, [Text])  -- ^ (Title, User, Items)
       -> Html ()                        -- ^ Result.
 basic (title', user, items') = html_ $ do
     head_ $ title_ $ toHtml title'
@@ -112,7 +121,7 @@ basic (title', user, items') = html_ $ do
 
 -- | A benchmark producing a very wide but very shallow tree.
 --
-wideTree :: [String]  -- ^ Text to create a tree from.
+wideTree :: [Text]  -- ^ Text to create a tree from.
          -> Html ()      -- ^ Result.
 wideTree = div_ . mapM_ ((with p_ [id_ "foo"]) . toHtml)
 
@@ -125,11 +134,15 @@ deepTree n = p_ $ table_ $ tr_ $ td_ $ div_ $ deepTree (n - 1)
 
 -- | Create an element with many attributes.
 --
-manyAttributes :: [String]  -- ^ List of attribute values.
+manyAttributes :: [(T.Text, T.Text)]  -- ^ List of attribute values.
                -> Html ()      -- ^ Result.
-manyAttributes as = img_ (map (id_ . T.pack) as)
+manyAttributes as = img_ (map (\(key, val) -> makeAttribute key val) as)
 
-customAttributes :: [(String, String)]  -- ^ List of attribute name, value pairs
+duplicateAttributes :: [Text]  -- ^ List of attribute values.
+               -> Html ()      -- ^ Result.
+duplicateAttributes as = img_ (map id_ as)
+
+customAttributes :: [(Text, Text)]  -- ^ List of attribute name, value pairs
                  -> Html ()                -- ^ Result
 customAttributes xs =
-  img_ (map (\(key,val) -> makeAttribute (fromString key) (T.pack val)) xs)
+  img_ (map (\(key,val) -> makeAttribute key val) xs)
