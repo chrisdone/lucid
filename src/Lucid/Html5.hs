@@ -15,8 +15,12 @@ import           Data.Text (Text, unwords)
 -- Elements
 
 -- | @DOCTYPE@ element
+--
+-- This is implemented as "raw output", because the doctype doesn't
+-- accept attributes, such as those inserted via 'with'.
+--
 doctype_ :: Applicative m => HtmlT m ()
-doctype_ = makeElementNoEnd "!DOCTYPE HTML"
+doctype_ = HtmlT (pure (const "<!DOCTYPE HTML>", ()))
 
 -- | @DOCTYPE@ element + @html@ element
 doctypehtml_ :: Applicative m => HtmlT m a -> HtmlT m a
