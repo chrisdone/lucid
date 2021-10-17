@@ -1,6 +1,14 @@
+## 2.9.13
+
+* Change internal attributes representation from HashMap to Map. This
+  introduces stable ordering, at a negligible performance cost for
+  realistic element sizes. This may affect some test suites.
+* doctype no longer accepts attributes. You can use `with` with
+  `doctypeHtml` now, if needed.
+
 ## 2.9.12.1
 
-* Allow different orderings of attributes in test-suite 
+* Allow different orderings of attributes in test-suite
 
 ## 2.9.12
 
