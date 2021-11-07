@@ -53,12 +53,12 @@ import           Control.Monad.Writer.Class (MonadWriter(..))
 import           Data.ByteString.Lazy (ByteString)
 import qualified Data.ByteString.Lazy as L
 import qualified Data.ByteString as S
+import qualified Data.Foldable as Foldable
 import           Data.Functor.Identity
-import           Data.Map.Strict (Map)
 import qualified Data.Map.Strict as M
+import Data.Sequence (Seq(..))
+import qualified Data.Sequence as Seq
 import           Data.Hashable (Hashable(..))
-import           Data.Semigroup (Semigroup (..))
-import           Data.Monoid (Monoid (..))
 import           Data.String
 import           Data.Text (Text)
 import qualified Data.Text.Lazy as LT
