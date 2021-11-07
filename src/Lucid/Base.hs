@@ -523,8 +523,8 @@ makeAttribute x y = Attribute x y
 
 -- | Make an HTML builder.
 makeElement :: Functor m
-            => Text       -- ^ Name.
-            -> HtmlT m a  -- ^ Children HTML.
+            => Text      -- ^ Name.
+            -> HtmlT m a -- ^ Children HTML.
             -> HtmlT m a -- ^ A parent element.
 {-# INLINE[1] makeElement #-}
 makeElement name = \m' -> HtmlT (mk <$> runHtmlT m')
@@ -532,7 +532,7 @@ makeElement name = \m' -> HtmlT (mk <$> runHtmlT m')
     mk ~(f,a) =
       (\attr ->
         s "<" <> Blaze.fromText name
-        <> foldlMapWithKey buildAttr attr <> s ">"
+        <> foldlSeqWithKey buildAttr attr <> s ">"
         <> f mempty
         <> s "</" <> Blaze.fromText name <> s ">"
       ,a)
@@ -543,7 +543,7 @@ makeElementNoEnd :: Applicative m
                  -> HtmlT m () -- ^ A parent element.
 makeElementNoEnd name =
   HtmlT (pure (\attr -> s "<" <> Blaze.fromText name
-                        <> foldlMapWithKey buildAttr attr <> s ">",
+                        <> foldlSeqWithKey buildAttr attr <> s ">",
                  ()))
 
 -- | Make an XML builder for elements which have no ending tag.
@@ -552,8 +552,19 @@ makeXmlElementNoEnd :: Applicative m
                     -> HtmlT m () -- ^ A parent element.
 makeXmlElementNoEnd name =
   HtmlT (pure (\attr -> s "<" <> Blaze.fromText name
-                        <> foldlMapWithKey buildAttr attr <> s "/>",
+                        <> foldlSeqWithKey buildAttr attr <> s "/>",
                  ()))
+
+-- | Folding and monoidally appending attributes.
+foldlSeqWithKey :: Monoid m => (k -> v -> m) -> Seq (k, v) -> m
+foldlSeqWithKey f = foldlWithKey (\m k v -> m `mappend` f k v) mempty
+
+foldlWithKey :: (a -> k -> v -> a) -> a -> Seq (k, v) -> a
+foldlWithKey f z ps = go z ps
+  where
+    -- go :: a -> Seq (k, v) -> a
+    go z' Empty = z'
+    go z' ((k, v) :<| ps') = go (f z' k v) ps'
 
 -- | Build and encode an attribute.
 buildAttr :: Text -> Text -> Builder
@@ -563,10 +574,6 @@ buildAttr key val =
   if val == mempty
      then mempty
      else s "=\"" <> Blaze.fromHtmlEscapedText val <> s "\""
-
--- | Folding and monoidally appending attributes.
-foldlMapWithKey :: Monoid m => (k -> v -> m) -> Map k v -> m
-foldlMapWithKey f = M.foldlWithKey' (\m k v -> m `mappend` f k v) mempty
 
 -- | Convenience function for constructing builders.
 s :: String -> Builder
