@@ -87,7 +87,7 @@ type Html = HtmlT Identity
 -- | A monad transformer that generates HTML. Use the simpler 'Html'
 -- type if you don't want to transform over some other monad.
 newtype HtmlT m a =
-  HtmlT {runHtmlT :: m (Map Text Text -> Builder,a)
+  HtmlT {runHtmlT :: m (Seq (Text, Text) -> Builder,a)
          -- ^ This is the low-level way to run the HTML transformer,
          -- finally returning an element builder and a value. You can
          -- pass 'mempty' for this argument for a top-level call. See
