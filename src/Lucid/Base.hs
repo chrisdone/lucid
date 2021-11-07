@@ -343,7 +343,7 @@ class With a  where
 instance (Functor m) => With (HtmlT m a) where
   with f = \attr -> HtmlT (mk attr <$> runHtmlT f)
     where
-      mk attr ~(f',a) = (\attr' -> f' (unionArgs (M.fromListWith (<>) (map toPair attr)) attr')
+      mk attr ~(f',a) = (\attr' -> f' (unionArgs (fromListWith (<>) (map toPair attr)) attr')
                         ,a)
       toPair (Attribute x y) = (x,y)
 
@@ -351,13 +351,48 @@ instance (Functor m) => With (HtmlT m a) where
 instance (Functor m) => With (HtmlT m a -> HtmlT m a) where
   with f = \attr inner -> HtmlT (mk attr <$> runHtmlT (f inner))
     where
-      mk attr ~(f',a) = (\attr' -> f' (unionArgs (M.fromListWith (<>) (map toPair attr)) attr')
+      mk attr ~(f',a) = (\attr' -> f' (unionArgs (fromListWith (<>) (map toPair attr)) attr')
                         ,a)
       toPair (Attribute x y) = (x,y)
 
 -- | Union two sets of arguments and append duplicate keys.
-unionArgs :: Map Text Text -> Map Text Text -> Map Text Text
-unionArgs = M.unionWith (<>)
+unionArgs :: Seq (Text, Text) -> Seq (Text, Text) -> Seq (Text, Text)
+unionArgs = unionWith (<>)
+
+unionWith :: (Ord k, Semigroup v) => (v -> v -> v) -> Seq (k, v) -> Seq (k, v) -> Seq (k, v)
+unionWith f s1 s2 = mapMaybe (\k -> fmap (k,) (M.lookup k values)) keys
+  where
+    union = s1 Seq.>< s2
+    keys = nubSeq $ fmap fst union
+    values = M.fromListWith (flip f) $ Foldable.toList union
+
+mapMaybe :: (a -> Maybe b) -> Seq a -> Seq b
+mapMaybe _ Empty = Empty
+mapMaybe f (x :<| xs) =
+  let rs = mapMaybe f xs in
+  case f x of
+    Nothing -> rs
+    Just r  -> r Seq.<| rs
+
+-- | Removes all duplicate values from a Sequence.
+nubSeq :: Eq a => Seq a -> Seq a
+nubSeq Empty = Seq.empty
+nubSeq xs@(_ :<| Empty) = xs
+nubSeq (x :<| tailXs@(y :<| _))
+  | x /= y    = x Seq.<| nubSeq tailXs
+  | otherwise = nubSeq tailXs
+
+fromListWith :: Eq k => (a -> a -> a) -> [(k, a)] -> Seq (k, a)
+fromListWith f l
+    = Foldable.foldl' ins Seq.empty l
+    where
+      ins ps (k,v) = insertWith f k v ps
+
+insertWith :: Eq k => (a -> a -> a) -> k -> a -> Seq (k, a) -> Seq (k, a)
+insertWith _ k v Empty = (k, v) Seq.<| Empty
+insertWith f k v (p@(k', v') :<| ps)
+  | k == k' = (k, f v v') Seq.<| ps
+  | otherwise = p Seq.<| insertWith f k v ps
 
 --------------------------------------------------------------------------------
 -- Running
