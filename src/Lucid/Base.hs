@@ -1,4 +1,5 @@
 {-# LANGUAGE CPP #-}
+{-# LANGUAGE BangPatterns #-}
 {-# LANGUAGE FunctionalDependencies #-}
 {-# LANGUAGE FlexibleInstances #-}
 {-# LANGUAGE MultiParamTypeClasses #-}
@@ -64,11 +65,11 @@ import qualified Data.Text.Lazy.Encoding as LT
 import qualified Data.Text.Encoding as T
 import           Data.Typeable (Typeable)
 import           Prelude
-import           Data.Containers.ListUtils
 import           Data.Maybe
 import           Data.Sequence (Seq)
 import qualified Data.Sequence as Seq
 import           Data.Foldable (toList)
+import qualified Data.Set as Set
 
 --------------------------------------------------------------------------------
 -- Types
@@ -534,11 +535,25 @@ buildAttr key val =
 -- | Folding and monoidally appending attributes.
 foldlMapWithKey :: (Text -> Text -> Builder) -> Seq Attribute -> Builder
 foldlMapWithKey f attributes =
-  foldMap (\k -> fromMaybe mempty (fmap (f k) (M.lookup k values))) keys
+  case nubOrdMaybe (map fst pairs) of
+    Just keyList ->
+      foldMap (\k -> fromMaybe mempty (fmap (f k) (M.lookup k values))) keyList
+      where values = M.fromListWith (<>) pairs
+    Nothing -> foldMap (\(Attribute k v) -> f k v) attributes
   where
-    keys = nubOrd (map fst pairs)
-    values = M.fromListWith (<>) pairs
     pairs = map (\(Attribute k v) -> (k,v)) (toList attributes)
+
+-- | Do a nubOrd, but only return Maybe if it actually removes anything.
+nubOrdMaybe :: Ord a => [a] -> Maybe [a]
+nubOrdMaybe = go False Set.empty []
+  where
+    go (!removed) set acc (x:xs)
+      | x `Set.member` set = go True set acc xs
+      | otherwise = go removed (Set.insert x set) (x : acc) xs
+    go removed _set acc [] =
+      if removed
+        then pure (reverse acc)
+        else Nothing
 
 -- | Convenience function for constructing builders.
 s :: String -> Builder
