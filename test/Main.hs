@@ -193,7 +193,7 @@ testExtension =
          "<div class=\" container \">Foo!</div>")
      it "bootstrap-attributes-extended" $
         renderText (container_ [class_ "bar",id_ "zot"] "Foo!") ==?*
-        [ "<div id=\"zot\" class=\" container bar\">Foo!</div>"
+        [ "<div class=\" container bar\" id=\"zot\">Foo!</div>"
         , "<div class=\" container bar\" id=\"zot\">Foo!</div>"
         ]
 

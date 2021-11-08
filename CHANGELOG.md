@@ -1,3 +1,9 @@
+## 2.11.0
+
+* Change internal attributes to `Seq Attribute`. This preserves
+  ordering. Attributes are merged in a left-biased way, preserving the
+  key order as first encountered.
+
 ## 2.9.13
 
 * Change internal attributes representation from HashMap to Map. This
