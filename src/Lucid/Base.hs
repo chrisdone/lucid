@@ -1,4 +1,5 @@
 {-# LANGUAGE CPP #-}
+{-# LANGUAGE BangPatterns #-}
 {-# LANGUAGE FunctionalDependencies #-}
 {-# LANGUAGE FlexibleInstances #-}
 {-# LANGUAGE MultiParamTypeClasses #-}
@@ -53,7 +54,6 @@ import           Data.ByteString.Lazy (ByteString)
 import qualified Data.ByteString.Lazy as L
 import qualified Data.ByteString as S
 import           Data.Functor.Identity
-import           Data.Map.Strict (Map)
 import qualified Data.Map.Strict as M
 import           Data.Hashable (Hashable(..))
 import           Data.Semigroup (Semigroup (..))
@@ -65,11 +65,18 @@ import qualified Data.Text.Lazy.Encoding as LT
 import qualified Data.Text.Encoding as T
 import           Data.Typeable (Typeable)
 import           Prelude
+import           Data.Maybe
+import           Data.Sequence (Seq)
+import qualified Data.Sequence as Seq
+import           Data.Foldable (toList)
+import qualified Data.Set as Set
 
 --------------------------------------------------------------------------------
 -- Types
 
--- | A simple attribute. Don't use the constructor, use 'makeAttribute'.
+-- | A simple attribute. Don't use the constructor, use
+-- 'makeAttribute'.  Attributes are case sensitive, so if you want
+-- attributes to be merged properly, use a single case representation.
 data Attribute = Attribute !Text !Text
   deriving (Show,Eq,Typeable)
 
@@ -85,8 +92,11 @@ type Html = HtmlT Identity
 
 -- | A monad transformer that generates HTML. Use the simpler 'Html'
 -- type if you don't want to transform over some other monad.
+--
+-- Don't rely on the internal representation of this type. Use the
+-- monad and functor classes.
 newtype HtmlT m a =
-  HtmlT {runHtmlT :: m (Map Text Text -> Builder,a)
+  HtmlT {runHtmlT :: m (Seq Attribute -> Builder,a)
          -- ^ This is the low-level way to run the HTML transformer,
          -- finally returning an element builder and a value. You can
          -- pass 'mempty' for this argument for a top-level call. See
@@ -342,21 +352,15 @@ class With a  where
 instance (Functor m) => With (HtmlT m a) where
   with f = \attr -> HtmlT (mk attr <$> runHtmlT f)
     where
-      mk attr ~(f',a) = (\attr' -> f' (unionArgs (M.fromListWith (<>) (map toPair attr)) attr')
+      mk attr ~(f',a) = (\attr' -> f' (attr' <> Seq.fromList attr)
                         ,a)
-      toPair (Attribute x y) = (x,y)
 
 -- | For the contentful elements: 'Lucid.Html5.div_'
 instance (Functor m) => With (HtmlT m a -> HtmlT m a) where
   with f = \attr inner -> HtmlT (mk attr <$> runHtmlT (f inner))
     where
-      mk attr ~(f',a) = (\attr' -> f' (unionArgs (M.fromListWith (<>) (map toPair attr)) attr')
+      mk attr ~(f',a) = (\attr' -> f' (attr' <> Seq.fromList attr)
                         ,a)
-      toPair (Attribute x y) = (x,y)
-
--- | Union two sets of arguments and append duplicate keys.
-unionArgs :: Map Text Text -> Map Text Text -> Map Text Text
-unionArgs = M.unionWith (<>)
 
 --------------------------------------------------------------------------------
 -- Running
@@ -529,8 +533,27 @@ buildAttr key val =
      else s "=\"" <> Blaze.fromHtmlEscapedText val <> s "\""
 
 -- | Folding and monoidally appending attributes.
-foldlMapWithKey :: Monoid m => (k -> v -> m) -> Map k v -> m
-foldlMapWithKey f = M.foldlWithKey' (\m k v -> m `mappend` f k v) mempty
+foldlMapWithKey :: (Text -> Text -> Builder) -> Seq Attribute -> Builder
+foldlMapWithKey f attributes =
+  case nubOrdMaybe (map fst pairs) of
+    Just keyList ->
+      foldMap (\k -> fromMaybe mempty (fmap (f k) (M.lookup k values))) keyList
+      where values = M.fromListWith (<>) pairs
+    Nothing -> foldMap (\(Attribute k v) -> f k v) attributes
+  where
+    pairs = map (\(Attribute k v) -> (k,v)) (toList attributes)
+
+-- | Do a nubOrd, but only return Maybe if it actually removes anything.
+nubOrdMaybe :: Ord a => [a] -> Maybe [a]
+nubOrdMaybe = go False Set.empty []
+  where
+    go (!removed) set acc (x:xs)
+      | x `Set.member` set = go True set acc xs
+      | otherwise = go removed (Set.insert x set) (x : acc) xs
+    go removed _set acc [] =
+      if removed
+        then pure (reverse acc)
+        else Nothing
 
 -- | Convenience function for constructing builders.
 s :: String -> Builder
