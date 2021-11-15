@@ -3,6 +3,13 @@ lucid [![Hackage](https://img.shields.io/hackage/v/lucid.svg?style=flat)](https:
 
 Clear to write, read and edit DSL for writing HTML
 
+**Table of Contents**
+
+- [Introduction](#introduction)
+- [Rendering](#rendering)
+- [Good to know](#good-to-know)
+- [Transforming](#transforming)
+
 ## Introduction
 
 HTML terms in Lucid are written with a postfix ‘`_`’ to indicate data
