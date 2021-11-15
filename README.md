@@ -116,6 +116,11 @@ Blaze.ByteString.Builder.
 See the documentation for the `Lucid` module for information about
 using it as a monad transformer.
 
+## Good to know
+
+* Attributes are escaped, so you cannot write arbitrary JavaScript in attributes. Instead, do something like `onclick_ "foo()"`.
+* Attributes are rendered in the order that they are written in your Haskell code.
+
 ## Transforming
 
 You can use `lift` to call parent monads.
