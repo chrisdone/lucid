@@ -711,6 +711,10 @@ method_ = makeAttribute "method"
 min_ :: Text -> Attribute
 min_ = makeAttribute "min"
 
+-- | The @minlength@ attribute.
+minlength_ :: Text -> Attribute
+minlength_ = makeAttribute "minlength"
+
 -- | The @multiple@ attribute.
 multiple_ :: Text -> Attribute
 multiple_ = makeAttribute "multiple"
