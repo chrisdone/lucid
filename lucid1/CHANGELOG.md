@@ -8,7 +8,7 @@
   ordering. Attributes are merged in a left-biased way, preserving the
   key order as first encountered.
 
-## 2.9.13
+## 2.10.0
 
 * Change internal attributes representation from HashMap to Map. This
   introduces stable ordering, at a negligible performance cost for
