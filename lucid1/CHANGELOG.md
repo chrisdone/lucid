@@ -1,3 +1,7 @@
+## upcoming
+
+* Added `minlength` attribute.
+
 ## 2.11.0
 
 * Change internal attributes to `Seq Attribute`. This preserves
