@@ -1,6 +1,7 @@
 ## upcoming
 
 * Added `minlength` attribute.
+* Added `loading` attribute.
 
 ## 2.11.0
 
