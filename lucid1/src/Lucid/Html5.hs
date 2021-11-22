@@ -679,6 +679,10 @@ lang_ = makeAttribute "lang"
 list_ :: Text -> Attribute
 list_ = makeAttribute "list"
 
+-- | The @loading@ attribute.
+loading_ :: Text -> Attribute
+loading_ = makeAttribute "loading"
+
 -- | The @loop@ attribute.
 loop_ :: Text -> Attribute
 loop_ = makeAttribute "loop"
