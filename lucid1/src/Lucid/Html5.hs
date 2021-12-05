@@ -1007,6 +1007,10 @@ ping_ = makeAttribute "ping"
 placeholder_ :: Text -> Attribute
 placeholder_ = makeAttribute "placeholder"
 
+-- | The @poster@ attribute.
+poster_ :: Text -> Attribute
+poster_ = makeAttribute "poster"
+
 -- | The @preload@ attribute.
 preload_ :: Text -> Attribute
 preload_ = makeAttribute "preload"
