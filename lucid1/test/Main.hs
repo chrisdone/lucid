@@ -21,6 +21,8 @@ import Example1
 import Test.HUnit
 import Test.Hspec
 
+import qualified Lucid2
+
 -- | Test suite entry point, returns exit failure if any test fails.
 main :: IO ()
 main = hspec spec
@@ -86,7 +88,14 @@ testElements =
 -- | Test that attribute assigning works properly.
 testAttributes :: Spec
 testAttributes =
-  do it "simple"
+  do describe "Lucid2" $ do
+       it "simple"
+          (renderText (Lucid2.p_ [Lucid2.class_ "foo"] "foo") `shouldBe`
+           "<p class=\"foo \">foo</p>")
+       it "simple, duplicate attributes"
+          (renderText (Lucid2.p_ [Lucid2.class_ "foo", Lucid2.class_ "bar"] "foo") `shouldBe`
+           "<p class=\"bar foo \">foo</p>")
+     it "simple"
         (renderText (p_ [class_ "foo"] "foo") ==
          "<p class=\"foo\">foo</p>")
      it "escaping"

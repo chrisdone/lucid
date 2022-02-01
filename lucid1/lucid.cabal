@@ -32,6 +32,9 @@ library
                      Lucid.Html5
                      Lucid.Bootstrap
 
+                     Lucid2
+                     Lucid.Html5_2
+
   -- GHC boot libraries
   build-depends:     base                   >=4.8      && <4.17
                    , bytestring             >=0.10.6.0
