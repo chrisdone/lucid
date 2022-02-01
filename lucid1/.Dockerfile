@@ -7,7 +7,7 @@ RUN chown chris:chris -R /home/chris/tmp
 USER chris
 
 WORKDIR /home/chris/tmp
-RUN stack build --fast
+RUN stack build --fast --test --no-run-tests
 
 USER root
 
