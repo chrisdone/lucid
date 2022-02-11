@@ -9,4 +9,4 @@ This repo contains all package versions of lucid.
   first version. Released on Hackage as `lucid`.
 
 Subsequent releases will be released under the
-[Immutable Publishing Policy](https://gist.github.com/chrisdone/f71a2eca728a805c181091863c339fc2).
+[Immutable Publishing Policy](https://chrisdone.com/posts/ipp).
