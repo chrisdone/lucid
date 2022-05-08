@@ -1,6 +1,6 @@
-## 0.0.x
+## 0.0.20220509
 
-TBA
+* Use explicit imports for mtl, avoiding mtl-2.3 incompatibility.
 
 ## New in lucid2
 

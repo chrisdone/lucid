@@ -1,5 +1,8 @@
-## upcoming
+## Upcoming
 
+## 2.11.1
+
+* Use explicit imports for mtl, avoids the mtl-2.3 issue
 * Added `minlength` attribute.
 * Added `loading` attribute.
 
