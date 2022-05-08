@@ -39,7 +39,7 @@ library
                    , transformers           >=0.4.2.0
 
   -- GHC boot libraries since 8.4.
-  build-depends:     mtl                    >=2.2
+  build-depends:     mtl                    >=2.2 && <2.3
                    , text                   >=1.2.0.2
 
   -- compat packages
