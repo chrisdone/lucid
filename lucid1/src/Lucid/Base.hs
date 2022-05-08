@@ -45,8 +45,11 @@ import qualified Blaze.ByteString.Builder as Blaze
 import qualified Blaze.ByteString.Builder.Html.Utf8 as Blaze
 import           Control.Applicative
 import           Control.Monad
-import           Control.Monad.Morph
-import           Control.Monad.Reader
+import           Control.Monad.Morph (MFunctor(..))
+import           Control.Monad.Reader (MonadReader(..))
+import           Control.Monad.IO.Class (MonadIO(..))
+import           Control.Monad.Fix (MonadFix(..))
+import           Control.Monad.Trans (MonadTrans(..))
 import           Control.Monad.Error.Class (MonadError(..))
 import           Control.Monad.State.Class (MonadState(..))
 import           Control.Monad.Writer.Class (MonadWriter(..))

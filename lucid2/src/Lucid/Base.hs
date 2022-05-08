@@ -46,9 +46,13 @@ import qualified Blaze.ByteString.Builder.Html.Utf8 as Blaze
 import           Control.Applicative
 import           Control.Monad
 import           Control.Monad.Error.Class (MonadError(..))
-import           Control.Monad.Reader
+import           Control.Monad.Fix (MonadFix(..))
+import           Control.Monad.IO.Class (MonadIO(..))
+import           Control.Monad.Reader (MonadReader(..))
 import           Control.Monad.State.Class (MonadState(..))
+import           Control.Monad.Trans (MonadTrans(..))
 import           Control.Monad.Trans.State.Strict (StateT(..), modify')
+import           Control.Monad.Writer.Class (MonadWriter(..))
 import qualified Data.ByteString as S
 import           Data.ByteString.Lazy (ByteString)
 import qualified Data.ByteString.Lazy as L
