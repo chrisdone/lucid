@@ -6,7 +6,7 @@ TBA
 
 lucid2 is a new package published to Hackage and maintained under `lucid2/` in this repository alongside `lucid1`. Releases are made under the [Immutable Publishing Policy](https://chrisdone.com/posts/ipp/), and users had asked for many breaking changes, therefore we needed a completely new namespace to work under, hence, "lucid2". Many things have also been dropped in the process, to simplify the codebase.
 
-This upgrade is **entirely optional*.
+This upgrade is **entirely optional**.
 
 People using `lucid` **will not have to do anything**. They can continue using that package indefinitely, it will be maintained alongside `lucid2`, to keep it building with GHCs and things. You can even use both packages in the same codebase with `-XPackageImports`.
 
