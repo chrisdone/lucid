@@ -9,6 +9,7 @@ Changed:
 * All on* attributes and style_ do not escape their values anymore. Be
   careful. Though you were probably being careful with these anyway,
   as they are inherently dangerous for XXS.
+* The `Attribute` type has been replaced by `Attributes`, which is a `Monoid` instance. This makes it really easy to write code like `if X then class_ "foo" else mempty`.
 
 Renamed:
 
