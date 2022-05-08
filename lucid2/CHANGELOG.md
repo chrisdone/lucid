@@ -16,6 +16,7 @@ Changed:
   careful. Though you were probably being careful with these anyway,
   as they are inherently dangerous for XXS.
 * The `Attribute` type has been replaced by `Attributes`, which is a `Monoid` instance. This makes it really easy to write code like `if X then class_ "foo" else mempty`.
+* The `class_` and `style_` attributes combine with a space and `;` between them when there are duplicates, e.g. `[class_ "x",class_ "y"]` produces `class="x y"`. These are special cases, the rest of the attributes do not have special combining behavior and will be simple concatenation.
 
 Renamed:
 
