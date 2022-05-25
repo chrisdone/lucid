@@ -23,7 +23,7 @@ module Lucid.Base
   ,evalHtmlT
   ,runHtmlT
   ,relaxHtmlT
-  -- ,commuteHtmlT
+  ,commuteHtmlT
   -- ,hoistHtmlT
   -- * Combinators
   ,makeElement
@@ -335,10 +335,12 @@ relaxHtmlT = undefined
 -- @
 --
 -- @since 2.9.9
--- commuteHtmlT :: (Functor m, Monad n)
---              => HtmlT m a      -- ^ unpurely generated HTML
---              -> m (HtmlT n a)  -- ^ Commuted monads. /Note:/ @n@ can be 'Identity'
--- commuteHtmlT (HtmlT xs) = fmap (HtmlT . return) xs
+commuteHtmlT :: (Monad m, Monad n)
+             => HtmlT m a      -- ^ unpurely generated HTML
+             -> m (HtmlT n a)  -- ^ Commuted monads. /Note:/ @n@ can be 'Identity'
+commuteHtmlT h = do
+  (builder, a) <- runHtmlT h
+  return . HtmlT $ put builder >> return a
 
 -- | Evaluate the HTML to its return value. Analogous to @evalState@.
 --
