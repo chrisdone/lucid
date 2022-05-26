@@ -1,3 +1,11 @@
+## 0.0.20220526
+
+This release adds some extra functions for running different monad
+stacks, prompted by Joe Vargas.
+
+* Add `generalizeHtmlT`, `commuteHtmlT` and `hoistHtmlT`.
+* Deprecate the accidentally exported `relaxHtmlT = undefined`.
+
 ## 0.0.20220509
 
 * Use explicit imports for mtl, avoiding mtl-2.3 incompatibility.
