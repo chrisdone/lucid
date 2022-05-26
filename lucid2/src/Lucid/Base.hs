@@ -22,9 +22,9 @@ module Lucid.Base
   ,execHtmlT
   ,evalHtmlT
   ,runHtmlT
-  ,relaxHtmlT
-  -- ,commuteHtmlT
-  -- ,hoistHtmlT
+  ,generalizeHtmlT
+  ,commuteHtmlT
+  ,hoistHtmlT
   -- * Combinators
   ,makeElement
   ,makeElementNoEnd
@@ -37,7 +37,11 @@ module Lucid.Base
    -- * Classes
   ,Term(..)
   ,TermRaw(..)
-  ,ToHtml(..))
+  ,ToHtml(..)
+
+   -- * Deprecated
+  ,relaxHtmlT
+  )
   where
 
 import           Blaze.ByteString.Builder (Builder)
@@ -50,7 +54,7 @@ import           Control.Monad.IO.Class (MonadIO(..))
 import           Control.Monad.Reader (MonadReader(..))
 import           Control.Monad.State.Class (MonadState(..))
 import           Control.Monad.Trans (MonadTrans(..))
-import           Control.Monad.Trans.State.Strict (StateT(..), modify')
+import           Control.Monad.Trans.State.Strict (StateT(..), modify', mapStateT)
 import qualified Data.ByteString as S
 import           Data.ByteString.Lazy (ByteString)
 import qualified Data.ByteString.Lazy as L
@@ -107,9 +111,9 @@ instance MonadState s m => MonadState s (HtmlT m) where
 runHtmlT :: Monad m => HtmlT m a -> m (Builder, a)
 runHtmlT = fmap swap . flip runStateT mempty . unHtmlT
 
--- -- | Switch the underlying monad.
--- hoistHtmlT :: (Monad m, Monad n) => (forall a. m a -> n a) -> HtmlT m b -> HtmlT n b
--- hoistHtmlT f (HtmlT xs) = HtmlT (f xs)
+-- | Switch the underlying monad.
+hoistHtmlT :: (Monad m, Monad n) => (forall a. m a -> n a) -> HtmlT m b -> HtmlT n b
+hoistHtmlT f (HtmlT xs) = HtmlT (mapStateT f xs)
 
 -- | @since 2.9.7
 instance (a ~ (),Monad m) => Semigroup (HtmlT m a) where
@@ -142,8 +146,8 @@ class ToHtml a where
 
 -- | @since 2.9.8
 instance (a ~ (), m ~ Identity) => ToHtml (HtmlT m a) where
-  toHtml = relaxHtmlT
-  toHtmlRaw = relaxHtmlT
+  toHtml = generalizeHtmlT
+  toHtmlRaw = generalizeHtmlT
 
 instance ToHtml String where
   toHtml    = write . Blaze.fromHtmlEscapedString
@@ -308,15 +312,14 @@ execHtmlT m =
 -- monad, here 'Identity', but have trouble maintaining the polymorphic
 -- type. This utility generalizes from 'Identity'.
 --
--- @since 2.9.6
-relaxHtmlT :: Monad m
-           => HtmlT Identity a  -- ^ The HTML generated purely.
-           -> HtmlT m a         -- ^ Same HTML accessible in a polymorphic context.
-relaxHtmlT = undefined
--- relaxHtmlT = hoistHtmlT go
---   where
---     go :: Monad m => Identity a -> m a
---     go = return . runIdentity
+generalizeHtmlT ::
+     Monad m
+  => HtmlT Identity a -- ^ The HTML generated purely.
+  -> HtmlT m a -- ^ Same HTML accessible in a polymorphic context.
+generalizeHtmlT = hoistHtmlT go
+   where
+     go :: Monad m => Identity a -> m a
+     go = return . runIdentity
 
 -- | Commute inner @m@ to the front.
 --
@@ -334,11 +337,12 @@ relaxHtmlT = undefined
 -- exampleHtml' = evalState (commuteHtmlT exampleHtml) 1
 -- @
 --
--- @since 2.9.9
--- commuteHtmlT :: (Functor m, Monad n)
---              => HtmlT m a      -- ^ unpurely generated HTML
---              -> m (HtmlT n a)  -- ^ Commuted monads. /Note:/ @n@ can be 'Identity'
--- commuteHtmlT (HtmlT xs) = fmap (HtmlT . return) xs
+commuteHtmlT :: (Monad m, Monad n)
+             => HtmlT m a      -- ^ unpurely generated HTML
+             -> m (HtmlT n a)  -- ^ Commuted monads. /Note:/ @n@ can be 'Identity'
+commuteHtmlT h = do
+  (builder, a) <- runHtmlT h
+  return . HtmlT $ put builder >> return a
 
 -- | Evaluate the HTML to its return value. Analogous to @evalState@.
 --
@@ -442,3 +446,10 @@ write b = HtmlT (modify' (<> b))
 
 attributeList :: [Attributes] -> Seq Attribute
 attributeList = foldMap unAttributes
+
+--------------------------------------------------------------------------------
+-- Deprecated definitions
+
+relaxHtmlT :: Monad m => HtmlT Identity a -> HtmlT m a
+relaxHtmlT = undefined
+{-# DEPRECATED relaxHtmlT "DO NOT USE. This was exported accidentally and throws an exception." #-}
