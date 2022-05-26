@@ -24,7 +24,7 @@ module Lucid.Base
   ,runHtmlT
   ,relaxHtmlT
   ,commuteHtmlT
-  -- ,hoistHtmlT
+  ,hoistHtmlT
   -- * Combinators
   ,makeElement
   ,makeElementNoEnd
@@ -50,7 +50,7 @@ import           Control.Monad.IO.Class (MonadIO(..))
 import           Control.Monad.Reader (MonadReader(..))
 import           Control.Monad.State.Class (MonadState(..))
 import           Control.Monad.Trans (MonadTrans(..))
-import           Control.Monad.Trans.State.Strict (StateT(..), modify')
+import           Control.Monad.Trans.State.Strict (StateT(..), modify', mapStateT)
 import qualified Data.ByteString as S
 import           Data.ByteString.Lazy (ByteString)
 import qualified Data.ByteString.Lazy as L
@@ -107,9 +107,9 @@ instance MonadState s m => MonadState s (HtmlT m) where
 runHtmlT :: Monad m => HtmlT m a -> m (Builder, a)
 runHtmlT = fmap swap . flip runStateT mempty . unHtmlT
 
--- -- | Switch the underlying monad.
--- hoistHtmlT :: (Monad m, Monad n) => (forall a. m a -> n a) -> HtmlT m b -> HtmlT n b
--- hoistHtmlT f (HtmlT xs) = HtmlT (f xs)
+-- | Switch the underlying monad.
+hoistHtmlT :: (Monad m, Monad n) => (forall a. m a -> n a) -> HtmlT m b -> HtmlT n b
+hoistHtmlT f (HtmlT xs) = HtmlT (mapStateT f xs)
 
 -- | @since 2.9.7
 instance (a ~ (),Monad m) => Semigroup (HtmlT m a) where
@@ -312,11 +312,10 @@ execHtmlT m =
 relaxHtmlT :: Monad m
            => HtmlT Identity a  -- ^ The HTML generated purely.
            -> HtmlT m a         -- ^ Same HTML accessible in a polymorphic context.
-relaxHtmlT = undefined
--- relaxHtmlT = hoistHtmlT go
---   where
---     go :: Monad m => Identity a -> m a
---     go = return . runIdentity
+relaxHtmlT = hoistHtmlT go
+   where
+     go :: Monad m => Identity a -> m a
+     go = return . runIdentity
 
 -- | Commute inner @m@ to the front.
 --
