@@ -342,7 +342,7 @@ commuteHtmlT :: (Monad m, Monad n)
              -> m (HtmlT n a)  -- ^ Commuted monads. /Note:/ @n@ can be 'Identity'
 commuteHtmlT h = do
   (builder, a) <- runHtmlT h
-  return . HtmlT $ put builder >> return a
+  return . HtmlT $ modify' (<> builder) >> return a
 
 -- | Evaluate the HTML to its return value. Analogous to @evalState@.
 --
