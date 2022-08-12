@@ -30,6 +30,7 @@ spec = do
   describe "attributes" testAttributes
   describe "special-elements" testSpecials
   describe "self-closing" testSelfClosing
+  describe "commute" testCommute
 
 (==?*) :: (Eq a, Show a) => a -> [a] -> Assertion
 x ==?* xs | x `elem` xs = return ()
@@ -154,3 +155,12 @@ testSelfClosing =
      it "input"
         (renderText (input_ [type_ "text"]) `shouldBe`
          "<input type=\"text\">")
+
+testCommute :: Spec
+testCommute = do
+  it "commutes" $ do
+    let stateAction :: HtmlT (Control.Monad.State.Strict.State [Integer]) ()
+        stateAction = div_ [class_ "inside"] $ pure ()
+        (fragment, _s) = runState (commuteHtmlT2 stateAction) [0]
+    renderText (div_ [class_ "outside"] fragment) `shouldBe`
+     "<div class=\"outside\"><div class=\"inside\"></div></div>"
