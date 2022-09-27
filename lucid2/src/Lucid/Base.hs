@@ -23,7 +23,7 @@ module Lucid.Base
   ,evalHtmlT
   ,runHtmlT
   ,generalizeHtmlT
-  ,commuteHtmlT
+  ,commuteHtmlT2
   ,hoistHtmlT
   -- * Combinators
   ,makeElement
@@ -41,6 +41,7 @@ module Lucid.Base
 
    -- * Deprecated
   ,relaxHtmlT
+  ,commuteHtmlT
   )
   where
 
@@ -337,12 +338,12 @@ generalizeHtmlT = hoistHtmlT go
 -- exampleHtml' = evalState (commuteHtmlT exampleHtml) 1
 -- @
 --
-commuteHtmlT :: (Monad m, Monad n)
+commuteHtmlT2 :: (Monad m, Monad n)
              => HtmlT m a      -- ^ unpurely generated HTML
              -> m (HtmlT n a)  -- ^ Commuted monads. /Note:/ @n@ can be 'Identity'
-commuteHtmlT h = do
+commuteHtmlT2 h = do
   (builder, a) <- runHtmlT h
-  return . HtmlT $ put builder >> return a
+  return . HtmlT $ modify' (<> builder) >> return a
 
 -- | Evaluate the HTML to its return value. Analogous to @evalState@.
 --
@@ -453,3 +454,11 @@ attributeList = foldMap unAttributes
 relaxHtmlT :: Monad m => HtmlT Identity a -> HtmlT m a
 relaxHtmlT = undefined
 {-# DEPRECATED relaxHtmlT "DO NOT USE. This was exported accidentally and throws an exception." #-}
+
+commuteHtmlT :: (Monad m, Monad n)
+             => HtmlT m a      -- ^ unpurely generated HTML
+             -> m (HtmlT n a)  -- ^ Commuted monads. /Note:/ @n@ can be 'Identity'
+commuteHtmlT h = do
+  (builder, a) <- runHtmlT h
+  return . HtmlT $ put builder >> return a
+{-# DEPRECATED commuteHtmlT "This has incorrect behavior and will lose HTML output. See commuteHtmlT2." #-}
