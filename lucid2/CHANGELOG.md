@@ -1,3 +1,7 @@
+## Upcoming
+
+* Fix `commuteHtmlT` in favor of newly added `commuteHtmlT2`
+
 ## 0.0.20220526
 
 This release adds some extra functions for running different monad
