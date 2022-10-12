@@ -1,4 +1,4 @@
-## Upcoming
+## 0.0.20221012
 
 * Fix `commuteHtmlT` in favor of newly added `commuteHtmlT2`
 
