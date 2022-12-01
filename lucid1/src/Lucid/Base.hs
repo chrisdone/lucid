@@ -44,6 +44,7 @@ import           Blaze.ByteString.Builder (Builder)
 import qualified Blaze.ByteString.Builder as Blaze
 import qualified Blaze.ByteString.Builder.Html.Utf8 as Blaze
 import           Control.Applicative
+import           Control.DeepSeq
 import           Control.Monad
 import           Control.Monad.Morph (MFunctor(..))
 import           Control.Monad.Reader (MonadReader(..))
@@ -113,6 +114,9 @@ newtype HtmlT m a =
 #if  __GLASGOW_HASKELL__ >= 707
   deriving (Typeable)
 #endif
+
+instance NFData (HtmlT m a) where
+  rnf a = seq a ()
 
 -- | @since 2.9.5
 instance MFunctor HtmlT where
