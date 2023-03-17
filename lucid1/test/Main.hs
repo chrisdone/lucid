@@ -11,6 +11,7 @@ import Lucid
 import Lucid.Base
 import Lucid.Bootstrap
 
+import Control.Monad
 import Control.Applicative
 import Control.Monad.State.Strict
 
