@@ -1,5 +1,9 @@
 ## Upcoming
 
+## 2.11.20230408
+
+* Don't expect Control.Monad to be re-exported from mtl anymore
+
 ## 2.11.1
 
 * Use explicit imports for mtl, avoids the mtl-2.3 issue
