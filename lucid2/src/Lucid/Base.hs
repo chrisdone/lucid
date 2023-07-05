@@ -45,8 +45,8 @@ module Lucid.Base
   )
   where
 
-import           Blaze.ByteString.Builder (Builder)
-import qualified Blaze.ByteString.Builder as Blaze
+import           Data.ByteString.Builder (Builder)
+import qualified Data.ByteString.Builder as Blaze
 import qualified Blaze.ByteString.Builder.Html.Utf8 as Blaze
 import           Control.Applicative
 import           Control.Monad
@@ -169,7 +169,7 @@ instance ToHtml LT.Text where
 -- @since 2.9.5
 instance ToHtml S.ByteString where
   toHtml    = write . Blaze.fromHtmlEscapedText . T.decodeUtf8
-  toHtmlRaw = write . Blaze.fromByteString
+  toHtmlRaw = write . Blaze.byteString
 
 -- | This instance requires the ByteString to contain UTF-8 encoded
 -- text, for the 'toHtml' method. The 'toHtmlRaw' method doesn't care,
@@ -178,7 +178,7 @@ instance ToHtml S.ByteString where
 -- @since 2.9.5
 instance ToHtml L.ByteString where
   toHtml    = write . Blaze.fromHtmlEscapedLazyText . LT.decodeUtf8
-  toHtmlRaw = write . Blaze.fromLazyByteString
+  toHtmlRaw = write . Blaze.lazyByteString
 
 -- | Used to construct HTML terms.
 --
