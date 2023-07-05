@@ -1,0 +1,5 @@
+resolver: lts-20.11
+system-ghc: true
+packages:
+- lucid1
+- lucid2
