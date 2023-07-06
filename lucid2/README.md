@@ -149,3 +149,9 @@ You can use `lift` to call parent monads.
 ``` html
 "<html><body><p class=\"name\">Chris</p></body></html>"
 ```
+
+## Copyright
+
+* Copyright (c) 2014-2022 Chris Done
+* Copyright (c) 2013 Leon P Smith
+* Copyright (c) 2010 Jasper Van der Jeugt, 2010-2011 Simon Meier

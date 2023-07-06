@@ -1,3 +1,9 @@
+## 0.0.20230706
+
+* Inline the `blaze-builder` modules in-use into the package, to drop
+  dependency on
+  `blaze-builder`. <https://github.com/chrisdone/lucid/issues/143>
+
 ## 0.0.20221012
 
 * Fix `commuteHtmlT` in favor of newly added `commuteHtmlT2`
