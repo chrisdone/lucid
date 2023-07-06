@@ -32,6 +32,8 @@ library
                      Lucid.Base
                      Lucid.Html5
 
+  -- These have been inlined from the blaze-builder package, so that
+  -- all dependencies are GHC boot libraries.
   other-modules: Blaze.ByteString.Builder.Char.Utf8
                  Blaze.ByteString.Builder.Html.Utf8
                  Blaze.ByteString.Builder.Html.Word
