@@ -1,3 +1,7 @@
+## 0.0.20240424
+
+* Add `dialogue_` element. <https://github.com/chrisdone/lucid/issues/147>
+
 ## 0.0.20230706
 
 * Inline the `blaze-builder` modules in-use into the package, to drop
