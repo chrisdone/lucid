@@ -1,6 +1,6 @@
 ## 0.0.20240424
 
-* Add `dialogue_` element. <https://github.com/chrisdone/lucid/issues/147>
+* Add `dialog_` element. <https://github.com/chrisdone/lucid/issues/147>
 
 ## 0.0.20230706
 
