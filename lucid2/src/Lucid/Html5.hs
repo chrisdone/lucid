@@ -130,6 +130,10 @@ details_ = term "details"
 dfn_ :: Term arg result => arg -> result
 dfn_ = term "dfn"
 
+-- | @dialog@ element
+dialog_ :: Term arg result => arg -> result
+dialog_ = term "dialog"
+
 -- | @div@ element
 div_ :: Term arg result => arg -> result
 div_ = term "div"
