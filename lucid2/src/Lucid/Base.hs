@@ -28,6 +28,7 @@ module Lucid.Base
   -- * Combinators
   ,makeElement
   ,makeElementNoEnd
+  ,makeElementSelfTerminated
   ,makeAttributes
   ,makeAttributesRaw
   ,Attributes
@@ -400,6 +401,16 @@ makeElementNoEnd :: Monad m
 makeElementNoEnd name attr =
   write
     (s "<" <> Blaze.fromText name <> foldlMapWithKey buildAttr (attributeList attr) <> s ">")
+
+-- | Make an HTML builder for a self-terminated element.
+makeElementSelfTerminated 
+  :: Monad m
+  => Text       -- ^ Name.
+  -> [Attributes]
+  -> HtmlT m () -- ^ A parent element.
+makeElementSelfTerminated name attr =
+  write
+    (s "<" <> Blaze.fromText name <> foldlMapWithKey buildAttr (attributeList attr) <> s "/>")
 
 -- | Build and encode an attribute.
 buildAttr :: Text -> Builder -> Builder
