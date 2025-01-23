@@ -4,7 +4,7 @@
 {-# LANGUAGE FlexibleInstances #-}
 {-# LANGUAGE MultiParamTypeClasses #-}
 {-# LANGUAGE GADTs #-}
-{-# LANGUAGE DeriveDataTypeable #-}
+{-# LANGUAGE TypeOperators #-}
 
 -- Search for UndecidableInstances to see why this is needed
 {-# LANGUAGE UndecidableInstances #-}
@@ -66,7 +66,6 @@ import           Data.Text (Text)
 import qualified Data.Text.Lazy as LT
 import qualified Data.Text.Lazy.Encoding as LT
 import qualified Data.Text.Encoding as T
-import           Data.Typeable (Typeable)
 import           Prelude
 import           Data.Maybe
 import           Data.Sequence (Seq)
@@ -81,7 +80,7 @@ import qualified Data.Set as Set
 -- 'makeAttribute'.  Attributes are case sensitive, so if you want
 -- attributes to be merged properly, use a single case representation.
 data Attribute = Attribute !Text !Text
-  deriving (Show,Eq,Typeable)
+  deriving (Show,Eq)
 
 instance Hashable Attribute where
   hashWithSalt salt (Attribute a b) = salt `hashWithSalt` a `hashWithSalt` b
@@ -105,14 +104,6 @@ newtype HtmlT m a =
          -- pass 'mempty' for this argument for a top-level call. See
          -- 'evalHtmlT' and 'execHtmlT' for easier to use functions.
          }
--- GHC 7.4 errors with
---  Can't make a derived instance of `Typeable (HtmlT m a)':
---    `HtmlT' must only have arguments of kind `*'
--- GHC 7.6 errors with
---    `HtmlT' must only have arguments of kind `*'
-#if  __GLASGOW_HASKELL__ >= 707
-  deriving (Typeable)
-#endif
 
 -- | @since 2.9.5
 instance MFunctor HtmlT where
