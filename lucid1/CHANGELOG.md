@@ -1,5 +1,9 @@
 ## Upcoming
 
+## 2.11.20250303
+
+* Support GHC 9.12
+
 ## 2.11.20230408
 
 * Don't expect Control.Monad to be re-exported from mtl anymore

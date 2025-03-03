@@ -1,3 +1,7 @@
+## 0.0.20250303
+
+* Support GHC 9.12
+
 ## 0.0.20240424
 
 * Add `dialog_` element. <https://github.com/chrisdone/lucid/issues/147>
