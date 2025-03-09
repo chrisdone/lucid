@@ -125,7 +125,9 @@ instance (a ~ (),Monad m) => Semigroup (HtmlT m a) where
 -- | Monoid is right-associative, a la the 'Builder' in it.
 instance (a ~ (),Monad m) => Monoid (HtmlT m a) where
   mempty  = pure mempty
+#if !MIN_VERSION_base(4,11,0)
   mappend = liftA2 mappend
+#endif
 
 -- | If you want to use IO in your HTML generation.
 instance MonadIO m => MonadIO (HtmlT m) where

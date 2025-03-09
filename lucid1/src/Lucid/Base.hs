@@ -116,7 +116,9 @@ instance (a ~ (),Applicative m) => Semigroup (HtmlT m a) where
 -- | Monoid is right-associative, a la the 'Builder' in it.
 instance (a ~ (),Applicative m) => Monoid (HtmlT m a) where
   mempty  = pure mempty
+#if !MIN_VERSION_base(4,11,0)
   mappend = liftA2 mappend
+#endif
 
 -- | Based on the monad instance.
 instance Applicative m => Applicative (HtmlT m) where
@@ -144,20 +146,11 @@ instance Functor m => Functor (HtmlT m) where
 
 -- | Basically acts like Writer.
 instance Monad m => Monad (HtmlT m) where
-  return a = HtmlT (return (mempty,a))
-  {-# INLINE return #-}
-
   m >>= f = HtmlT $ do
     ~(g,a) <- runHtmlT m
     ~(h,b) <- runHtmlT (f a)
     return (g <> h,b)
   {-# INLINE (>>=) #-}
-
-  m >> n = HtmlT $ do
-    ~(g, _) <- runHtmlT m
-    ~(h, b) <- runHtmlT n
-    return (g <> h, b)
-  {-# INLINE (>>) #-}
 
 -- | Used for 'lift'.
 instance MonadTrans HtmlT where
