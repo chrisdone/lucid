@@ -1,5 +1,9 @@
 ## Upcoming
 
+## 2.11.20260427
+
+* Support GHC 9.14
+
 ## 2.11.20250303
 
 * Support GHC 9.12
