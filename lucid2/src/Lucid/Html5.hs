@@ -529,6 +529,10 @@ cols_ = makeAttributes "cols"
 colspan_ :: Text -> Attributes
 colspan_ = makeAttributes "colspan"
 
+-- | The @commandfor@ attribute.
+commandfor_ :: Text -> Attributes
+commandfor_ = makeAttributes "commandfor"
+
 -- | The @content@ attribute.
 content_ :: Text -> Attributes
 content_ = makeAttributes "content"
