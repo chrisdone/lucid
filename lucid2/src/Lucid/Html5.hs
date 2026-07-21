@@ -1017,6 +1017,10 @@ poster_ = makeAttributes "poster"
 preload_ :: Text -> Attributes
 preload_ = makeAttributes "preload"
 
+-- | The @property@ attribute.
+property_ :: Text -> Attributes
+property_ = makeAttributes "property"
+
 -- | The @pubdate@ attribute.
 pubdate_ :: Text -> Attributes
 pubdate_ = makeAttributes "pubdate"
